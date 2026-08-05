@@ -16,8 +16,6 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-io.listen(PORT);
-
 io.on("connection", socket => {
   console.log("connected an user")
 
@@ -40,8 +38,4 @@ app.use((err: any, _: any, res: any, __: any) => {
   res.send(err.message);
 })
 
-app.listen(PORT, e => {
-  if (e) return console.error(e);
-
-  console.log(`Listening on port ${PORT}`)
-})
+io.listen(PORT);
