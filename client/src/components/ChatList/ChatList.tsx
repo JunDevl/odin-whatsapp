@@ -1,12 +1,18 @@
+import type { ChatKind } from "../../utils";
+
 type Props = {
+  kind: ChatKind
   chats: Record<string, any>[]
 }
 
-const ChatList = ({ chats }: Props) => {
+const ChatList = ({ kind, chats }: Props) => {
   return (
-    <nav id="chats-sidebar">
-      <ul id="chats">
-        {chats.map(chat => <li className="chat">
+    <nav id={`${kind}s-sidebar`}>
+      <div id="search-chat">
+        <input type="text" name="" id="" />
+      </div>
+      <ul id={`${kind}s`}>
+        {chats.map(chat => <li className={`${kind}`}>
           {chat.whatever}
         </li>)}
       </ul>

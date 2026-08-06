@@ -1,8 +1,12 @@
-type Props = {}
+import type { ChatKind } from "../../utils";
 
-const ChatDetailModal = (props: Props) => {
+type Props = {
+  kind: ChatKind
+}
+
+const ChatDetailModal = ({ kind }: Props) => {
   return (
-    <dialog>
+    <dialog className={kind}>
       details
     </dialog>
   )

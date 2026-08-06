@@ -2,7 +2,7 @@ type Props = {}
 
 const Menu = (props: Props) => {
   return (
-    <nav>
+    <nav id="menu">
       <ul>
         <li>Conversations</li>
         <li>Groups</li>
