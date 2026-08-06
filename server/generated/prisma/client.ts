@@ -31,8 +31,8 @@ export * from "./enums.ts"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Players
- * const players = await prisma.player.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -42,22 +42,32 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Player
+ * Model User
  * 
  */
-export type Player = Prisma.PlayerModel
+export type User = Prisma.UserModel
 /**
- * Model TimedSession
+ * Model Group
  * 
  */
-export type TimedSession = Prisma.TimedSessionModel
+export type Group = Prisma.GroupModel
 /**
- * Model CharacterGuess
+ * Model UserOfGroup
  * 
  */
-export type CharacterGuess = Prisma.CharacterGuessModel
+export type UserOfGroup = Prisma.UserOfGroupModel
 /**
- * Model ImageCharacter
+ * Model Message
  * 
  */
-export type ImageCharacter = Prisma.ImageCharacterModel
+export type Message = Prisma.MessageModel
+/**
+ * Model MessageToGroup
+ * 
+ */
+export type MessageToGroup = Prisma.MessageToGroupModel
+/**
+ * Model MessageToUser
+ * 
+ */
+export type MessageToUser = Prisma.MessageToUserModel

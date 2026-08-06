@@ -51,10 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Player: 'Player',
-  TimedSession: 'TimedSession',
-  CharacterGuess: 'CharacterGuess',
-  ImageCharacter: 'ImageCharacter'
+  User: 'User',
+  Group: 'Group',
+  UserOfGroup: 'UserOfGroup',
+  Message: 'Message',
+  MessageToGroup: 'MessageToGroup',
+  MessageToUser: 'MessageToUser'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -73,41 +75,61 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const PlayerScalarFieldEnum = {
+export const UserScalarFieldEnum = {
+  id: 'id',
   name: 'name',
-  scoreSeconds: 'scoreSeconds'
+  profile_name: 'profile_name',
+  email: 'email',
+  password_hash: 'password_hash'
 } as const
 
-export type PlayerScalarFieldEnum = (typeof PlayerScalarFieldEnum)[keyof typeof PlayerScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const TimedSessionScalarFieldEnum = {
-  initialTime: 'initialTime'
+export const GroupScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt'
 } as const
 
-export type TimedSessionScalarFieldEnum = (typeof TimedSessionScalarFieldEnum)[keyof typeof TimedSessionScalarFieldEnum]
+export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
 
 
-export const CharacterGuessScalarFieldEnum = {
-  finalTime: 'finalTime',
-  imageCharacterImagePath: 'imageCharacterImagePath',
-  imageCharacterCharacterName: 'imageCharacterCharacterName',
-  timedSessionInitialTime: 'timedSessionInitialTime'
+export const UserOfGroupScalarFieldEnum = {
+  userId: 'userId',
+  groupId: 'groupId',
+  joinedAt: 'joinedAt'
 } as const
 
-export type CharacterGuessScalarFieldEnum = (typeof CharacterGuessScalarFieldEnum)[keyof typeof CharacterGuessScalarFieldEnum]
+export type UserOfGroupScalarFieldEnum = (typeof UserOfGroupScalarFieldEnum)[keyof typeof UserOfGroupScalarFieldEnum]
 
 
-export const ImageCharacterScalarFieldEnum = {
-  imagePath: 'imagePath',
-  characterName: 'characterName',
-  xPos: 'xPos',
-  yPos: 'yPos',
-  width: 'width',
-  height: 'height'
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  sentAt: 'sentAt',
+  editedAt: 'editedAt',
+  content: 'content',
+  userId: 'userId'
 } as const
 
-export type ImageCharacterScalarFieldEnum = (typeof ImageCharacterScalarFieldEnum)[keyof typeof ImageCharacterScalarFieldEnum]
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageToGroupScalarFieldEnum = {
+  messageId: 'messageId',
+  recieverGroupId: 'recieverGroupId'
+} as const
+
+export type MessageToGroupScalarFieldEnum = (typeof MessageToGroupScalarFieldEnum)[keyof typeof MessageToGroupScalarFieldEnum]
+
+
+export const MessageToUserScalarFieldEnum = {
+  messageId: 'messageId',
+  recieverUserId: 'recieverUserId'
+} as const
+
+export type MessageToUserScalarFieldEnum = (typeof MessageToUserScalarFieldEnum)[keyof typeof MessageToUserScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -124,4 +146,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

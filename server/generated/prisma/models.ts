@@ -8,8 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Player.ts'
-export type * from './models/TimedSession.ts'
-export type * from './models/CharacterGuess.ts'
-export type * from './models/ImageCharacter.ts'
+export type * from './models/User.ts'
+export type * from './models/Group.ts'
+export type * from './models/UserOfGroup.ts'
+export type * from './models/Message.ts'
+export type * from './models/MessageToGroup.ts'
+export type * from './models/MessageToUser.ts'
 export type * from './commonInputTypes.ts'

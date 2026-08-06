@@ -18,22 +18,32 @@ export { Prisma }
 export * as $Enums from './enums.ts'
 export * from './enums.ts';
 /**
- * Model Player
+ * Model User
  * 
  */
-export type Player = Prisma.PlayerModel
+export type User = Prisma.UserModel
 /**
- * Model TimedSession
+ * Model Group
  * 
  */
-export type TimedSession = Prisma.TimedSessionModel
+export type Group = Prisma.GroupModel
 /**
- * Model CharacterGuess
+ * Model UserOfGroup
  * 
  */
-export type CharacterGuess = Prisma.CharacterGuessModel
+export type UserOfGroup = Prisma.UserOfGroupModel
 /**
- * Model ImageCharacter
+ * Model Message
  * 
  */
-export type ImageCharacter = Prisma.ImageCharacterModel
+export type Message = Prisma.MessageModel
+/**
+ * Model MessageToGroup
+ * 
+ */
+export type MessageToGroup = Prisma.MessageToGroupModel
+/**
+ * Model MessageToUser
+ * 
+ */
+export type MessageToUser = Prisma.MessageToUserModel

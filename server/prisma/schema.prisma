@@ -14,8 +14,9 @@ datasource db {
 
 model User {
   id             String          @id @default(uuid())
-  name           String
-  email          String
+  name           String          @unique
+  profile_name   String
+  email          String          @unique
   password_hash  String
   messages       Message[]
   usersOfGroups  UserOfGroup[]
@@ -26,7 +27,7 @@ model Group {
   id              String           @id @default(uuid())
   name            String
   description     String?
-  // image? Implement this using something better than Prisma (cloud/file based database solutions, such as Supabase, for instance.)
+  // image? Implement this using something better than Prisma/pg (cloud/file based database solutions, such as Supabase, for instance.)
   createdAt       DateTime         @default(now())
   usersOfGroups   UserOfGroup[]
   messageToGroups MessageToGroup[]
