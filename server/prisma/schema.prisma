@@ -45,11 +45,11 @@ model UserOfGroup {
 
 model Message {
   id              String           @id @default(uuid())
-  sender          User             @relation(fields: [userId], references: [id])
+  sender          User             @relation(fields: [senderId], references: [id])
   sentAt          DateTime         @default(now())
-  editedAt        DateTime         @default(now())
+  editedAt        DateTime?        @default(now())
   content         String
-  userId          String
+  senderId        String
   messageToGroups MessageToGroup[]
   messageToUsers  MessageToUser[]
 }
