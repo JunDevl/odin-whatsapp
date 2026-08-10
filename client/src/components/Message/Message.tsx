@@ -1,12 +1,15 @@
+import type { MessageResponse } from "../../utils";
+
 type Props = {
-  message: Record<string, any>
+  message: MessageResponse
 }
 
 const Message = ({ message }: Props) => {
   return (
-    <li className="message">
+    <li className="message inline-block bg-green-600 text-gray-100 p-1 px-3 rounded-lg">
       <article>
-        {message.whatever}
+        <p>{message.content}</p>
+        
       </article>
     </li>
   )

@@ -4,34 +4,34 @@ import ChatList from "../../components/ChatList/ChatList";
 const boilerplateMessages = [
   {
     sentAt: new Date("2026-08-05 8:00"),
-    sender: "John Doe",
-    text: "Yo!",
+    editedAt: null,
+    content: "Yo!",
   },
   {
     sentAt: new Date("2026-08-05 9:00"),
-    sender: "John Doe",
-    text: "You aight?",
+    editedAt: null,
+    content: "You aight?",
   },
   {
     sentAt: new Date("2026-08-05 10:00"),
-    sender: "John Doe",
-    text: "...",
+    editedAt: null,
+    content: "...",
   },
 ]
 
 const boilerplateConvos = [
   {
-    name: "John Doe",
+    chat: {name: "john_doe", profile_name: "John Doe"},
     lastMessage: "...",
     sentAt: new Date("2026-08-05 10:00")
   },
   {
-    name: "Yo Mama",
+    chat: {name: "yo_mama", profile_name: "Yo Mama"},
     lastMessage: "Fuck the police!",
     sentAt: new Date("2026-08-04 10:00")
   },
   {
-    name: "Jun",
+    chat: {name: "jun", profile_name: "Jun"},
     lastMessage: "I am ironman",
     sentAt: new Date("2026-03-05 10:00")
   },

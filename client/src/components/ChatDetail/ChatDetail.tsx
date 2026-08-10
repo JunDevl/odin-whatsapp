@@ -6,7 +6,7 @@ type Props = {
 
 const ChatDetailModal = ({ kind }: Props) => {
   return (
-    <dialog className={kind}>
+    <dialog className={`${kind}`}>
       details
     </dialog>
   )
