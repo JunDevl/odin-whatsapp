@@ -4,7 +4,7 @@ import { body, matchedData, validationResult, type ValidationChain } from "expre
 import cookieParser from "cookie-parser";
 import cookie from "cookie";
 
-import { createServer } from "node:http";
+import { createServer } from "node:https";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -20,9 +20,15 @@ import { JWTStrategy } from "./auth.ts";
 import usersRouter from "./routes/usersRouter.ts";
 
 const PORT = 8080;
+const CERT_DIR = path.resolve(process.cwd(), 'certs');
+
+const tlscert = {
+  key: fs.readFileSync(path.join(CERT_DIR, 'server-key.pem')),
+  cert: fs.readFileSync(path.join(CERT_DIR, 'server-cert.pem'))
+}
 
 const app = express();
-const server = createServer(app);
+const server = createServer(tlscert, app);
 const io = new Server(server, {
   cors: { origin: "*" },
   cookie: true
