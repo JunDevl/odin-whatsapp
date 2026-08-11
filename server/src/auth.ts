@@ -32,9 +32,13 @@ export const localStrategy = new LocalStrategy.Strategy(
   }
 );
 
+const extractJwtFromCookie = (req: Request) => {
+  return req.cookies["session_token"] ?? null
+};
+
 export const JWTStrategy = new Jwt.Strategy(
   {
-    jwtFromRequest: (req: Request) => req.cookies["session_token"] ?? null,
+    jwtFromRequest: extractJwtFromCookie,
     secretOrKey: process.env["SECRET_KEY"]!
   },
   async (jwt_payload: User, done) => {

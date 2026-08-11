@@ -20,17 +20,40 @@ import { JWTStrategy } from "./auth.ts";
 import usersRouter from "./routes/usersRouter.ts";
 
 const PORT = 8080;
+
+const app = express();
+
+app.use(cors({
+  origin: "localhost:5173"
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+const apiRouter = Router();
+
+passport.use(localStrategy);
+passport.use(JWTStrategy);
+
+app.use("/api", apiRouter);
+
+apiRouter.use("/users", usersRouter);
+
+app.use((err: any, _: any, res: any, __: any) => {
+  console.error(err.stack);
+  res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
+})
+
 const CERT_DIR = path.resolve(process.cwd(), 'certs');
 
-const tlscert = {
+const TLS_CERT = {
   key: fs.readFileSync(path.join(CERT_DIR, 'server-key.pem')),
   cert: fs.readFileSync(path.join(CERT_DIR, 'server-cert.pem'))
 }
 
-const app = express();
-const server = createServer(tlscert, app);
+const server = createServer(TLS_CERT, app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { origin: "localhost:5173" },
   cookie: true
 });
 
@@ -60,41 +83,6 @@ io.on("connection", socket => {
   })
 
   socket.send("connected!");
-})
-
-// io.on("upgrade", (req, socket, head) => {
-//   authenticateUpgrade(req, (err, user) => {
-//     if (err) {
-//       socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-//       socket.destroy();
-//       return;
-//     }
-//     wss.handleUpgrade(req, socket, head, (ws) => {
-//       ws.user = user; // attach identity to the socket
-//       wss.emit('connection', ws, req);
-//     });
-//   });
-// })
-
-app.use(cors({
-  origin: "*"
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-const apiRouter = Router();
-
-// passport.use(localStrategy);
-// passport.use(JWTStrategy);
-
-app.use("/api", apiRouter);
-
-apiRouter.use("/users", usersRouter);
-
-app.use((err: any, _: any, res: any, __: any) => {
-  console.error(err.stack);
-  res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
 })
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));

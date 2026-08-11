@@ -6,12 +6,15 @@ import Groups from "./pages/Groups/Groups";
 import Profile from "./pages/Profile/Profile";
 import Auth from "./pages/Auth/Auth";
 
-const jwt = localStorage.getItem("jwt");
+// import { queryClient } from "./main";
+import { getLoggedUser } from "./actions";
+
+const user = await getLoggedUser();
 
 const routes: RouteObject[] = [
   {
     index: true,
-    element: <Navigate to={jwt ? `/chat/priv` : `/auth`} replace/>
+    element: <Navigate to={user ? `/chat/priv` : `/auth`} replace/>
   },
   {
     path: "/auth",

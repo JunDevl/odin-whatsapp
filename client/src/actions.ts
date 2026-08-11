@@ -1,3 +1,56 @@
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+import { handleError, PromiseError } from "@packages/utils";
+import type { UserResponse } from "./utils";
 
-const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`);
+// const socket = io(`wss://${import.meta.env["VITE_SERVER_PATH"]}`);
+
+export const createUser = async (data: FormData) => {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+    method: "POST",
+    body: data
+  });
+
+  if (!userResponse.ok) throw new Error(await userResponse.text());
+
+  const created: UserResponse = await userResponse.json();
+
+  return created;
+}
+
+export const loginUser = async (data: FormData) => {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+    method: "POST",
+    body: data
+  });
+
+  if (!userResponse.ok) {
+    if (userResponse.status === 404 || userResponse.status === 401) return await userResponse.text();
+    throw new Error(await userResponse.text());
+  }
+
+  const user: UserResponse = await userResponse.json();
+
+  return user;
+}
+
+export const getLoggedUser = async () => {
+  const userResponse = await handleError(fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+    // mode: "no-cors"
+    headers: {
+      "Access-Control-Allow-Headers": '*'
+    }
+  }));
+
+  if (userResponse instanceof PromiseError) {
+    return console.error(`${userResponse.error}\n\n${userResponse.error.stack}`);
+  }
+
+  if (!userResponse.ok) {
+    if (userResponse.status === 404 || userResponse.status === 401) return null;
+    throw new Error(await userResponse.text());
+  }
+
+  const user: UserResponse = await await userResponse.json();
+
+  return user;
+}

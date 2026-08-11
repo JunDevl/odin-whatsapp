@@ -28,7 +28,7 @@ usersRouter.route("/auth")
           if (err) return res.status(400).send(err);
 
     
-          res.status(201).cookie("session_token", token, { httpOnly: true }); // frontend will recieve jwt token so it can be stored on LocalStorage TODO: change this so it stores the jwt as a cookie
+          res.status(201).cookie("session_token", token, { httpOnly: true });
         })
       }
     )(req, res, next)

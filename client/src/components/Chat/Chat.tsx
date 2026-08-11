@@ -18,7 +18,7 @@ const Chat = ({ kind, messages }: Props) => {
         </div>
         <div className="search-message flex">
           <input type="text" name="searchMessage" id="search-message" />
-          <p>s</p>
+          <button>s</button>
         </div>
       </aside>
       <main className="overflow-hidden">

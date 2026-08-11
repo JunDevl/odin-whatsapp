@@ -11,7 +11,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@packages/utils": path.resolve(import.meta.dirname, "../../packages/utils/utils.ts"),
+      "@packages/utils": path.resolve(import.meta.dirname, "../packages/utils/utils.ts"),
       "@types": path.resolve(import.meta.dirname, "../server/generated/prisma/browser.ts")
     },
     tsconfigPaths: true
