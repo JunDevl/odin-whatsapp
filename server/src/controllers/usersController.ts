@@ -32,9 +32,9 @@ export const createUser: (RequestHandler | ValidationChain[])[] = [
 
     const data = matchedData(req);
 
-    const newUser = data;
+    const { password, ...newUser } = data; 
 
-    const hashedPassword = await argon2.hash(newUser.password, {
+    const hashedPassword = await argon2.hash(password, {
       memoryCost: 65536,
       parallelism: 4,
       timeCost: 5
@@ -49,7 +49,7 @@ export const createUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(createdUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token, { httpOnly: true });
+      res.cookie("session_token", token, { httpOnly: true }).sendStatus(200);
     })
   }
 ]
@@ -115,7 +115,7 @@ export const updateUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(updatedUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token, { httpOnly: true });
+      res.cookie("session_token", token, { httpOnly: true }).sendStatus(200);
     })
   }
 ]

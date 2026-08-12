@@ -26,9 +26,8 @@ usersRouter.route("/auth")
 
         jwt.sign(user, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
           if (err) return res.status(400).send(err);
-
     
-          res.status(201).cookie("session_token", token, { httpOnly: true });
+          res.cookie("session_token", token, { httpOnly: true }).sendStatus(201);
         })
       }
     )(req, res, next)

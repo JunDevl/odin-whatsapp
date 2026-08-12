@@ -4,10 +4,15 @@ import type { UserResponse } from "./utils";
 
 // const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`);
 
-export const createUser = async (data: FormData) => {
+export const createUser = async (formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+
   const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "POST",
-    body: data
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   });
 
   if (!userResponse.ok) throw new Error(await userResponse.text());
@@ -17,10 +22,15 @@ export const createUser = async (data: FormData) => {
   return created;
 }
 
-export const loginUser = async (data: FormData) => {
+export const loginUser = async (formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+
   const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
     method: "POST",
-    body: data
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   });
 
   if (!userResponse.ok) {
@@ -28,9 +38,7 @@ export const loginUser = async (data: FormData) => {
     throw new Error(await userResponse.text());
   }
 
-  const user: UserResponse = await userResponse.json();
-
-  return user;
+  return true;
 }
 
 export const getLoggedUser = async () => {
