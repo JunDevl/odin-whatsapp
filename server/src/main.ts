@@ -4,7 +4,7 @@ import { body, matchedData, validationResult, type ValidationChain } from "expre
 import cookieParser from "cookie-parser";
 import cookie from "cookie";
 
-import { createServer } from "node:https";
+import { createServer } from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -24,7 +24,7 @@ const PORT = 8080;
 const app = express();
 
 app.use(cors({
-  origin: "localhost:5173"
+  origin: "*"
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,16 +44,9 @@ app.use((err: any, _: any, res: any, __: any) => {
   res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
 })
 
-const CERT_DIR = path.resolve(process.cwd(), 'certs');
-
-const TLS_CERT = {
-  key: fs.readFileSync(path.join(CERT_DIR, 'server-key.pem')),
-  cert: fs.readFileSync(path.join(CERT_DIR, 'server-cert.pem'))
-}
-
-const server = createServer(TLS_CERT, app);
+const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: "localhost:5173" },
+  cors: { origin: "*" },
   cookie: true
 });
 

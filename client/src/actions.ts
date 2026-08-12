@@ -2,10 +2,10 @@
 import { handleError, PromiseError } from "@packages/utils";
 import type { UserResponse } from "./utils";
 
-// const socket = io(`wss://${import.meta.env["VITE_SERVER_PATH"]}`);
+// const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`);
 
 export const createUser = async (data: FormData) => {
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "POST",
     body: data
   });
@@ -18,7 +18,7 @@ export const createUser = async (data: FormData) => {
 }
 
 export const loginUser = async (data: FormData) => {
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
     method: "POST",
     body: data
   });
@@ -34,11 +34,11 @@ export const loginUser = async (data: FormData) => {
 }
 
 export const getLoggedUser = async () => {
-  const userResponse = await handleError(fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+  const userResponse = await handleError(fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
     // mode: "no-cors"
-    headers: {
-      "Access-Control-Allow-Headers": '*'
-    }
+    // headers: {
+    //   "Access-Control-Allow-Headers": '*'
+    // }
   }));
 
   if (userResponse instanceof PromiseError) {
