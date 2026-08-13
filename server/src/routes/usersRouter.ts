@@ -4,17 +4,20 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import { JWTProtectedRoute } from "../auth.ts";
 
-import { createUser, deleteUser, getUser, updateUser } from "../controllers/usersController.ts";
+import { addUserFriend, createUser, deleteUser, getUser, getUserFriends, removeUserFriend, updateUser } from "../controllers/usersController.ts";
 
 import type { User } from "../../generated/prisma/client.ts";
 
 const usersRouter = Router();
 
 usersRouter.route("/")
-  .post(createUser as RequestHandler[]);
+  .post(createUser as RequestHandler[])
+  .all(JWTProtectedRoute)
+  .delete(deleteUser)
+  .put(updateUser as RequestHandler[])
+  .get(getUser); // get user from jwt stored in the client's cookies
 
 usersRouter.route("/auth")
-  .get(JWTProtectedRoute, getUser)
   .post((req, res, next) => { // log-in and create new JWT
     passport.authenticate(
       "local", 
@@ -27,16 +30,18 @@ usersRouter.route("/auth")
         jwt.sign(user, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
           if (err) return res.status(400).send(err);
     
-          res.cookie("session_token", token, { httpOnly: true }).sendStatus(201);
+          res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(201);
         })
       }
     )(req, res, next)
   })
 
-usersRouter.route("/:userID")
+usersRouter.route("/friends")
   .all(JWTProtectedRoute)
-  .get(getUser)
-  .delete(deleteUser)
-  .put(updateUser as RequestHandler[]);
+  .get(getUserFriends)
+  .post(addUserFriend as RequestHandler[])
+
+usersRouter.route("/friends/:friendName")
+  .delete(JWTProtectedRoute, removeUserFriend);
 
 export default usersRouter;

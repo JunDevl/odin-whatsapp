@@ -13,8 +13,8 @@ const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>
         <button className="flex items-center px-3">s</button>
       </div>
       <ul id={`${kind}s`} className="flex flex-col gap-2">
-        {chats.map(chat => <li className={`${kind} bg-gray-600`}>
-          test
+        {chats.map((chat, i) => <li className={`${kind} bg-gray-600`} key={i}>
+          {chat.chat.name}
         </li>)}
       </ul>
     </nav>

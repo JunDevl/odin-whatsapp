@@ -18,14 +18,13 @@ import { localStrategy } from "./auth.ts";
 import { JWTStrategy } from "./auth.ts";
 
 import usersRouter from "./routes/usersRouter.ts";
+import type { User } from "../generated/prisma/client.ts";
 
 const PORT = 8080;
 
 const app = express();
 
-app.use(cors({
-  origin: "*"
-}));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -46,7 +45,7 @@ app.use((err: any, _: any, res: any, __: any) => {
 
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { origin: "http://localhost:5173", credentials: true },
   cookie: true
 });
 
@@ -56,7 +55,7 @@ io.use((socket, next) => {
     if (!rawCookies) return next(new Error('No cookies sent'));
 
     const parsed = cookie.parse(rawCookies);
-    const token = parsed.access_token;
+    const token = parsed["session_token"];
     if (!token) return next(new Error('Not authenticated'));
 
     const payload = jwt.verify(token, process.env["SECRET_KEY"]!);
@@ -67,12 +66,14 @@ io.use((socket, next) => {
   }
 });
 
-io.on("connection", socket => {
-  // const sessionId = socket.request["session_token"];
+io.on("connection", (socket) => {
+  const user = socket.data.user as User;
+
   socket.on("message", message => {
     message = message ?? "[empty]"
-    socket.send(`SERVER ### ${message} ### SERVER`);
-    socket.emit(`SERVER ### ${message} ### SERVER`); // emits to everybody connected to the websocket
+
+    socket.send(`SERVER ### Recieved message: "${message}" ### SERVER`);
+    socket.emit(`SERVER ### Emitted message: "${message}" ### SERVER`); // emits to everybody connected to the websocket
   })
 
   socket.send("connected!");

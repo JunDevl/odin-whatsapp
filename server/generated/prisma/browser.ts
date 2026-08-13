@@ -23,6 +23,11 @@ export * from './enums.ts';
  */
 export type User = Prisma.UserModel
 /**
+ * Model FriendOfUser
+ * 
+ */
+export type FriendOfUser = Prisma.FriendOfUserModel
+/**
  * Model Group
  * 
  */

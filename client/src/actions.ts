@@ -1,14 +1,21 @@
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { handleError, PromiseError } from "@packages/utils";
 import type { UserResponse } from "./utils";
 
-// const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`);
+const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
+  withCredentials: true
+});
+
+socket.on("message", message => console.log(message));
+
+// REST API ACTIONS BELOW
 
 export const createUser = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
   const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },
@@ -27,6 +34,7 @@ export const loginUser = async (formData: FormData) => {
 
   const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },
@@ -38,15 +46,12 @@ export const loginUser = async (formData: FormData) => {
     throw new Error(await userResponse.text());
   }
 
-  return true;
+  return await userResponse.text();
 }
 
 export const getLoggedUser = async () => {
-  const userResponse = await handleError(fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
-    // mode: "no-cors"
-    // headers: {
-    //   "Access-Control-Allow-Headers": '*'
-    // }
+  const userResponse = await handleError(fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+    credentials: "include"
   }));
 
   if (userResponse instanceof PromiseError) {
@@ -62,3 +67,10 @@ export const getLoggedUser = async () => {
 
   return user;
 }
+
+// WEBSOCKET ACTIONS BELOW
+
+export const createMessage = async () => {
+  
+}
+

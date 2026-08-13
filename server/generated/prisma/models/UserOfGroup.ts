@@ -210,7 +210,7 @@ export type UserOfGroupScalarWhereWithAggregatesInput = {
 
 export type UserOfGroupCreateInput = {
   joinedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutUsersOfGroupsInput
+  user: Prisma.UserCreateNestedOneWithoutGroupsInput
   group: Prisma.GroupCreateNestedOneWithoutUsersOfGroupsInput
 }
 
@@ -222,7 +222,7 @@ export type UserOfGroupUncheckedCreateInput = {
 
 export type UserOfGroupUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutUsersOfGroupsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutGroupsNestedInput
   group?: Prisma.GroupUpdateOneRequiredWithoutUsersOfGroupsNestedInput
 }
 
@@ -412,7 +412,7 @@ export type UserOfGroupScalarWhereInput = {
 
 export type UserOfGroupCreateWithoutGroupInput = {
   joinedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutUsersOfGroupsInput
+  user: Prisma.UserCreateNestedOneWithoutGroupsInput
 }
 
 export type UserOfGroupUncheckedCreateWithoutGroupInput = {
@@ -473,7 +473,7 @@ export type UserOfGroupCreateManyGroupInput = {
 
 export type UserOfGroupUpdateWithoutGroupInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutUsersOfGroupsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutGroupsNestedInput
 }
 
 export type UserOfGroupUncheckedUpdateWithoutGroupInput = {

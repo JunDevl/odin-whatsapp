@@ -183,8 +183,10 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password_hash?: Prisma.StringFilter<"User"> | string
   messages?: Prisma.MessageListRelationFilter
-  usersOfGroups?: Prisma.UserOfGroupListRelationFilter
+  friends?: Prisma.FriendOfUserListRelationFilter
+  groups?: Prisma.UserOfGroupListRelationFilter
   messageToUsers?: Prisma.MessageToUserListRelationFilter
+  friendOfUsers?: Prisma.FriendOfUserListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -194,8 +196,10 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password_hash?: Prisma.SortOrder
   messages?: Prisma.MessageOrderByRelationAggregateInput
-  usersOfGroups?: Prisma.UserOfGroupOrderByRelationAggregateInput
+  friends?: Prisma.FriendOfUserOrderByRelationAggregateInput
+  groups?: Prisma.UserOfGroupOrderByRelationAggregateInput
   messageToUsers?: Prisma.MessageToUserOrderByRelationAggregateInput
+  friendOfUsers?: Prisma.FriendOfUserOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -208,8 +212,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profile_name?: Prisma.StringFilter<"User"> | string
   password_hash?: Prisma.StringFilter<"User"> | string
   messages?: Prisma.MessageListRelationFilter
-  usersOfGroups?: Prisma.UserOfGroupListRelationFilter
+  friends?: Prisma.FriendOfUserListRelationFilter
+  groups?: Prisma.UserOfGroupListRelationFilter
   messageToUsers?: Prisma.MessageToUserListRelationFilter
+  friendOfUsers?: Prisma.FriendOfUserListRelationFilter
 }, "id" | "name" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -241,8 +247,10 @@ export type UserCreateInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
-  usersOfGroups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -252,8 +260,10 @@ export type UserUncheckedCreateInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
-  usersOfGroups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserUpdateInput = {
@@ -263,8 +273,10 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
-  usersOfGroups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -274,8 +286,10 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
-  usersOfGroups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -335,18 +349,46 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type UserCreateNestedOneWithoutUsersOfGroupsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutUsersOfGroupsInput, Prisma.UserUncheckedCreateWithoutUsersOfGroupsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUsersOfGroupsInput
+export type UserCreateNestedOneWithoutFriendOfUsersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFriendOfUsersInput, Prisma.UserUncheckedCreateWithoutFriendOfUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFriendOfUsersInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutUsersOfGroupsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutUsersOfGroupsInput, Prisma.UserUncheckedCreateWithoutUsersOfGroupsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUsersOfGroupsInput
-  upsert?: Prisma.UserUpsertWithoutUsersOfGroupsInput
+export type UserCreateNestedOneWithoutFriendsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFriendsInput, Prisma.UserUncheckedCreateWithoutFriendsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFriendsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUsersOfGroupsInput, Prisma.UserUpdateWithoutUsersOfGroupsInput>, Prisma.UserUncheckedUpdateWithoutUsersOfGroupsInput>
+}
+
+export type UserUpdateOneRequiredWithoutFriendOfUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFriendOfUsersInput, Prisma.UserUncheckedCreateWithoutFriendOfUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFriendOfUsersInput
+  upsert?: Prisma.UserUpsertWithoutFriendOfUsersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFriendOfUsersInput, Prisma.UserUpdateWithoutFriendOfUsersInput>, Prisma.UserUncheckedUpdateWithoutFriendOfUsersInput>
+}
+
+export type UserUpdateOneRequiredWithoutFriendsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFriendsInput, Prisma.UserUncheckedCreateWithoutFriendsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFriendsInput
+  upsert?: Prisma.UserUpsertWithoutFriendsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFriendsInput, Prisma.UserUpdateWithoutFriendsInput>, Prisma.UserUncheckedUpdateWithoutFriendsInput>
+}
+
+export type UserCreateNestedOneWithoutGroupsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGroupsInput, Prisma.UserUncheckedCreateWithoutGroupsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGroupsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutGroupsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGroupsInput, Prisma.UserUncheckedCreateWithoutGroupsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGroupsInput
+  upsert?: Prisma.UserUpsertWithoutGroupsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGroupsInput, Prisma.UserUpdateWithoutGroupsInput>, Prisma.UserUncheckedUpdateWithoutGroupsInput>
 }
 
 export type UserCreateNestedOneWithoutMessagesInput = {
@@ -377,60 +419,196 @@ export type UserUpdateOneRequiredWithoutMessageToUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessageToUsersInput, Prisma.UserUpdateWithoutMessageToUsersInput>, Prisma.UserUncheckedUpdateWithoutMessageToUsersInput>
 }
 
-export type UserCreateWithoutUsersOfGroupsInput = {
+export type UserCreateWithoutFriendOfUsersInput = {
   id?: string
   name: string
   profile_name: string
   email: string
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
 }
 
-export type UserUncheckedCreateWithoutUsersOfGroupsInput = {
+export type UserUncheckedCreateWithoutFriendOfUsersInput = {
   id?: string
   name: string
   profile_name: string
   email: string
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
 }
 
-export type UserCreateOrConnectWithoutUsersOfGroupsInput = {
+export type UserCreateOrConnectWithoutFriendOfUsersInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutUsersOfGroupsInput, Prisma.UserUncheckedCreateWithoutUsersOfGroupsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFriendOfUsersInput, Prisma.UserUncheckedCreateWithoutFriendOfUsersInput>
 }
 
-export type UserUpsertWithoutUsersOfGroupsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutUsersOfGroupsInput, Prisma.UserUncheckedUpdateWithoutUsersOfGroupsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutUsersOfGroupsInput, Prisma.UserUncheckedCreateWithoutUsersOfGroupsInput>
+export type UserCreateWithoutFriendsInput = {
+  id?: string
+  name: string
+  profile_name: string
+  email: string
+  password_hash: string
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
+}
+
+export type UserUncheckedCreateWithoutFriendsInput = {
+  id?: string
+  name: string
+  profile_name: string
+  email: string
+  password_hash: string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
+}
+
+export type UserCreateOrConnectWithoutFriendsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFriendsInput, Prisma.UserUncheckedCreateWithoutFriendsInput>
+}
+
+export type UserUpsertWithoutFriendOfUsersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFriendOfUsersInput, Prisma.UserUncheckedUpdateWithoutFriendOfUsersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFriendOfUsersInput, Prisma.UserUncheckedCreateWithoutFriendOfUsersInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutUsersOfGroupsInput = {
+export type UserUpdateToOneWithWhereWithoutFriendOfUsersInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutUsersOfGroupsInput, Prisma.UserUncheckedUpdateWithoutUsersOfGroupsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFriendOfUsersInput, Prisma.UserUncheckedUpdateWithoutFriendOfUsersInput>
 }
 
-export type UserUpdateWithoutUsersOfGroupsInput = {
+export type UserUpdateWithoutFriendOfUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profile_name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutUsersOfGroupsInput = {
+export type UserUncheckedUpdateWithoutFriendOfUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   profile_name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
+}
+
+export type UserUpsertWithoutFriendsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFriendsInput, Prisma.UserUncheckedUpdateWithoutFriendsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFriendsInput, Prisma.UserUncheckedCreateWithoutFriendsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFriendsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFriendsInput, Prisma.UserUncheckedUpdateWithoutFriendsInput>
+}
+
+export type UserUpdateWithoutFriendsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  messageToUsers?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFriendsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
+}
+
+export type UserCreateWithoutGroupsInput = {
+  id?: string
+  name: string
+  profile_name: string
+  email: string
+  password_hash: string
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
+  messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
+}
+
+export type UserUncheckedCreateWithoutGroupsInput = {
+  id?: string
+  name: string
+  profile_name: string
+  email: string
+  password_hash: string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
+  messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
+}
+
+export type UserCreateOrConnectWithoutGroupsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGroupsInput, Prisma.UserUncheckedCreateWithoutGroupsInput>
+}
+
+export type UserUpsertWithoutGroupsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGroupsInput, Prisma.UserUncheckedUpdateWithoutGroupsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGroupsInput, Prisma.UserUncheckedCreateWithoutGroupsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGroupsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGroupsInput, Prisma.UserUncheckedUpdateWithoutGroupsInput>
+}
+
+export type UserUpdateWithoutGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
+  messageToUsers?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
+  messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -439,8 +617,10 @@ export type UserCreateWithoutMessagesInput = {
   profile_name: string
   email: string
   password_hash: string
-  usersOfGroups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -449,8 +629,10 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   profile_name: string
   email: string
   password_hash: string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -475,8 +657,10 @@ export type UserUpdateWithoutMessagesInput = {
   profile_name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  usersOfGroups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -485,8 +669,10 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   profile_name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserCreateWithoutMessageToUsersInput = {
@@ -496,7 +682,9 @@ export type UserCreateWithoutMessageToUsersInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
-  usersOfGroups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  friendOfUsers?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageToUsersInput = {
@@ -506,7 +694,9 @@ export type UserUncheckedCreateWithoutMessageToUsersInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
-  usersOfGroups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
+  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageToUsersInput = {
@@ -532,7 +722,9 @@ export type UserUpdateWithoutMessageToUsersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
-  usersOfGroups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageToUsersInput = {
@@ -542,7 +734,9 @@ export type UserUncheckedUpdateWithoutMessageToUsersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
-  usersOfGroups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
+  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  friendOfUsers?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
 }
 
 
@@ -552,14 +746,18 @@ export type UserUncheckedUpdateWithoutMessageToUsersInput = {
 
 export type UserCountOutputType = {
   messages: number
-  usersOfGroups: number
+  friends: number
+  groups: number
   messageToUsers: number
+  friendOfUsers: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
-  usersOfGroups?: boolean | UserCountOutputTypeCountUsersOfGroupsArgs
+  friends?: boolean | UserCountOutputTypeCountFriendsArgs
+  groups?: boolean | UserCountOutputTypeCountGroupsArgs
   messageToUsers?: boolean | UserCountOutputTypeCountMessageToUsersArgs
+  friendOfUsers?: boolean | UserCountOutputTypeCountFriendOfUsersArgs
 }
 
 /**
@@ -582,7 +780,14 @@ export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountUsersOfGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountFriendsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendOfUserWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserOfGroupWhereInput
 }
 
@@ -593,6 +798,13 @@ export type UserCountOutputTypeCountMessageToUsersArgs<ExtArgs extends runtime.T
   where?: Prisma.MessageToUserWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFriendOfUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FriendOfUserWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -601,8 +813,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   password_hash?: boolean
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
-  usersOfGroups?: boolean | Prisma.User$usersOfGroupsArgs<ExtArgs>
+  friends?: boolean | Prisma.User$friendsArgs<ExtArgs>
+  groups?: boolean | Prisma.User$groupsArgs<ExtArgs>
   messageToUsers?: boolean | Prisma.User$messageToUsersArgs<ExtArgs>
+  friendOfUsers?: boolean | Prisma.User$friendOfUsersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -633,8 +847,10 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "profile_name" | "email" | "password_hash", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
-  usersOfGroups?: boolean | Prisma.User$usersOfGroupsArgs<ExtArgs>
+  friends?: boolean | Prisma.User$friendsArgs<ExtArgs>
+  groups?: boolean | Prisma.User$groupsArgs<ExtArgs>
   messageToUsers?: boolean | Prisma.User$messageToUsersArgs<ExtArgs>
+  friendOfUsers?: boolean | Prisma.User$friendOfUsersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -644,8 +860,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     messages: Prisma.$MessagePayload<ExtArgs>[]
-    usersOfGroups: Prisma.$UserOfGroupPayload<ExtArgs>[]
+    friends: Prisma.$FriendOfUserPayload<ExtArgs>[]
+    groups: Prisma.$UserOfGroupPayload<ExtArgs>[]
     messageToUsers: Prisma.$MessageToUserPayload<ExtArgs>[]
+    friendOfUsers: Prisma.$FriendOfUserPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1048,8 +1266,10 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  usersOfGroups<T extends Prisma.User$usersOfGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$usersOfGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  friends<T extends Prisma.User$friendsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$friendsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendOfUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  groups<T extends Prisma.User$groupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messageToUsers<T extends Prisma.User$messageToUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messageToUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  friendOfUsers<T extends Prisma.User$friendOfUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$friendOfUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendOfUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1501,9 +1721,33 @@ export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.usersOfGroups
+ * User.friends
  */
-export type User$usersOfGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$friendsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FriendOfUser
+   */
+  select?: Prisma.FriendOfUserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FriendOfUser
+   */
+  omit?: Prisma.FriendOfUserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendOfUserInclude<ExtArgs> | null
+  where?: Prisma.FriendOfUserWhereInput
+  orderBy?: Prisma.FriendOfUserOrderByWithRelationInput | Prisma.FriendOfUserOrderByWithRelationInput[]
+  cursor?: Prisma.FriendOfUserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendOfUserScalarFieldEnum | Prisma.FriendOfUserScalarFieldEnum[]
+}
+
+/**
+ * User.groups
+ */
+export type User$groupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserOfGroup
    */
@@ -1546,6 +1790,30 @@ export type User$messageToUsersArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.MessageToUserScalarFieldEnum | Prisma.MessageToUserScalarFieldEnum[]
+}
+
+/**
+ * User.friendOfUsers
+ */
+export type User$friendOfUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FriendOfUser
+   */
+  select?: Prisma.FriendOfUserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FriendOfUser
+   */
+  omit?: Prisma.FriendOfUserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FriendOfUserInclude<ExtArgs> | null
+  where?: Prisma.FriendOfUserWhereInput
+  orderBy?: Prisma.FriendOfUserOrderByWithRelationInput | Prisma.FriendOfUserOrderByWithRelationInput[]
+  cursor?: Prisma.FriendOfUserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FriendOfUserScalarFieldEnum | Prisma.FriendOfUserScalarFieldEnum[]
 }
 
 /**

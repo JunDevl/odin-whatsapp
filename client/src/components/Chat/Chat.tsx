@@ -23,8 +23,8 @@ const Chat = ({ kind, messages }: Props) => {
       </aside>
       <main className="overflow-hidden">
         <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-2 p-3">
-          {messages.map(message => 
-            <Message message={message}/>
+          {messages.map((message, i) => 
+            <Message message={message} key={i}/>
           )}
         </ul>
       </main>

@@ -49,24 +49,15 @@ export const createUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(createdUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token, { httpOnly: true }).sendStatus(200);
+      res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(200);
     })
   }
 ]
 
 export const getUser: RequestHandler = async (req, res) => {
-  const userID = String(req.params.userID ?? "");
+  const {id, password_hash, ...user} = req.user as User;
 
-  const user = req.user as User
-
-  let foundUser = 
-    userID ? 
-    await prisma.user.findUnique({ where: { id: userID } }) : 
-    req.user as Partial<User>;
-
-  if (!foundUser) return res.sendStatus(404);
-
-  res.json(foundUser);
+  res.json(user);
 }
 
 const updateUserValidator: ValidationChain[] = [
@@ -103,7 +94,7 @@ export const updateUser: (RequestHandler | ValidationChain[])[] = [
       updateUser.password_hash = hashedPassword;
     }
 
-    const id = String(req.params.userID);
+    const {id} = req.user as User;
 
     const updatedUser = await prisma.user.update({
       data: updateUser,
@@ -115,13 +106,13 @@ export const updateUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(updatedUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token, { httpOnly: true }).sendStatus(200);
+      res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(200);
     })
   }
 ]
 
 export const deleteUser: RequestHandler = async (req, res) => {
-  const id = String(req.params.userID);
+  const {id} = req.user as User;
 
   const deletedUser = await prisma.user.delete({
     where: { id }
@@ -132,28 +123,92 @@ export const deleteUser: RequestHandler = async (req, res) => {
   return res.sendStatus(200);
 }
 
-/*
-  {
-    "user": {
-        "id": "1a180aa3-3a87-40bb-a52c-263e15bf5401",
-        "name": "Aroldo Medina",
-        "email": "aroldo.medina@gmail.com",
-        "password": "$argon2id$v=19$m=65536,t=5,p=4$WKm5gDnh5ZsBxoCvofxYCg$cw8xJn8oCpwKKll+PxJGDtpReJcQPDwRIPX8e6VBZLU",
-        "kind": "reader"
-    },
-    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlmZmQ3ZTI1LTYwNmEtNDY5NS04OTliLWE2OTliZmJjMTNhOSIsIm5hbWUiOiJBcm9sZG8gTWVkaW5hIiwiZW1haWwiOiJhcm9sZG8ubWVkaW5hQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTUscD00JDJWamNyS1Q5azNSUGxyY1RHVVVWZmckdFdsODA1REtlZUxndU5qZ013VWdZN0JLVDFVS093YkhCckFiVThGN1lhayIsImtpbmQiOiJyZWFkZXIiLCJpYXQiOjE3ODM3OTkzNTUsImV4cCI6MTc4NDQwNDE1NX0.CHc3A118VIm4vqwoLnZ_GN-y7IwzzC4bnXN1AwLbrzQ"
+export const getUserFriends: RequestHandler = async (req, res) => {
+  const {id} = req.user as User;
+
+  const userFriendsData = await handleError(prisma.friendOfUser.findMany({
+    where: { originUserId: id },
+    select: {
+      friendUser: {
+        select: {
+          name: true,
+          profile_name: true
+        }
+      }
+    }
+  }))
+
+  if (userFriendsData instanceof PromiseError) return res.status(400).send(userFriendsData.error);
+
+  const userFriends = userFriendsData.map(userFriend => userFriend.friendUser);
+
+  return res.json(userFriends);
+}
+
+const addFriendValidator: ValidationChain[] = [
+  body("name")
+    .trim()
+    .not().contains(" ")
+    .notEmpty()
+]
+
+export const addUserFriend: (RequestHandler | ValidationChain[])[] = [
+  addFriendValidator,
+  async (req, res, next) => {
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
+
+    const {id} = req.user as User;
+
+    const {name} = matchedData(req);
+
+    const targetFriendUser = await handleError(prisma.user.findUnique({ 
+      where: { name },
+      select: { id: true }
+    }))
+
+    if (targetFriendUser instanceof PromiseError) return res.status(400).send(targetFriendUser.error);
+
+    if (!targetFriendUser) return res.status(404).send(`There is no user of name ${name}.`);
+
+    const addedFriend = await handleError(prisma.friendOfUser.create({
+      data: {
+        originUserId: id,
+        friendUserId: targetFriendUser.id
+      }
+    }))
+
+    if (addedFriend instanceof PromiseError) return res.status(400).send(addedFriend.error);
+
+    return res.sendStatus(200);
   }
+]
 
+export const removeUserFriend: RequestHandler = async (req, res, next) => {
+  const {id} = req.user as User;
 
+  const name = String(req.params.friendName);
 
-  {
-    "user": {
-        "id": "62880c91-a3db-457c-b19c-32c7f221cddb",
-        "name": "Juninho Pedone",
-        "email": "juninhoplay.pedone@gmail.com",
-        "password": "$argon2id$v=19$m=65536,t=5,p=4$L2/dwP/tyeDFclz4v7IZ0A$Ak1wztmxBCz7lqW//6ctDMJwjVz61usFWzmILVF9M8I",
-        "kind": "admin"
-    },
-    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyODgwYzkxLWEzZGItNDU3Yy1iMTljLTMyYzdmMjIxY2RkYiIsIm5hbWUiOiJKdW5pbmhvIFBlZG9uZSIsImVtYWlsIjoianVuaW5ob3BsYXkucGVkb25lQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTUscD00JEwyL2R3UC90eWVERmNsejR2N0laMEEkQWsxd3p0bXhCQ3o3bHFXLy82Y3RETUp3alZ6NjF1c0ZXem1JTFZGOU04SSIsImtpbmQiOiJyZWFkZXIiLCJpYXQiOjE3ODM0NjUzMjEsImV4cCI6MTc4NDA3MDEyMX0.tGp9yoN_yXRz5X3IapZAaiuRYKrTuUixC-chO61MT5Q"
-  }
-*/
+  const targetFriendUser = await handleError(prisma.user.findUnique({ 
+    where: { name },
+    select: { id: true }
+  }))
+
+  if (targetFriendUser instanceof PromiseError) return res.status(400).send(targetFriendUser.error);
+
+  if (!targetFriendUser) return res.status(404).send(`There is no user of name ${name}.`);
+
+  const removedFriend = await handleError(prisma.friendOfUser.delete({
+    where: {
+      originUserId_friendUserId: {
+        originUserId: id,
+        friendUserId: targetFriendUser.id
+      }
+    }
+  }))
+
+  if (removedFriend instanceof PromiseError) return res.status(400).send(removedFriend.error);
+
+  return res.sendStatus(200);
+}

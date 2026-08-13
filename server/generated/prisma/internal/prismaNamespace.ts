@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  FriendOfUser: 'FriendOfUser',
   Group: 'Group',
   UserOfGroup: 'UserOfGroup',
   Message: 'Message',
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "group" | "userOfGroup" | "message" | "messageToGroup" | "messageToUser"
+    modelProps: "user" | "friendOfUser" | "group" | "userOfGroup" | "message" | "messageToGroup" | "messageToUser"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -493,6 +494,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    FriendOfUser: {
+      payload: Prisma.$FriendOfUserPayload<ExtArgs>
+      fields: Prisma.FriendOfUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FriendOfUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FriendOfUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        findFirst: {
+          args: Prisma.FriendOfUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FriendOfUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        findMany: {
+          args: Prisma.FriendOfUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>[]
+        }
+        create: {
+          args: Prisma.FriendOfUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        createMany: {
+          args: Prisma.FriendOfUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FriendOfUserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>[]
+        }
+        delete: {
+          args: Prisma.FriendOfUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        update: {
+          args: Prisma.FriendOfUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.FriendOfUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FriendOfUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FriendOfUserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>[]
+        }
+        upsert: {
+          args: Prisma.FriendOfUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FriendOfUserPayload>
+        }
+        aggregate: {
+          args: Prisma.FriendOfUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFriendOfUser>
+        }
+        groupBy: {
+          args: Prisma.FriendOfUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FriendOfUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FriendOfUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FriendOfUserCountAggregateOutputType> | number
         }
       }
     }
@@ -916,6 +991,14 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const FriendOfUserScalarFieldEnum = {
+  originUserId: 'originUserId',
+  friendUserId: 'friendUserId'
+} as const
+
+export type FriendOfUserScalarFieldEnum = (typeof FriendOfUserScalarFieldEnum)[keyof typeof FriendOfUserScalarFieldEnum]
+
+
 export const GroupScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1185,6 +1268,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  friendOfUser?: Prisma.FriendOfUserOmit
   group?: Prisma.GroupOmit
   userOfGroup?: Prisma.UserOfGroupOmit
   message?: Prisma.MessageOmit

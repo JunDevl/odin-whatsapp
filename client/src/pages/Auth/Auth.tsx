@@ -16,7 +16,7 @@ const Auth = (props: Props) => {
 
     const data = new FormData(form.current!);
 
-    const response: any = await handleError(authMode == "login" ? loginUser(data) : createUser(data));
+    const response = await handleError<any>(authMode == "login" ? loginUser(data) : createUser(data));
 
     if (response instanceof PromiseError) throw new Error(response.error);
 

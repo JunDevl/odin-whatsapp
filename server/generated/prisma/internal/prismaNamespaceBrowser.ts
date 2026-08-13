@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  FriendOfUser: 'FriendOfUser',
   Group: 'Group',
   UserOfGroup: 'UserOfGroup',
   Message: 'Message',
@@ -84,6 +85,14 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const FriendOfUserScalarFieldEnum = {
+  originUserId: 'originUserId',
+  friendUserId: 'friendUserId'
+} as const
+
+export type FriendOfUserScalarFieldEnum = (typeof FriendOfUserScalarFieldEnum)[keyof typeof FriendOfUserScalarFieldEnum]
 
 
 export const GroupScalarFieldEnum = {
