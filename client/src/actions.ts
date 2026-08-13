@@ -24,7 +24,7 @@ export const createUser = async (formData: FormData) => {
 
   if (!userResponse.ok) throw new Error(await userResponse.text());
 
-  const created: UserResponse = await userResponse.json();
+  const created = await userResponse.text();
 
   return created;
 }

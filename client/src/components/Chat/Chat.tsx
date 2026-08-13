@@ -17,7 +17,7 @@ const Chat = ({ kind, messages }: Props) => {
           Details
         </div>
         <div className="search-message flex">
-          <input type="text" name="searchMessage" id="search-message" />
+          <input type="text" name="searchMessage" id="search-message" placeholder="Search Messages"/>
           <button>s</button>
         </div>
       </aside>
