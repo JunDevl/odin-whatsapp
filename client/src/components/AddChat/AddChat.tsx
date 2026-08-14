@@ -1,5 +1,7 @@
-import type { DetailedHTMLProps, DialogHTMLAttributes, RefObject, SubmitEvent } from "react";
+import { useRef, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject, type SubmitEvent } from "react";
 import type { ChatKind } from "../../utils";
+import { addContact, getUserContacts } from "../../actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   kind: ChatKind,
@@ -7,22 +9,48 @@ type Props = {
 } & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
 
 const AddChat = ({ kind, ...props }: Props) => {
-  const modal = props.ref;
+  const queryClient = useQueryClient();
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+  const modal = props.ref;
+  const form = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const formData = new FormData(form.current!);
+
+    await addContact(String(formData.get("name")));
+
+    await queryClient.fetchQuery({
+      queryKey: ["user", "friends"],
+      queryFn: () => getUserContacts()
+    });
+
+    modal.current!.close();
   }
 
   return (
-    <dialog {...props}>
-      <form method="POST" onSubmit={handleSubmit}>
-        <input type="text" name="name" id="name" placeholder="Contact Name"/>
-        <button type="submit">
-          Submit
-        </button>
-        <button type="reset" onClick={() => modal.current!.close()}>
-          Cancel
-        </button>
+    <dialog {...props} className="m-auto p-5 bg-black rounded-lg">
+      <form 
+        method="POST" 
+        onSubmit={handleSubmit} 
+        className="flex flex-col gap-3"
+        ref={form}
+      >
+        <input 
+          type="text" 
+          name="name" 
+          id="name" 
+          placeholder="Contact Name"
+        />
+        <div className="buttons flex justify-around">
+          <button type="submit" className="bg-primary-500 hover:bg-primary-400">
+            Submit
+          </button>
+          <button type="reset" onClick={() => modal.current!.close()} className="bg-dark-600 hover:bg-dark-500">
+            Cancel
+          </button>
+        </div>
       </form>
     </dialog>
   )

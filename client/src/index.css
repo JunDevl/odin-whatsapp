@@ -1,10 +1,41 @@
 @import "tailwindcss";
 
-/* @theme {
-  --color-mint-500: oklch(0.72 0.11 178);
-} */
+@theme {
+  --hue: 160;
+
+  --color-primary-400: oklch(85% .3 var(--hue));
+  --color-primary-500: oklch(80% .35 var(--hue));
+  --color-primary-600: oklch(75% .4 var(--hue));
+
+  --color-semantic-ok-400: oklch(85% .4 140);
+  --color-semantic-ok-500: oklch(80% .4 140);
+  --color-semantic-ok-600: oklch(70% .4 140);
+
+  --color-semantic-alert-400: oklch(85% .4 100);
+  --color-semantic-alert-500: oklch(80% .4 100);
+  --color-semantic-alert-600: oklch(70% .4 100);
+
+  --color-semantic-error-400: oklch(85% .4 35);
+  --color-semantic-error-500: oklch(80% .4 35);
+  --color-semantic-error-600: oklch(70% .4 35);
+
+  --color-dark-400: oklch(25% .02 var(--hue));
+  --color-dark-500: oklch(18% .015 var(--hue));
+  --color-dark-600: oklch(15% .01 var(--hue));
+  --color-dark-900: oklch(10% .005 var(--hue));
+
+  --color-light-400: oklch(96% .025 var(--hue));
+  --color-light-500: oklch(92% .02 var(--hue));
+  --color-light-600: oklch(86% .015 var(--hue));
+  --color-light-900: oklch(82% .01 var(--hue));
+}
 
 :root {
+  --color-light-400: oklch(96%, 0.025, 160);
+  --color-light-500: oklch(92%, 0.02, 160);
+  --color-light-600: oklch(86%, 0.015, 160);
+  --color-light-900: oklch(82%, 0.01, 160);
+
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
@@ -129,4 +160,10 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+button {
+  transition: all 250ms;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
 }

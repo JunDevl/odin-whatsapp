@@ -9,6 +9,5 @@ export type UserResponse = Omit<User, "id" | "password_hash">;
 
 export interface ChatType<T extends Contact | GroupResponse> {
   chat: T,
-  lastMessage: string,
-  sentAt: Date
+  lastMessage: MessageResponse
 }

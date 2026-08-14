@@ -70,7 +70,7 @@ io.on("connection", (socket) => {
   const user = socket.data.user as User;
 
   socket.on("message", message => {
-    message = message ?? "[empty]"
+    message = message ?? "[empty]";
 
     socket.send(`SERVER ### Recieved message: "${message}" ### SERVER`);
     socket.emit(`SERVER ### Emitted message: "${message}" ### SERVER`); // emits to everybody connected to the websocket
