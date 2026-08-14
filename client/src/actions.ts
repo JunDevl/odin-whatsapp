@@ -15,7 +15,6 @@ export const createUser = async (formData: FormData) => {
 
   const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },
@@ -65,7 +64,9 @@ export const getLoggedUser = async () => {
 }
 
 export const getUserContacts = async () => {
-  const fetchedContacts = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`);
+  const fetchedContacts = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
+    credentials: "include"
+  });
 
   if (!fetchedContacts.ok) throw new Error(await fetchedContacts.text());
 
@@ -77,6 +78,7 @@ export const getUserContacts = async () => {
 export const addContact = async (name: string) => {
   const addedContact = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
     method: "POST",
+    credentials: "include",
     body: JSON.stringify({ name })
   })
 
@@ -89,7 +91,8 @@ export const addContact = async (name: string) => {
 
 export const removeContact = async (name: string) => {
   const removedContact = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends/${name}`, {
-    method: "DELETE"
+    method: "DELETE",
+    credentials: "include"
   })
 
   if (!removedContact.ok) throw new Error(await removedContact.text());

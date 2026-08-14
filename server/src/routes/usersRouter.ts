@@ -12,10 +12,9 @@ const usersRouter = Router();
 
 usersRouter.route("/")
   .post(createUser as RequestHandler[])
-  .all(JWTProtectedRoute)
-  .delete(deleteUser)
-  .put(updateUser as RequestHandler[])
-  .get(getUser); // get user from jwt stored in the client's cookies
+  .delete(JWTProtectedRoute, deleteUser)
+  .put(JWTProtectedRoute, updateUser as RequestHandler[])
+  .get(JWTProtectedRoute, getUser); // get user from jwt stored in the client's cookies
 
 usersRouter.route("/auth")
   .post((req, res, next) => { // log-in and create new JWT
@@ -37,9 +36,8 @@ usersRouter.route("/auth")
   })
 
 usersRouter.route("/friends")
-  .all(JWTProtectedRoute)
-  .get(getUserFriends)
-  .post(addUserFriend as RequestHandler[])
+  .get(JWTProtectedRoute, getUserFriends)
+  .post(JWTProtectedRoute, addUserFriend as RequestHandler[])
 
 usersRouter.route("/friends/:friendName")
   .delete(JWTProtectedRoute, removeUserFriend);
