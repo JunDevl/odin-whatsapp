@@ -35,11 +35,15 @@ usersRouter.route("/auth")
     )(req, res, next)
   })
 
-usersRouter.route("/friends")
-  .get(JWTProtectedRoute, getUserFriends)
-  .post(JWTProtectedRoute, addUserFriend as RequestHandler[])
+const friendsRouter = Router();
 
-usersRouter.route("/friends/:friendName")
+usersRouter.use("/friends", friendsRouter);
+
+friendsRouter.route("/")
+  .post(JWTProtectedRoute, addUserFriend as RequestHandler[])
+  .get(JWTProtectedRoute, getUserFriends);
+
+friendsRouter.route("/:friendName")
   .delete(JWTProtectedRoute, removeUserFriend);
 
 export default usersRouter;

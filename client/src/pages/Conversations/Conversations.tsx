@@ -1,26 +1,28 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import Chat from "../../components/Chat/Chat";
 import ChatList from "../../components/ChatList/ChatList";
-import { getUserContacts } from "../../actions";
-import { Suspense } from "react";
+import { getMessagesFromChat, getUserContacts } from "../../actions";
+import { ErrorBoundary } from "react-error-boundary";
+import { useContext } from "react";
+import { SelectedChatContext } from "../../utils";
 
-const boilerplateMessages = [
-  {
-    content: "Yo!",
-    sentAt: new Date("2026-08-05 8:00"),
-    editedAt: null,
-  },
-  {
-    content: "You aight?",
-    sentAt: new Date("2026-08-05 9:00"),
-    editedAt: null,
-  },
-  {
-    content: "...",
-    sentAt: new Date("2026-08-05 10:00"),
-    editedAt: null,
-  },
-]
+// const boilerplateMessages = [
+//   {
+//     content: "Yo!",
+//     sentAt: new Date("2026-08-05 8:00"),
+//     editedAt: null,
+//   },
+//   {
+//     content: "You aight?",
+//     sentAt: new Date("2026-08-05 9:00"),
+//     editedAt: null,
+//   },
+//   {
+//     content: "...",
+//     sentAt: new Date("2026-08-05 10:00"),
+//     editedAt: null,
+//   },
+// ]
 
 // const boilerplateConvos = [
 //   {
@@ -52,19 +54,45 @@ const boilerplateMessages = [
 type Props = {}
 
 const Conversations = (props: Props) => {
-  const {data: contacts} = useSuspenseQuery({
+  const {selectedChat} = useContext(SelectedChatContext);
+
+  const {data: contacts, error} = useSuspenseQuery({
     queryKey: ["user", "friends"],
-    queryFn: () => getUserContacts()
+    queryFn: () => getUserContacts(),
+    staleTime: Infinity
   })
+
+  useQueries({
+    queries: contacts ? contacts.map(contact => ({
+      queryKey: ["conversations", contact.name],
+      queryFn: () => getMessagesFromChat("conversation", contact.name),
+      staleTime: Infinity
+    })) : []
+  });
+
+  const chats = contacts.map(contact => ({
+    chat: contact,
+    lastMessage: {
+      contact: contact.name,
+      message: {
+        content: "test",
+        sentAt: new Date("2026-03-05 10:00"),
+        editedAt: null
+      }
+    }
+  }))
 
   return (
     <>
-      <Suspense fallback={<p>Loading ...</p>}>
-        <ChatList kind="conversation" chats={contacts as any}/>
-      </Suspense>
-      <Suspense fallback={<p>Loading ...</p>}>
-        <Chat kind="conversation" messages={boilerplateMessages}/>
-      </Suspense>
+      <ErrorBoundary fallback={<p>Something went wrong when loading user's contacts: <br>{error ? error.stack : ""}</br></p>}>
+        <ChatList kind="conversation" chats={chats}/>
+      </ErrorBoundary>
+      {selectedChat ? 
+        <Chat kind="conversation"/> :
+        <div id="chat" className="flex flex-col flex-1">
+          No chats selected.
+        </div>
+      }
     </>
   )
 }

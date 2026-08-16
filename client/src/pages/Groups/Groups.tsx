@@ -52,7 +52,7 @@ const Groups = (props: Props) => {
   return (
     <>
       <ChatList kind="conversation" chats={boilerplateGroups}/>
-      <Chat kind="conversation" messages={boilerplateMessages}/>
+      <Chat kind="conversation" /*messages={boilerplateMessages}*//>
     </>
   )
 }

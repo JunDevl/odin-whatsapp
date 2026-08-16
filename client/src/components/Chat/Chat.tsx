@@ -1,17 +1,28 @@
-import "./chat.css"
-
 import Message from "../Message/Message";
-import type { ChatKind, MessageResponse } from "../../utils";
+import type { ChatKind } from "../../utils";
 import MessageInput from "../MessageInput/MessageInput";
+import { SelectedChatContext } from "../../utils";
+import { Suspense, useContext, useEffect } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getMessagesFromChat } from "../../actions";
+import { ErrorBoundary } from "react-error-boundary";
+
 
 type Props = {
   kind: ChatKind
-  messages: MessageResponse[]
 }
 
-const Chat = ({ kind, messages }: Props) => {
+const Chat = ({ kind }: Props) => {
+  const {selectedChat} = useContext(SelectedChatContext);
+
+  const {data: messages, error} = useSuspenseQuery({
+    queryKey: [`${kind}s`, selectedChat!.name],
+    queryFn: () => getMessagesFromChat(kind, selectedChat!.name),
+    staleTime: Infinity
+  })
+
   return (
-    <div id="chat">
+    <div id="chat" className="flex flex-col flex-1">
       <aside id={`current-${kind}-details`} className="border-b-2 flex p-3">
         <div className="details flex-1">
           Details
@@ -21,11 +32,15 @@ const Chat = ({ kind, messages }: Props) => {
           <button>s</button>
         </div>
       </aside>
-      <main className="overflow-hidden">
-        <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-2 p-3">
-          {messages.map((message, i) => 
-            <Message message={message} key={i}/>
-          )}
+      <main className="overflow-hidden flex-1">
+        <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-2 p-3 overflow-y-auto">
+          <ErrorBoundary fallback={<p>An error ocurred: <br>{error ? error.stack : ""}</br></p>}>
+            <Suspense fallback={<p>Loading messages ...</p>}>
+              {messages.messages.map((message, i) => 
+                <Message message={message} key={i}/>
+              )}
+            </Suspense>
+          </ErrorBoundary>
         </ul>
       </main>
       <MessageInput/>

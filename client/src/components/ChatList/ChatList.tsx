@@ -1,6 +1,7 @@
-import { useRef, type SubmitEvent } from "react";
+import { Suspense, useContext, useEffect, useRef } from "react";
 import type { ChatKind, ChatType, Contact, GroupResponse } from "../../utils";
 import AddChat from "../AddChat/AddChat";
+import { SelectedChatContext } from "../../utils";
 
 type Props<T extends Contact | GroupResponse> = {
   kind: ChatKind
@@ -9,6 +10,7 @@ type Props<T extends Contact | GroupResponse> = {
 
 const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>) => {
   const newChatModal = useRef<HTMLDialogElement>(null);
+  const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);
 
   return (
     <nav id={`${kind}s-sidebar`}>
@@ -24,9 +26,18 @@ const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>
           <button className="flex items-center px-3">s</button>
         </div>
         <ul id={`${kind}s`} className="flex flex-col gap-2">
-          {chats.map((chat, i) => <li className={`${kind} bg-gray-600`} key={i}>
-            {chat.chat.name}
-          </li>)}
+          <Suspense>
+            {chats.length > 0 && chats.map((chat, i) => 
+              <li 
+                className={`${kind} bg-gray-600 hover:bg-gray-500 cursor-pointer data-[selected=true]:bg-white`} 
+                data-selected={selectedChat?.name === chat.chat.name}
+                key={i} 
+                onClick={() => setSelectedChat({kind, name: chat.chat.name})}
+              >
+                {chat.chat.name}
+              </li>
+            )}
+          </Suspense>
         </ul>
       </div>
     </nav>

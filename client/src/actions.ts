@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 import { handleError, PromiseError } from "@packages/utils";
-import type { Contact, UserResponse } from "./utils";
+import type { ChatKind, Contact, MessageResponse, UserResponse } from "./utils";
 
-const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
+export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true
 });
 
@@ -76,10 +76,15 @@ export const getUserContacts = async () => {
 }
 
 export const addContact = async (name: string) => {
+  const data = { name };
+
   const addedContact = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify({ name })
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
   })
 
   if (!addedContact.ok) throw new Error(await addedContact.text());
@@ -102,8 +107,43 @@ export const removeContact = async (name: string) => {
   return removed;
 }
 
+export const getMessagesFromChat = async (chatKind: ChatKind, chatIdentification: string) => {
+  const result = {
+    contact: chatIdentification,
+    messages: [] as MessageResponse[]
+  }
+
+  if (chatIdentification === "") return result;
+
+  const chatRoute = chatKind === "conversation" ? "user" : "group";
+
+  const messagesResponse = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatRoute}/${chatIdentification}`, 
+    { credentials: "include" }
+  )
+
+  if (!messagesResponse.ok) throw new Error(await messagesResponse.text());
+
+  result.messages = await messagesResponse.json()
+
+  return result;
+}
+
 // WEBSOCKET ACTIONS BELOW
 
-export const createMessage = async () => {
-  
+// export const getMessage = async () => {
+//   const message = socket.on("userMessage", (content) => content);
+// }
+
+export const createMessage = async (content: string, chat: {name: string, kind: ChatKind}) => {
+  const kind = chat.kind === "conversation" ? "user" : chat.kind;
+
+  const reciever = {kind, name: chat.name} as const;
+
+  let createdMessage: MessageResponse;
+
+  try {createdMessage = await socket.emitWithAck("userMessage", content, reciever)} 
+  catch (e) {throw new Error(e as any)}
+
+  return createdMessage;
 }

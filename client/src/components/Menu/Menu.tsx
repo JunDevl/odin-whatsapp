@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import "./menu.css"
+import { useEffect } from "react";
 
 type Props = {}
 
