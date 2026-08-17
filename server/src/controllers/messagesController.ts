@@ -46,6 +46,9 @@ export const getMessages: RequestHandler = async (req, res, next) => {
           omit: {
             id: true,
             senderId: true
+          },
+          include: {
+            sender: { select: {name: true } }
           }
         }
       },
@@ -66,6 +69,9 @@ export const getMessages: RequestHandler = async (req, res, next) => {
           omit: {
             id: true,
             senderId: true
+          },
+          include: {
+            sender: { select: { name: true } }
           }
         }
       },
@@ -105,8 +111,9 @@ export const updateMessage = async (user: User, messageId: string, content: stri
 
 export const createMessage = async (senderId: string, content: string, reciever: { kind: "user" | "group", id: string }) => {
   const createdMessage = await handleError(prisma.message.create({ 
-    data: {senderId, content},
-    include: {sender: {select: {id: true, name: true}}}
+    data: { senderId, content },
+    omit: { senderId: true },
+    include: { sender: { select: { name: true } } }
   }));
 
   if (createdMessage instanceof PromiseError) throw new Error(createdMessage.error);

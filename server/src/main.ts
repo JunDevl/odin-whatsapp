@@ -106,10 +106,10 @@ io.on("connection", (socket) => {
 
     if (!recieverExists) return socket.send(`Reciever (${recieverKind}) ${recieverIdentification} doesn't exist.`);
 
-    const {sender, id, senderId, ...createdMessage} = await createMessage(
-      user.id, 
-      content, 
-      {kind: recieverKind, id: recieverExists.id}
+    const {id, ...createdMessage} = await createMessage(
+      user.id,
+      content,
+      { kind: recieverKind, id: recieverExists.id }
     );
 
     let roomName: string;

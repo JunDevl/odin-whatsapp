@@ -88,8 +88,12 @@
 }
 
 #root {
+  min-height: 100dvh;
+  max-height: 100dvh;
+}
+
+#root {
   text-align: center;
-  min-height: 100svh;
   display: flex;
   justify-content: center;
   box-sizing: border-box;

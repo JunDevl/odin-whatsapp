@@ -77,14 +77,15 @@ const Conversations = (props: Props) => {
       message: {
         content: "test",
         sentAt: new Date("2026-03-05 10:00"),
-        editedAt: null
+        editedAt: null,
+        sender: { name: contact.name }
       }
     }
   }))
 
   return (
     <>
-      <ErrorBoundary fallback={<p>Something went wrong when loading user's contacts: <br>{error ? error.stack : ""}</br></p>}>
+      <ErrorBoundary fallback={<p>Something went wrong when loading user's contacts: <br/>{error ? error.stack : ""}</p>}>
         <ChatList kind="conversation" chats={chats}/>
       </ErrorBoundary>
       {selectedChat ? 

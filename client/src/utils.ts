@@ -4,7 +4,7 @@ import type { Dispatch } from "react";
 
 export type ChatKind = "group" | "conversation";
 
-export type MessageResponse = {message: Omit<Message, "id" | "senderId">};
+export type MessageResponse = {message: Omit<Message, "id" | "senderId"> & { sender: { name: string } }};
 export type GroupResponse = Omit<Group, "id">;
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
 export type UserResponse = Omit<User, "id" | "password_hash">;

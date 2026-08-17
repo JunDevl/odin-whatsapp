@@ -32,9 +32,9 @@ const Chat = ({ kind }: Props) => {
           <button>s</button>
         </div>
       </aside>
-      <main className="overflow-hidden flex-1">
-        <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-2 p-3 overflow-y-auto">
-          <ErrorBoundary fallback={<p>An error ocurred: <br>{error ? error.stack : ""}</br></p>}>
+      <main className="overflow-hidden overflow-y-auto">
+        <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-2 p-3">
+          <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
               {messages.messages.map((message, i) => 
                 <Message message={message} key={i}/>
