@@ -402,6 +402,7 @@ export const ModelName = {
   Group: 'Group',
   UserOfGroup: 'UserOfGroup',
   Message: 'Message',
+  MessageSeenByUser: 'MessageSeenByUser',
   MessageToGroup: 'MessageToGroup',
   MessageToUser: 'MessageToUser'
 } as const
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "friendOfUser" | "group" | "userOfGroup" | "message" | "messageToGroup" | "messageToUser"
+    modelProps: "user" | "friendOfUser" | "group" | "userOfGroup" | "message" | "messageSeenByUser" | "messageToGroup" | "messageToUser"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -793,6 +794,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MessageSeenByUser: {
+      payload: Prisma.$MessageSeenByUserPayload<ExtArgs>
+      fields: Prisma.MessageSeenByUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessageSeenByUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessageSeenByUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        findFirst: {
+          args: Prisma.MessageSeenByUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessageSeenByUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        findMany: {
+          args: Prisma.MessageSeenByUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>[]
+        }
+        create: {
+          args: Prisma.MessageSeenByUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        createMany: {
+          args: Prisma.MessageSeenByUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessageSeenByUserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>[]
+        }
+        delete: {
+          args: Prisma.MessageSeenByUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        update: {
+          args: Prisma.MessageSeenByUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.MessageSeenByUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessageSeenByUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessageSeenByUserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>[]
+        }
+        upsert: {
+          args: Prisma.MessageSeenByUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageSeenByUserPayload>
+        }
+        aggregate: {
+          args: Prisma.MessageSeenByUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessageSeenByUser>
+        }
+        groupBy: {
+          args: Prisma.MessageSeenByUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageSeenByUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessageSeenByUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageSeenByUserCountAggregateOutputType> | number
+        }
+      }
+    }
     MessageToGroup: {
       payload: Prisma.$MessageToGroupPayload<ExtArgs>
       fields: Prisma.MessageToGroupFieldRefs
@@ -1020,13 +1095,23 @@ export type UserOfGroupScalarFieldEnum = (typeof UserOfGroupScalarFieldEnum)[key
 
 export const MessageScalarFieldEnum = {
   id: 'id',
+  senderId: 'senderId',
   sentAt: 'sentAt',
   editedAt: 'editedAt',
   content: 'content',
-  senderId: 'senderId'
+  deletedAt: 'deletedAt'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageSeenByUserScalarFieldEnum = {
+  messageId: 'messageId',
+  recieverUserId: 'recieverUserId',
+  seenAt: 'seenAt'
+} as const
+
+export type MessageSeenByUserScalarFieldEnum = (typeof MessageSeenByUserScalarFieldEnum)[keyof typeof MessageSeenByUserScalarFieldEnum]
 
 
 export const MessageToGroupScalarFieldEnum = {
@@ -1272,6 +1357,7 @@ export type GlobalOmitConfig = {
   group?: Prisma.GroupOmit
   userOfGroup?: Prisma.UserOfGroupOmit
   message?: Prisma.MessageOmit
+  messageSeenByUser?: Prisma.MessageSeenByUserOmit
   messageToGroup?: Prisma.MessageToGroupOmit
   messageToUser?: Prisma.MessageToUserOmit
 }

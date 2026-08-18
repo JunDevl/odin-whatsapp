@@ -198,7 +198,7 @@ export type MessageToGroupScalarWhereWithAggregatesInput = {
 
 export type MessageToGroupCreateInput = {
   message: Prisma.MessageCreateNestedOneWithoutMessageToGroupsInput
-  recieverGroup: Prisma.GroupCreateNestedOneWithoutMessageToGroupsInput
+  recieverGroup: Prisma.GroupCreateNestedOneWithoutMessagesToGroupInput
 }
 
 export type MessageToGroupUncheckedCreateInput = {
@@ -208,7 +208,7 @@ export type MessageToGroupUncheckedCreateInput = {
 
 export type MessageToGroupUpdateInput = {
   message?: Prisma.MessageUpdateOneRequiredWithoutMessageToGroupsNestedInput
-  recieverGroup?: Prisma.GroupUpdateOneRequiredWithoutMessageToGroupsNestedInput
+  recieverGroup?: Prisma.GroupUpdateOneRequiredWithoutMessagesToGroupNestedInput
 }
 
 export type MessageToGroupUncheckedUpdateInput = {
@@ -387,7 +387,7 @@ export type MessageToGroupScalarWhereInput = {
 }
 
 export type MessageToGroupCreateWithoutMessageInput = {
-  recieverGroup: Prisma.GroupCreateNestedOneWithoutMessageToGroupsInput
+  recieverGroup: Prisma.GroupCreateNestedOneWithoutMessagesToGroupInput
 }
 
 export type MessageToGroupUncheckedCreateWithoutMessageInput = {
@@ -441,7 +441,7 @@ export type MessageToGroupCreateManyMessageInput = {
 }
 
 export type MessageToGroupUpdateWithoutMessageInput = {
-  recieverGroup?: Prisma.GroupUpdateOneRequiredWithoutMessageToGroupsNestedInput
+  recieverGroup?: Prisma.GroupUpdateOneRequiredWithoutMessagesToGroupNestedInput
 }
 
 export type MessageToGroupUncheckedUpdateWithoutMessageInput = {

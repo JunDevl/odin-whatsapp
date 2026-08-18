@@ -198,7 +198,7 @@ export type MessageToUserScalarWhereWithAggregatesInput = {
 
 export type MessageToUserCreateInput = {
   message: Prisma.MessageCreateNestedOneWithoutMessageToUsersInput
-  recieverUser: Prisma.UserCreateNestedOneWithoutMessageToUsersInput
+  recieverUser: Prisma.UserCreateNestedOneWithoutMessagesToUserInput
 }
 
 export type MessageToUserUncheckedCreateInput = {
@@ -208,7 +208,7 @@ export type MessageToUserUncheckedCreateInput = {
 
 export type MessageToUserUpdateInput = {
   message?: Prisma.MessageUpdateOneRequiredWithoutMessageToUsersNestedInput
-  recieverUser?: Prisma.UserUpdateOneRequiredWithoutMessageToUsersNestedInput
+  recieverUser?: Prisma.UserUpdateOneRequiredWithoutMessagesToUserNestedInput
 }
 
 export type MessageToUserUncheckedUpdateInput = {
@@ -387,7 +387,7 @@ export type MessageToUserScalarWhereInput = {
 }
 
 export type MessageToUserCreateWithoutMessageInput = {
-  recieverUser: Prisma.UserCreateNestedOneWithoutMessageToUsersInput
+  recieverUser: Prisma.UserCreateNestedOneWithoutMessagesToUserInput
 }
 
 export type MessageToUserUncheckedCreateWithoutMessageInput = {
@@ -441,7 +441,7 @@ export type MessageToUserCreateManyMessageInput = {
 }
 
 export type MessageToUserUpdateWithoutMessageInput = {
-  recieverUser?: Prisma.UserUpdateOneRequiredWithoutMessageToUsersNestedInput
+  recieverUser?: Prisma.UserUpdateOneRequiredWithoutMessagesToUserNestedInput
 }
 
 export type MessageToUserUncheckedUpdateWithoutMessageInput = {

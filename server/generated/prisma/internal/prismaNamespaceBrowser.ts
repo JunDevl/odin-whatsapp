@@ -56,6 +56,7 @@ export const ModelName = {
   Group: 'Group',
   UserOfGroup: 'UserOfGroup',
   Message: 'Message',
+  MessageSeenByUser: 'MessageSeenByUser',
   MessageToGroup: 'MessageToGroup',
   MessageToUser: 'MessageToUser'
 } as const
@@ -116,13 +117,23 @@ export type UserOfGroupScalarFieldEnum = (typeof UserOfGroupScalarFieldEnum)[key
 
 export const MessageScalarFieldEnum = {
   id: 'id',
+  senderId: 'senderId',
   sentAt: 'sentAt',
   editedAt: 'editedAt',
   content: 'content',
-  senderId: 'senderId'
+  deletedAt: 'deletedAt'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageSeenByUserScalarFieldEnum = {
+  messageId: 'messageId',
+  recieverUserId: 'recieverUserId',
+  seenAt: 'seenAt'
+} as const
+
+export type MessageSeenByUserScalarFieldEnum = (typeof MessageSeenByUserScalarFieldEnum)[keyof typeof MessageSeenByUserScalarFieldEnum]
 
 
 export const MessageToGroupScalarFieldEnum = {

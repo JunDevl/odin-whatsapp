@@ -197,7 +197,7 @@ export type FriendOfUserScalarWhereWithAggregatesInput = {
 }
 
 export type FriendOfUserCreateInput = {
-  originUser: Prisma.UserCreateNestedOneWithoutFriendOfUsersInput
+  originUser: Prisma.UserCreateNestedOneWithoutOriginUserFriendInput
   friendUser: Prisma.UserCreateNestedOneWithoutFriendsInput
 }
 
@@ -207,7 +207,7 @@ export type FriendOfUserUncheckedCreateInput = {
 }
 
 export type FriendOfUserUpdateInput = {
-  originUser?: Prisma.UserUpdateOneRequiredWithoutFriendOfUsersNestedInput
+  originUser?: Prisma.UserUpdateOneRequiredWithoutOriginUserFriendNestedInput
   friendUser?: Prisma.UserUpdateOneRequiredWithoutFriendsNestedInput
 }
 
@@ -345,7 +345,7 @@ export type FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput = {
 }
 
 export type FriendOfUserCreateWithoutFriendUserInput = {
-  originUser: Prisma.UserCreateNestedOneWithoutFriendOfUsersInput
+  originUser: Prisma.UserCreateNestedOneWithoutOriginUserFriendInput
 }
 
 export type FriendOfUserUncheckedCreateWithoutFriendUserInput = {
@@ -429,7 +429,7 @@ export type FriendOfUserCreateManyOriginUserInput = {
 }
 
 export type FriendOfUserUpdateWithoutFriendUserInput = {
-  originUser?: Prisma.UserUpdateOneRequiredWithoutFriendOfUsersNestedInput
+  originUser?: Prisma.UserUpdateOneRequiredWithoutOriginUserFriendNestedInput
 }
 
 export type FriendOfUserUncheckedUpdateWithoutFriendUserInput = {

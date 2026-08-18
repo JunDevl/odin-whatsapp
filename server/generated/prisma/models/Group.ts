@@ -174,8 +174,8 @@ export type GroupWhereInput = {
   name?: Prisma.StringFilter<"Group"> | string
   description?: Prisma.StringNullableFilter<"Group"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Group"> | Date | string
-  usersOfGroups?: Prisma.UserOfGroupListRelationFilter
-  messageToGroups?: Prisma.MessageToGroupListRelationFilter
+  usersOfGroup?: Prisma.UserOfGroupListRelationFilter
+  messagesToGroup?: Prisma.MessageToGroupListRelationFilter
 }
 
 export type GroupOrderByWithRelationInput = {
@@ -183,8 +183,8 @@ export type GroupOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  usersOfGroups?: Prisma.UserOfGroupOrderByRelationAggregateInput
-  messageToGroups?: Prisma.MessageToGroupOrderByRelationAggregateInput
+  usersOfGroup?: Prisma.UserOfGroupOrderByRelationAggregateInput
+  messagesToGroup?: Prisma.MessageToGroupOrderByRelationAggregateInput
 }
 
 export type GroupWhereUniqueInput = Prisma.AtLeast<{
@@ -195,8 +195,8 @@ export type GroupWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Group"> | string
   description?: Prisma.StringNullableFilter<"Group"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Group"> | Date | string
-  usersOfGroups?: Prisma.UserOfGroupListRelationFilter
-  messageToGroups?: Prisma.MessageToGroupListRelationFilter
+  usersOfGroup?: Prisma.UserOfGroupListRelationFilter
+  messagesToGroup?: Prisma.MessageToGroupListRelationFilter
 }, "id">
 
 export type GroupOrderByWithAggregationInput = {
@@ -224,8 +224,8 @@ export type GroupCreateInput = {
   name: string
   description?: string | null
   createdAt?: Date | string
-  usersOfGroups?: Prisma.UserOfGroupCreateNestedManyWithoutGroupInput
-  messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutRecieverGroupInput
+  usersOfGroup?: Prisma.UserOfGroupCreateNestedManyWithoutGroupInput
+  messagesToGroup?: Prisma.MessageToGroupCreateNestedManyWithoutRecieverGroupInput
 }
 
 export type GroupUncheckedCreateInput = {
@@ -233,8 +233,8 @@ export type GroupUncheckedCreateInput = {
   name: string
   description?: string | null
   createdAt?: Date | string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutGroupInput
-  messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutRecieverGroupInput
+  usersOfGroup?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutGroupInput
+  messagesToGroup?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutRecieverGroupInput
 }
 
 export type GroupUpdateInput = {
@@ -242,8 +242,8 @@ export type GroupUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usersOfGroups?: Prisma.UserOfGroupUpdateManyWithoutGroupNestedInput
-  messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutRecieverGroupNestedInput
+  usersOfGroup?: Prisma.UserOfGroupUpdateManyWithoutGroupNestedInput
+  messagesToGroup?: Prisma.MessageToGroupUpdateManyWithoutRecieverGroupNestedInput
 }
 
 export type GroupUncheckedUpdateInput = {
@@ -251,8 +251,8 @@ export type GroupUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutGroupNestedInput
-  messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutRecieverGroupNestedInput
+  usersOfGroup?: Prisma.UserOfGroupUncheckedUpdateManyWithoutGroupNestedInput
+  messagesToGroup?: Prisma.MessageToGroupUncheckedUpdateManyWithoutRecieverGroupNestedInput
 }
 
 export type GroupCreateManyInput = {
@@ -310,128 +310,128 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type GroupCreateNestedOneWithoutUsersOfGroupsInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupsInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutUsersOfGroupsInput
+export type GroupCreateNestedOneWithoutUsersOfGroupInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutUsersOfGroupInput
   connect?: Prisma.GroupWhereUniqueInput
 }
 
-export type GroupUpdateOneRequiredWithoutUsersOfGroupsNestedInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupsInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutUsersOfGroupsInput
-  upsert?: Prisma.GroupUpsertWithoutUsersOfGroupsInput
+export type GroupUpdateOneRequiredWithoutUsersOfGroupNestedInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutUsersOfGroupInput
+  upsert?: Prisma.GroupUpsertWithoutUsersOfGroupInput
   connect?: Prisma.GroupWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutUsersOfGroupsInput, Prisma.GroupUpdateWithoutUsersOfGroupsInput>, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutUsersOfGroupInput, Prisma.GroupUpdateWithoutUsersOfGroupInput>, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupInput>
 }
 
-export type GroupCreateNestedOneWithoutMessageToGroupsInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutMessageToGroupsInput, Prisma.GroupUncheckedCreateWithoutMessageToGroupsInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutMessageToGroupsInput
+export type GroupCreateNestedOneWithoutMessagesToGroupInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutMessagesToGroupInput, Prisma.GroupUncheckedCreateWithoutMessagesToGroupInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutMessagesToGroupInput
   connect?: Prisma.GroupWhereUniqueInput
 }
 
-export type GroupUpdateOneRequiredWithoutMessageToGroupsNestedInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutMessageToGroupsInput, Prisma.GroupUncheckedCreateWithoutMessageToGroupsInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutMessageToGroupsInput
-  upsert?: Prisma.GroupUpsertWithoutMessageToGroupsInput
+export type GroupUpdateOneRequiredWithoutMessagesToGroupNestedInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutMessagesToGroupInput, Prisma.GroupUncheckedCreateWithoutMessagesToGroupInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutMessagesToGroupInput
+  upsert?: Prisma.GroupUpsertWithoutMessagesToGroupInput
   connect?: Prisma.GroupWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutMessageToGroupsInput, Prisma.GroupUpdateWithoutMessageToGroupsInput>, Prisma.GroupUncheckedUpdateWithoutMessageToGroupsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutMessagesToGroupInput, Prisma.GroupUpdateWithoutMessagesToGroupInput>, Prisma.GroupUncheckedUpdateWithoutMessagesToGroupInput>
 }
 
-export type GroupCreateWithoutUsersOfGroupsInput = {
+export type GroupCreateWithoutUsersOfGroupInput = {
   id?: string
   name: string
   description?: string | null
   createdAt?: Date | string
-  messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutRecieverGroupInput
+  messagesToGroup?: Prisma.MessageToGroupCreateNestedManyWithoutRecieverGroupInput
 }
 
-export type GroupUncheckedCreateWithoutUsersOfGroupsInput = {
+export type GroupUncheckedCreateWithoutUsersOfGroupInput = {
   id?: string
   name: string
   description?: string | null
   createdAt?: Date | string
-  messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutRecieverGroupInput
+  messagesToGroup?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutRecieverGroupInput
 }
 
-export type GroupCreateOrConnectWithoutUsersOfGroupsInput = {
+export type GroupCreateOrConnectWithoutUsersOfGroupInput = {
   where: Prisma.GroupWhereUniqueInput
-  create: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupsInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupInput>
 }
 
-export type GroupUpsertWithoutUsersOfGroupsInput = {
-  update: Prisma.XOR<Prisma.GroupUpdateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupsInput>
-  create: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupsInput>
+export type GroupUpsertWithoutUsersOfGroupInput = {
+  update: Prisma.XOR<Prisma.GroupUpdateWithoutUsersOfGroupInput, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutUsersOfGroupInput, Prisma.GroupUncheckedCreateWithoutUsersOfGroupInput>
   where?: Prisma.GroupWhereInput
 }
 
-export type GroupUpdateToOneWithWhereWithoutUsersOfGroupsInput = {
+export type GroupUpdateToOneWithWhereWithoutUsersOfGroupInput = {
   where?: Prisma.GroupWhereInput
-  data: Prisma.XOR<Prisma.GroupUpdateWithoutUsersOfGroupsInput, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupsInput>
+  data: Prisma.XOR<Prisma.GroupUpdateWithoutUsersOfGroupInput, Prisma.GroupUncheckedUpdateWithoutUsersOfGroupInput>
 }
 
-export type GroupUpdateWithoutUsersOfGroupsInput = {
+export type GroupUpdateWithoutUsersOfGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutRecieverGroupNestedInput
+  messagesToGroup?: Prisma.MessageToGroupUpdateManyWithoutRecieverGroupNestedInput
 }
 
-export type GroupUncheckedUpdateWithoutUsersOfGroupsInput = {
+export type GroupUncheckedUpdateWithoutUsersOfGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutRecieverGroupNestedInput
+  messagesToGroup?: Prisma.MessageToGroupUncheckedUpdateManyWithoutRecieverGroupNestedInput
 }
 
-export type GroupCreateWithoutMessageToGroupsInput = {
+export type GroupCreateWithoutMessagesToGroupInput = {
   id?: string
   name: string
   description?: string | null
   createdAt?: Date | string
-  usersOfGroups?: Prisma.UserOfGroupCreateNestedManyWithoutGroupInput
+  usersOfGroup?: Prisma.UserOfGroupCreateNestedManyWithoutGroupInput
 }
 
-export type GroupUncheckedCreateWithoutMessageToGroupsInput = {
+export type GroupUncheckedCreateWithoutMessagesToGroupInput = {
   id?: string
   name: string
   description?: string | null
   createdAt?: Date | string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutGroupInput
+  usersOfGroup?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutGroupInput
 }
 
-export type GroupCreateOrConnectWithoutMessageToGroupsInput = {
+export type GroupCreateOrConnectWithoutMessagesToGroupInput = {
   where: Prisma.GroupWhereUniqueInput
-  create: Prisma.XOR<Prisma.GroupCreateWithoutMessageToGroupsInput, Prisma.GroupUncheckedCreateWithoutMessageToGroupsInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutMessagesToGroupInput, Prisma.GroupUncheckedCreateWithoutMessagesToGroupInput>
 }
 
-export type GroupUpsertWithoutMessageToGroupsInput = {
-  update: Prisma.XOR<Prisma.GroupUpdateWithoutMessageToGroupsInput, Prisma.GroupUncheckedUpdateWithoutMessageToGroupsInput>
-  create: Prisma.XOR<Prisma.GroupCreateWithoutMessageToGroupsInput, Prisma.GroupUncheckedCreateWithoutMessageToGroupsInput>
+export type GroupUpsertWithoutMessagesToGroupInput = {
+  update: Prisma.XOR<Prisma.GroupUpdateWithoutMessagesToGroupInput, Prisma.GroupUncheckedUpdateWithoutMessagesToGroupInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutMessagesToGroupInput, Prisma.GroupUncheckedCreateWithoutMessagesToGroupInput>
   where?: Prisma.GroupWhereInput
 }
 
-export type GroupUpdateToOneWithWhereWithoutMessageToGroupsInput = {
+export type GroupUpdateToOneWithWhereWithoutMessagesToGroupInput = {
   where?: Prisma.GroupWhereInput
-  data: Prisma.XOR<Prisma.GroupUpdateWithoutMessageToGroupsInput, Prisma.GroupUncheckedUpdateWithoutMessageToGroupsInput>
+  data: Prisma.XOR<Prisma.GroupUpdateWithoutMessagesToGroupInput, Prisma.GroupUncheckedUpdateWithoutMessagesToGroupInput>
 }
 
-export type GroupUpdateWithoutMessageToGroupsInput = {
+export type GroupUpdateWithoutMessagesToGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usersOfGroups?: Prisma.UserOfGroupUpdateManyWithoutGroupNestedInput
+  usersOfGroup?: Prisma.UserOfGroupUpdateManyWithoutGroupNestedInput
 }
 
-export type GroupUncheckedUpdateWithoutMessageToGroupsInput = {
+export type GroupUncheckedUpdateWithoutMessagesToGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usersOfGroups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutGroupNestedInput
+  usersOfGroup?: Prisma.UserOfGroupUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 
@@ -440,13 +440,13 @@ export type GroupUncheckedUpdateWithoutMessageToGroupsInput = {
  */
 
 export type GroupCountOutputType = {
-  usersOfGroups: number
-  messageToGroups: number
+  usersOfGroup: number
+  messagesToGroup: number
 }
 
 export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  usersOfGroups?: boolean | GroupCountOutputTypeCountUsersOfGroupsArgs
-  messageToGroups?: boolean | GroupCountOutputTypeCountMessageToGroupsArgs
+  usersOfGroup?: boolean | GroupCountOutputTypeCountUsersOfGroupArgs
+  messagesToGroup?: boolean | GroupCountOutputTypeCountMessagesToGroupArgs
 }
 
 /**
@@ -462,14 +462,14 @@ export type GroupCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
 /**
  * GroupCountOutputType without action
  */
-export type GroupCountOutputTypeCountUsersOfGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type GroupCountOutputTypeCountUsersOfGroupArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserOfGroupWhereInput
 }
 
 /**
  * GroupCountOutputType without action
  */
-export type GroupCountOutputTypeCountMessageToGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type GroupCountOutputTypeCountMessagesToGroupArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageToGroupWhereInput
 }
 
@@ -479,8 +479,8 @@ export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   name?: boolean
   description?: boolean
   createdAt?: boolean
-  usersOfGroups?: boolean | Prisma.Group$usersOfGroupsArgs<ExtArgs>
-  messageToGroups?: boolean | Prisma.Group$messageToGroupsArgs<ExtArgs>
+  usersOfGroup?: boolean | Prisma.Group$usersOfGroupArgs<ExtArgs>
+  messagesToGroup?: boolean | Prisma.Group$messagesToGroupArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["group"]>
 
@@ -507,8 +507,8 @@ export type GroupSelectScalar = {
 
 export type GroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "createdAt", ExtArgs["result"]["group"]>
 export type GroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  usersOfGroups?: boolean | Prisma.Group$usersOfGroupsArgs<ExtArgs>
-  messageToGroups?: boolean | Prisma.Group$messageToGroupsArgs<ExtArgs>
+  usersOfGroup?: boolean | Prisma.Group$usersOfGroupArgs<ExtArgs>
+  messagesToGroup?: boolean | Prisma.Group$messagesToGroupArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -517,8 +517,8 @@ export type GroupIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $GroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Group"
   objects: {
-    usersOfGroups: Prisma.$UserOfGroupPayload<ExtArgs>[]
-    messageToGroups: Prisma.$MessageToGroupPayload<ExtArgs>[]
+    usersOfGroup: Prisma.$UserOfGroupPayload<ExtArgs>[]
+    messagesToGroup: Prisma.$MessageToGroupPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -919,8 +919,8 @@ readonly fields: GroupFieldRefs;
  */
 export interface Prisma__GroupClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  usersOfGroups<T extends Prisma.Group$usersOfGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$usersOfGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  messageToGroups<T extends Prisma.Group$messageToGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$messageToGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  usersOfGroup<T extends Prisma.Group$usersOfGroupArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$usersOfGroupArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messagesToGroup<T extends Prisma.Group$messagesToGroupArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$messagesToGroupArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1347,9 +1347,9 @@ export type GroupDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Group.usersOfGroups
+ * Group.usersOfGroup
  */
-export type Group$usersOfGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Group$usersOfGroupArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the UserOfGroup
    */
@@ -1371,9 +1371,9 @@ export type Group$usersOfGroupsArgs<ExtArgs extends runtime.Types.Extensions.Int
 }
 
 /**
- * Group.messageToGroups
+ * Group.messagesToGroup
  */
-export type Group$messageToGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Group$messagesToGroupArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the MessageToGroup
    */

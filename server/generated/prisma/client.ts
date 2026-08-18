@@ -67,6 +67,11 @@ export type UserOfGroup = Prisma.UserOfGroupModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model MessageSeenByUser
+ * 
+ */
+export type MessageSeenByUser = Prisma.MessageSeenByUserModel
+/**
  * Model MessageToGroup
  * 
  */
