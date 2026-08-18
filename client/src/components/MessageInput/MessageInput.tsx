@@ -1,4 +1,6 @@
-import { useEffect, useRef, type SubmitEvent } from "react";
+import "./messageinput.css"
+
+import { useEffect, useRef, type InputEvent, type SubmitEvent } from "react";
 import { SelectedChatContext, type MessageResponse } from "../../utils";
 import { useContext } from "react";
 import { createMessage } from "../../actions";
@@ -10,7 +12,7 @@ const MessageInput = (props: Props) => {
   const queryClient = useQueryClient();
 
   const form = useRef<HTMLFormElement>(null);
-  const input = useRef<HTMLInputElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
 
@@ -29,12 +31,22 @@ const MessageInput = (props: Props) => {
     input.current!.value = "";
   }
 
+  const handleInput = (e: InputEvent<HTMLTextAreaElement>) => {
+    console.log(e);
+  }
+
   return (
     <footer className="border-t-2">
       <form id="message_form" onSubmit={onSubmitMessage} ref={form}>
         <label className="flex bg-gray-600 rounded-2xl p-2" htmlFor="content">
           <button id="send" className="p-2 px-3">Send</button>
-          <input type="text" className="flex-1" name="content" id="content" ref={input}/>
+          <textarea 
+            className="min-w-0 flex-1 resize-none field-sizing-content"
+            name="content" 
+            id="content" 
+            ref={input} 
+            onInput={handleInput}
+          />
         </label>
       </form>
     </footer>

@@ -1,0 +1,12 @@
+#content {
+  --max-rows: 8;
+
+  --padding-y: 0rem;
+  --line-height: 1.4;
+
+  padding-block: var(--padding-y);
+  line-height: var(--line-height);
+
+  max-height: calc(var(--max-rows) * (var(--line-height) * 1em) + (var(--padding-y) * 2));
+  overflow-y: auto;
+}
