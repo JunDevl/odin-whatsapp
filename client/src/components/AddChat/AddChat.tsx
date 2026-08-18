@@ -30,7 +30,7 @@ const AddChat = ({ kind, ...props }: Props) => {
   }
 
   return (
-    <dialog {...props} className="m-auto p-5 bg-black rounded-lg">
+    <dialog {...props} className="bg-black">
       <form 
         method="POST" 
         onSubmit={handleSubmit} 

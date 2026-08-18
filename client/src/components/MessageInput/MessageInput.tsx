@@ -30,14 +30,14 @@ const MessageInput = (props: Props) => {
   }
 
   return (
-    <aside className="border-t-2 p-3">
+    <footer className="border-t-2">
       <form id="message_form" onSubmit={onSubmitMessage} ref={form}>
         <label className="flex bg-gray-600 rounded-2xl p-2" htmlFor="content">
           <button id="send" className="p-2 px-3">Send</button>
           <input type="text" className="flex-1" name="content" id="content" ref={input}/>
         </label>
       </form>
-    </aside>
+    </footer>
   )
 }
 

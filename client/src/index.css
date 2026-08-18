@@ -90,13 +90,9 @@
 #root {
   min-height: 100dvh;
   max-height: 100dvh;
-}
-
-#root {
   text-align: center;
   display: flex;
   justify-content: center;
-  box-sizing: border-box;
   gap: 0.5rem;
 
   &>*:not(#menu) {
@@ -148,7 +144,11 @@ h2 {
 }
 
 input {
-  border: 1px solid white
+  padding-inline: 0.75rem;
+}
+
+input:focus {
+  outline: none;
 }
 
 code,
@@ -169,5 +169,29 @@ code {
 button {
   transition: all 250ms;
   padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.search {
+  display: flex;
+  padding: 0.1rem;
+  border-radius: 100vw;
+  box-sizing: content-box;
+
+  &>button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 1rem;
+  }
+
+  &:has(input:focus) {
+    outline: 1px solid white;
+  }
+}
+
+dialog {
+  margin: auto;
+  padding: 1.25rem;
   border-radius: 0.5rem;
 }

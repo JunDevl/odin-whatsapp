@@ -6,7 +6,7 @@ type Props = {}
 
 const Menu = (props: Props) => {
   return (
-    <nav id="menu" className="p-0.5">
+    <nav id="menu" className="p-0.5 overflow-hidden">
       <ul className="flex flex-col gap-2 [&>li>a]:py-3 *:hover:bg-gray-700">
         <li>
           <Link to={"priv"}>Conversations</Link>

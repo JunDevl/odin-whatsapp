@@ -76,7 +76,7 @@ const Conversations = (props: Props) => {
       contact: contact.name,
       message: {
         content: "test",
-        sentAt: new Date("2026-03-05 10:00"),
+        sentAt: "2026-03-05 10:00",
         editedAt: null,
         sender: { name: contact.name }
       }
@@ -90,7 +90,7 @@ const Conversations = (props: Props) => {
       </ErrorBoundary>
       {selectedChat ? 
         <Chat kind="conversation"/> :
-        <div id="chat" className="flex flex-col flex-1">
+        <div id="chat" className="flex flex-col flex-1 overflow-hidden">
           No chats selected.
         </div>
       }
