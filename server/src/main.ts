@@ -75,6 +75,33 @@ io.use((socket, next) => {
   }
 });
 
+const JWT_REGEN_TIME = 60/*seconds*/ *60/*minutes*/ *24/*hours*/ *2/*days*/; // At 2 days before expiring JWT
+
+io.engine.on("initial_headers", (headers, request) => {
+  const rawCookies = request.headers.cookie;
+
+  if (!rawCookies) return;
+
+  const parsed = cookie.parse(rawCookies);
+  const token = parsed["session_token"];
+
+  if (!token) return;
+
+  try {
+    const {exp, iat, ...verified} = jwt.verify(token, process.env["SECRET_KEY"]!) as Record<string, any>;
+
+    if (exp - iat > JWT_REGEN_TIME) return;
+
+    const newToken = jwt.sign(verified, process.env["SECRET_KEY"]!, {expiresIn: "7d"});
+
+    const serialized = cookie.serialize("session_token", newToken, {
+      path: "/"
+    });
+  
+    headers["set-cookie"] = serialized;
+  } catch (e) {return}
+})
+
 io.on("connection", (socket) => {
   const user = socket.data.user as User;
 
