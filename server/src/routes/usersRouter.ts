@@ -7,6 +7,7 @@ import { JWTProtectedRoute } from "../auth.ts";
 import { addUserFriend, createUser, deleteUser, getUser, getUserFriends, removeUserFriend, updateUser } from "../controllers/usersController.ts";
 
 import type { User } from "../../generated/prisma/client.ts";
+import { getUserGroups, joinGroup, leaveGroup } from "../controllers/groupsController.ts";
 
 const usersRouter = Router();
 
@@ -45,5 +46,16 @@ friendsRouter.route("/")
 
 friendsRouter.route("/:friendName")
   .delete(JWTProtectedRoute, removeUserFriend);
+
+const groupsRouter = Router();
+
+usersRouter.use("/groups", groupsRouter);
+
+groupsRouter.route("/")
+  .post(JWTProtectedRoute, joinGroup as RequestHandler[])
+  .get(JWTProtectedRoute, getUserGroups);
+
+groupsRouter.route("/:groupId")
+  .delete(JWTProtectedRoute, leaveGroup);
 
 export default usersRouter;

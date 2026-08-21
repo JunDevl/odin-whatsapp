@@ -19,3 +19,5 @@ export const handleError = async <T>(promise: Promise<T>) => {
 export type Prettify<T> = T extends infer O
   ? { [ K in keyof O ]: O[ K ] }
   : never;
+
+export type EntityKind = "group" | "user";

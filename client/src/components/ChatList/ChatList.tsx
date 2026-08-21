@@ -1,14 +1,16 @@
 import { Suspense, useContext, useEffect, useRef } from "react";
-import type { ChatKind, ChatType, Contact, GroupResponse } from "../../utils";
+import type { ChatType, Contact } from "../../utils";
 import AddChat from "../AddChat/AddChat";
 import { SelectedChatContext } from "../../utils";
+import type { Group } from "@types";
+import type { EntityKind } from "@packages/utils";
 
-type Props<T extends Contact | GroupResponse> = {
-  kind: ChatKind
+type Props<T extends Contact | Group> = {
+  kind: EntityKind
   chats: ChatType<T>[]
 }
 
-const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>) => {
+const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
   const newChatModal = useRef<HTMLDialogElement>(null);
   const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);
 
@@ -30,14 +32,32 @@ const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>
             {chats.length > 0 && chats.map((chat, i) => 
               <li 
                 className={`${kind} bg-gray-600 hover:bg-gray-500 cursor-pointer data-[selected=true]:bg-white py-2 rounded-md`} 
-                data-selected={selectedChat?.name === chat.chat.name}
+                data-selected={
+                  selectedChat?.kind === "user" && kind === "user" ? 
+                  selectedChat?.name === chat.chat.name :
+                  (selectedChat?.kind === "group" && "id" in chat.chat) &&
+                  selectedChat?.id === chat.chat.id
+                }
                 key={i} 
-                onClick={() => setSelectedChat({kind, name: chat.chat.name})}
+                onClick={() => setSelectedChat(() => {
+                  if (kind === "user") return {
+                    kind,
+                    name: chat.chat.name
+                  }
+
+                  const groupChat = (chat as unknown) as {chat: {kind: string, id: string}}
+
+                  return {
+                    kind,
+                    id: groupChat.chat.id
+                  }
+                })}
               >
                 {
                   "profile_name" in chat.chat ? 
                   chat.chat.profile_name : 
-                  chat.chat.name}
+                  chat.chat.name
+                }
               </li>
             )}
           </Suspense>

@@ -62,10 +62,10 @@ const Conversations = (props: Props) => {
     staleTime: Infinity
   })
 
-  useQueries({
+  const messages = useQueries({
     queries: contacts ? contacts.map(contact => ({
       queryKey: ["conversations", contact.name],
-      queryFn: () => getMessagesFromChat("conversation", contact.name),
+      queryFn: () => getMessagesFromChat("user", contact.name),
       staleTime: Infinity
     })) : []
   });
@@ -78,6 +78,7 @@ const Conversations = (props: Props) => {
         content: "test",
         sentAt: "2026-03-05 10:00",
         editedAt: null,
+        deletedAt: null,
         sender: { name: contact.name }
       }
     }
@@ -86,10 +87,10 @@ const Conversations = (props: Props) => {
   return (
     <>
       <ErrorBoundary fallback={<p>Something went wrong when loading user's contacts: <br/>{error ? error.stack : ""}</p>}>
-        <ChatList kind="conversation" chats={chats}/>
+        <ChatList kind="user" chats={chats}/>
       </ErrorBoundary>
       {selectedChat ? 
-        <Chat kind="conversation"/> :
+        <Chat kind="user"/> :
         <div id="chat" className="flex flex-col flex-1 overflow-hidden">
           No chats selected.
         </div>

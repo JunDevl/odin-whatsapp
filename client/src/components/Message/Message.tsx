@@ -1,18 +1,14 @@
-import type { MessageResponse } from "../../utils";
+import type { MessageResponse, UserResponse } from "../../utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser } from "../../actions";
 import { format } from "date-fns";
 
 type Props = {
   message: MessageResponse
+  user: UserResponse
 }
 
-const Message = ({ message }: Props) => {
-  const {data: user} = useSuspenseQuery({
-    queryKey: ["user"],
-    queryFn: () => getLoggedUser()
-  })
-
+const Message = ({ message, user }: Props) => {
   const {message: data} = message;
 
   const {content, sentAt, editedAt, sender} = data;

@@ -1,8 +1,8 @@
+import type { EntityKind } from "@packages/utils";
 import type { DetailedHTMLProps, DialogHTMLAttributes, RefObject } from "react";
-import type { ChatKind } from "../../utils";
 
 type Props = {
-  kind: ChatKind,
+  kind: EntityKind,
   ref: RefObject<HTMLDialogElement | null>
 } & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
 

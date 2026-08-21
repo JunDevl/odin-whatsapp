@@ -1,6 +1,8 @@
 import { io } from "socket.io-client";
 import { handleError, PromiseError } from "@packages/utils";
-import type { ChatKind, Contact, MessageResponse, UserResponse } from "./utils";
+import type { Contact, MessageResponse, SelectedChat, UserResponse } from "./utils";
+import type { EntityKind } from "@packages/utils";
+import type { Group } from "@types";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true
@@ -75,6 +77,18 @@ export const getUserContacts = async () => {
   return contacts;
 }
 
+export const getUserGroups = async () => {
+  const fetchedGroups = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
+    credentials: "include"
+  });
+
+  if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
+
+  const groups: Group[] = await fetchedGroups.json();
+
+  return groups;
+}
+
 export const addContact = async (name: string) => {
   const data = { name };
 
@@ -107,7 +121,7 @@ export const removeContact = async (name: string) => {
   return removed;
 }
 
-export const getMessagesFromChat = async (chatKind: ChatKind, chatIdentification: string) => {
+export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentification: string) => {
   const result = {
     contact: chatIdentification,
     messages: [] as MessageResponse[]
@@ -115,10 +129,8 @@ export const getMessagesFromChat = async (chatKind: ChatKind, chatIdentification
 
   if (chatIdentification === "") return result;
 
-  const chatRoute = chatKind === "conversation" ? "user" : "group";
-
   const messagesResponse = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatRoute}/${chatIdentification}`, 
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
     { credentials: "include" }
   )
 
@@ -135,10 +147,13 @@ export const getMessagesFromChat = async (chatKind: ChatKind, chatIdentification
 //   const message = socket.on("userMessage", (content) => content);
 // }
 
-export const createMessage = async (content: string, chat: {name: string, kind: ChatKind}) => {
-  const kind = chat.kind === "conversation" ? "user" : chat.kind;
+export const createMessage = async (content: string, chat: SelectedChat) => {
+  const { kind } = chat;
 
-  const reciever = {kind, name: chat.name} as const;
+  const reciever = {
+    kind, 
+    [kind === "user" ? "name" : "id"]: kind === "user" ? chat.name : chat.id
+  } as const;
 
   let createdMessage: MessageResponse;
 

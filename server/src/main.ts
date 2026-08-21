@@ -11,7 +11,7 @@ import path from "node:path";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 // import prisma from "../lib/prisma.ts";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 import passport from "passport";
 import { localStrategy } from "./auth.ts";
@@ -19,11 +19,11 @@ import { JWTStrategy } from "./auth.ts";
 
 import usersRouter from "./routes/usersRouter.ts";
 import type { User } from "../generated/prisma/client.ts";
-import { generateUserFriendRoom } from "./utils.ts";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../lib/prisma.ts";
 import { createMessage } from "./controllers/messagesController.ts";
 import messagesRouter from "./routes/messagesRouter.ts";
+import groupsRouter from "./routes/groupsRouter.ts";
 
 const PORT = 8080;
 
@@ -45,6 +45,8 @@ apiRouter.use("/users", usersRouter);
 
 apiRouter.use("/messages", messagesRouter);
 
+apiRouter.use("/groups", groupsRouter);
+
 app.use((err: any, _: any, res: any, __: any) => {
   console.error(err.stack);
   res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
@@ -56,7 +58,7 @@ const io = new Server(server, {
   cookie: true
 });
 
-const connectedUsers = new Map<string, string>();
+const connectedUsers = new Map<string, Socket>();
 
 io.use((socket, next) => {
   try {
@@ -105,7 +107,7 @@ io.engine.on("initial_headers", (headers, request) => {
 io.on("connection", (socket) => {
   const user = socket.data.user as User;
 
-  connectedUsers.set(user.name, socket.id);
+  connectedUsers.set(user.name, socket);
 
   socket.on("userMessage", async (
     content: string, 
@@ -139,34 +141,26 @@ io.on("connection", (socket) => {
       { kind: recieverKind, id: recieverExists.id }
     );
 
-    let roomName: string;
-
-    if (recieverKind === "group") roomName = recieverIdentification;
-    else {
-      roomName = generateUserFriendRoom(user.name, recieverIdentification);
-
-      const connectedReciever = connectedUsers.get(recieverIdentification);
-
-      if (connectedReciever) {
-        const recieverSocket = io.sockets.sockets.get(connectedReciever)!;
-
-        // const joinedRoom: string | string[] | null = recieverSocket.rooms.;
-  
-        if (!recieverSocket.rooms.has(roomName)) recieverSocket.join(roomName);
-      }
-    }
-
-    if (!socket.rooms.has(roomName)) socket.join(roomName);
-
     const message = { message: createdMessage };
 
-    io.to(roomName).emit(
-      "recievedMessage", 
+    const eventName = "recievedMessage"
+
+    const eventEmitPayload = [
       message, 
       {
         [recieverKind === "user" ? "name" : "id"]: recieverIdentification
       }
-    );
+    ]
+
+    if (recieverKind === "group") {
+      if (!socket.rooms.has(recieverIdentification)) socket.join(recieverIdentification);
+
+      socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload)
+    }else {
+      const connectedReciever = connectedUsers.get(recieverIdentification);
+
+      if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
+    }
 
     ack(message);
   })

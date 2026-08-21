@@ -1,5 +1,10 @@
+import { useContext } from "react";
 import Chat from "../../components/Chat/Chat";
 import ChatList from "../../components/ChatList/ChatList";
+import { SelectedChatContext } from "../../utils";
+import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
+import { getMessagesFromChat } from "../../actions";
+import { ErrorBoundary } from "react-error-boundary";
 
 const boilerplateMessages = [
   {
@@ -49,10 +54,47 @@ const boilerplateGroups = [
 type Props = {}
 
 const Groups = (props: Props) => {
+  const {selectedChat} = useContext(SelectedChatContext);
+  
+  const {data: groups, error} = useSuspenseQuery({
+    queryKey: ["user", "friends"],
+    queryFn: () => getUserGroups(),
+    staleTime: Infinity
+  })
+
+  const messages = useQueries({
+    queries: groups ? groups.map(group => ({
+      queryKey: ["conversations", group.id],
+      queryFn: () => getMessagesFromChat("group", group.id),
+      staleTime: Infinity
+    })) : []
+  });
+
+  const chats = groups.map(group => ({
+    chat: group,
+    lastMessage: {
+      contact: "test",
+      message: {
+        content: "test",
+        sentAt: "2026-03-05 10:00",
+        editedAt: null,
+        deletedAt: null,
+        sender: { name: "test" }
+      }
+    }
+  }))
+
   return (
     <>
-      <ChatList kind="conversation" chats={boilerplateGroups}/>
-      <Chat kind="conversation" /*messages={boilerplateMessages}*//>
+      <ErrorBoundary fallback={<p>Something went wrong when loading user's groups: <br/>{error ? error.stack : ""}</p>}>
+        <ChatList kind="group" chats={chats}/>
+      </ErrorBoundary>
+      {selectedChat ? 
+        <Chat kind="group"/> :
+        <div id="chat" className="flex flex-col flex-1 overflow-hidden">
+          No chats selected.
+        </div>
+      }
     </>
   )
 }
