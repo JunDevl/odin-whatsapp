@@ -12,7 +12,7 @@ const App = () => {
   const selectedChatState = {selectedChat, setSelectedChat};
 
   useEffect(() => {
-    socket.on("recievedMessage", (message: MessageResponse, reciever: Record<"name" | "id", string>) => {
+    socket.on("recievedMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
       if ("name" in reciever) 
         return queryClient.setQueryData(
           ["conversations", message.message.sender.name],

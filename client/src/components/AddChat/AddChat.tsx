@@ -1,10 +1,10 @@
 import { useRef, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject, type SubmitEvent } from "react";
-import type { ChatKind } from "../../utils";
 import { addContact, getUserContacts } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
+import type { EntityKind } from "@packages/utils";
 
 type Props = {
-  kind: ChatKind,
+  kind: EntityKind,
   ref: RefObject<HTMLDialogElement | null>
 } & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
 

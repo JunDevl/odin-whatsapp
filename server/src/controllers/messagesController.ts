@@ -1,11 +1,11 @@
-import type { RequestHandler } from "express";
+import type { RequestHandler, Response } from "express";
 import { body, validationResult, matchedData, type ValidationChain } from "express-validator";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
 import type { Message } from "../../generated/prisma/client.ts";
 import type { User } from "../../generated/prisma/client.ts";
 
-export const getMessages: RequestHandler = async (req, res, next) => {
+export const getTargetMessages: RequestHandler = async (req, res, next) => {
   const identification = String(req.params.userName ?? req.params.groupId);
 
   const target = req.params.userName ?
@@ -29,11 +29,11 @@ export const getMessages: RequestHandler = async (req, res, next) => {
         OR: [
           {
             recieverUserId: user.id,
-            message: {senderId: targetId}
+            message: { senderId: targetId }
           },
           {
             recieverUserId: targetId,
-            message: {senderId: user.id}
+            message: { senderId: user.id }
           }
         ]
       },
@@ -44,11 +44,10 @@ export const getMessages: RequestHandler = async (req, res, next) => {
       include: {
         message: {
           omit: {
-            id: true,
             senderId: true
           },
           include: {
-            sender: { select: {name: true } }
+            sender: { select: { name: true } }
           }
         }
       },
@@ -67,7 +66,6 @@ export const getMessages: RequestHandler = async (req, res, next) => {
       include: {
         message: {
           omit: {
-            id: true,
             senderId: true
           },
           include: {
@@ -82,9 +80,9 @@ export const getMessages: RequestHandler = async (req, res, next) => {
       }
     }))
 
-  if (messages instanceof PromiseError) return res.status(400).send(messages.error);
+  if (messages instanceof PromiseError) return res.status(400).send(messages.error)
 
-  res.json(messages);
+  return res.json(messages);
 }
 
 export const deleteMessages: RequestHandler = async (req, res, next) => {

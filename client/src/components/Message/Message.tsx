@@ -4,7 +4,7 @@ import { getLoggedUser } from "../../actions";
 import { format } from "date-fns";
 
 type Props = {
-  message: MessageResponse
+  message: { message: MessageResponse }
   user: UserResponse
 }
 

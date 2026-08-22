@@ -72,7 +72,7 @@ export const getUserContacts = async () => {
 
   if (!fetchedContacts.ok) throw new Error(await fetchedContacts.text());
 
-  const contacts: Contact[] = await fetchedContacts.json();
+  const contacts: { friendUser: Contact }[] = await fetchedContacts.json();
 
   return contacts;
 }
@@ -84,7 +84,7 @@ export const getUserGroups = async () => {
 
   if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
 
-  const groups: Group[] = await fetchedGroups.json();
+  const groups: { group: Group }[] = await fetchedGroups.json();
 
   return groups;
 }
@@ -124,7 +124,7 @@ export const removeContact = async (name: string) => {
 export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentification: string) => {
   const result = {
     contact: chatIdentification,
-    messages: [] as MessageResponse[]
+    messages: [] as { message: MessageResponse }[]
   }
 
   if (chatIdentification === "") return result;

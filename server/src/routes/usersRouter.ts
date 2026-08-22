@@ -52,10 +52,10 @@ const groupsRouter = Router();
 usersRouter.use("/groups", groupsRouter);
 
 groupsRouter.route("/")
-  .post(JWTProtectedRoute, joinGroup as RequestHandler[])
   .get(JWTProtectedRoute, getUserGroups);
 
 groupsRouter.route("/:groupId")
-  .delete(JWTProtectedRoute, leaveGroup);
+  .post(JWTProtectedRoute, joinGroup as RequestHandler[])
+  .delete(JWTProtectedRoute, leaveGroup as RequestHandler[]);
 
 export default usersRouter;

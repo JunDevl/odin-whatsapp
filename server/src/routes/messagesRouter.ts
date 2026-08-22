@@ -7,7 +7,7 @@ import { JWTProtectedRoute } from "../auth.ts";
 import { addUserFriend, createUser, deleteUser, getUser, getUserFriends, removeUserFriend, updateUser } from "../controllers/usersController.ts";
 
 import type { User } from "../../generated/prisma/client.ts";
-import { getMessages } from "../controllers/messagesController.ts";
+import { getTargetMessages } from "../controllers/messagesController.ts";
 
 const messagesRouter = Router();
 const groupsRouter = Router();
@@ -17,6 +17,6 @@ messagesRouter.use("/user", usersRouter);
 messagesRouter.use("/group", groupsRouter);
 
 usersRouter.route("/:userName")
-  .get(JWTProtectedRoute, getMessages);
+  .get(JWTProtectedRoute, getTargetMessages);
 
 export default messagesRouter;

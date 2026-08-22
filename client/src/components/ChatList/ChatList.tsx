@@ -1,4 +1,4 @@
-import { Suspense, useContext, useEffect, useRef } from "react";
+import { Suspense, useContext, useRef } from "react";
 import type { ChatType, Contact } from "../../utils";
 import AddChat from "../AddChat/AddChat";
 import { SelectedChatContext } from "../../utils";

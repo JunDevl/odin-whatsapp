@@ -126,23 +126,16 @@ export const deleteUser: RequestHandler = async (req, res) => {
 export const getUserFriends: RequestHandler = async (req, res) => {
   const {id} = req.user as User;
 
-  const userFriendsData = await handleError(prisma.friendOfUser.findMany({
-    where: { originUserId: id },
+  const userFriendsData = await handleError(prisma.user.findUnique({
+    where: { id },
     select: {
-      friendUser: {
-        select: {
-          name: true,
-          profile_name: true
-        }
-      }
+      originUserFriend: { select: { friendUser: { select: { name: true, profile_name: true } } } }
     }
   }))
 
   if (userFriendsData instanceof PromiseError) return res.status(400).send(userFriendsData.error);
 
-  const userFriends = userFriendsData.map(userFriend => userFriend.friendUser);
-
-  return res.json(userFriends);
+  return res.json(userFriendsData ? userFriendsData.originUserFriend : []);
 }
 
 const addFriendValidator: ValidationChain[] = [

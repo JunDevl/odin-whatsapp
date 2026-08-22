@@ -3,14 +3,14 @@ import type { User, Group, Message } from "@types";
 import type { Dispatch } from "react";
 import type { EntityKind } from "@packages/utils";
 
-export type MessageResponse = {
-  message: Omit<Message, "sentAt" | "editedAt" | "id" | "senderId"> & 
-  { 
-    sender: { name: string },
-    sentAt: string,
-    editedAt: string | null
-  }};
+export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "senderId"> & { 
+  sender: { name: string },
+  sentAt: string,
+  editedAt: string | null
+}
+
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
+
 export type UserResponse = Omit<User, "id" | "password_hash">;
 
 export interface ChatType<T extends Contact | Group> {

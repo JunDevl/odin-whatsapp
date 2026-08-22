@@ -5,10 +5,13 @@ import { SelectedChatContext, type MessageResponse } from "../../utils";
 import { useContext } from "react";
 import { createMessage } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
+import type { EntityKind } from "@packages/utils";
 
-type Props = {};
+type Props = {
+  kind: EntityKind
+};
 
-const MessageInput = (props: Props) => {
+const MessageInput = ({ kind }: Props) => {
   const queryClient = useQueryClient();
 
   const form = useRef<HTMLFormElement>(null);
@@ -29,7 +32,7 @@ const MessageInput = (props: Props) => {
     if (!createdMessage) throw new Error("Wasn't able to send message to the server.");
 
     queryClient.setQueryData(
-      ["conversations", "name" in selectedChat! ? selectedChat.name : selectedChat!.id!],
+      [`${kind}_chats`, "name" in selectedChat! ? selectedChat.name : selectedChat!.id!],
       (prevMessages: {contact: string, messages: MessageResponse[]}) => ({
         contact: prevMessages.contact,
         messages: [...prevMessages.messages, createdMessage]

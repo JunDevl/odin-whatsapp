@@ -64,23 +64,21 @@ const Conversations = (props: Props) => {
 
   const messages = useQueries({
     queries: contacts ? contacts.map(contact => ({
-      queryKey: ["conversations", contact.name],
-      queryFn: () => getMessagesFromChat("user", contact.name),
+      queryKey: ["user_chats", contact.friendUser.name],
+      queryFn: () => getMessagesFromChat("user", contact.friendUser.name),
       staleTime: Infinity
     })) : []
   });
 
   const chats = contacts.map(contact => ({
-    chat: contact,
+    chat: contact.friendUser,
     lastMessage: {
-      contact: contact.name,
-      message: {
-        content: "test",
-        sentAt: "2026-03-05 10:00",
-        editedAt: null,
-        deletedAt: null,
-        sender: { name: contact.name }
-      }
+      id: "abcd",
+      content: "test",
+      sentAt: "2026-03-05 10:00",
+      editedAt: null,
+      deletedAt: null,
+      sender: { name: contact.friendUser.name }
     }
   }))
 

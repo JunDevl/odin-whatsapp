@@ -9,9 +9,11 @@ import { createGroup, deleteGroup, getUserGroups, joinGroup, leaveGroup, updateG
 const groupsRouter = Router();
 
 groupsRouter.route("/")
+  .post(JWTProtectedRoute, createGroup as RequestHandler[]);
+
+groupsRouter.route("/:groupId")
   .all(JWTProtectedRoute)
-  .post(createGroup as RequestHandler[])
   .put(updateGroup as RequestHandler[])
-  .delete(deleteGroup);
+  .delete(deleteGroup as RequestHandler[]);
 
 export default groupsRouter;

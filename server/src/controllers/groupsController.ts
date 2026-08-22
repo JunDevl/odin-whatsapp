@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { body, validationResult, matchedData, type ValidationChain } from "express-validator";
+import { param, body, validationResult, matchedData, type ValidationChain } from "express-validator";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
 import type { Group, User } from "../../generated/prisma/client.ts";
@@ -30,25 +30,52 @@ export const createGroup: (RequestHandler | ValidationChain[])[] = [
   }
 ]
 
+const groupIdValidator: ValidationChain = param("groupId").trim().isUUID().notEmpty();
+
 export const updateGroup: (RequestHandler | ValidationChain[])[] = [
+  groupIdValidator,
   createGroupValidator,
   async (req, res, next) => {
+    const validationErrors = validationResult(req);
 
+    if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
 
-    return next();
+    const {id, name, description}: {id: string, name: string, description: string} = matchedData(req);
+
+    const data = { name, description };
+    
+    const createdGroup = await handleError(prisma.group.update({ data, where: { id } }));
+
+    if (createdGroup instanceof PromiseError) return res.status(400).send(createdGroup.error);
+
+    return res.sendStatus(201);
   }
 ]
 
-export const deleteGroup: RequestHandler = async (req, res, next) => {
-  
+export const deleteGroup: (RequestHandler | ValidationChain[])[] = [
+  groupIdValidator,
+  async (req, res, next) => {
+    const validationErrors = validationResult(req);
 
-  return next();
-}
+    if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
 
-const joinGroupValidator: ValidationChain = body("id").trim().isUUID().notEmpty();
+    const {id} = matchedData(req);
+
+    const targetGroup = await handleError(prisma.group.findUnique({ where: id }));
+
+    if (targetGroup instanceof PromiseError) return res.status(400).send(targetGroup.error);
+
+    if (!targetGroup) return res.status(404).send(`No group of id ${id} found`);
+
+    const deletedGroup = await handleError(prisma.group.delete({ where: { id } }));
+
+    if (deletedGroup instanceof PromiseError) return res.status(400).send(deletedGroup.error);
+
+    return res.sendStatus(200);
+}]
 
 export const joinGroup: (RequestHandler | ValidationChain[])[] = [
-  joinGroupValidator,
+  groupIdValidator,
   async (req, res, next) => {
     const validationErrors = validationResult(req);
 
@@ -79,14 +106,48 @@ export const joinGroup: (RequestHandler | ValidationChain[])[] = [
   }
 ]
 
+export const leaveGroup: (RequestHandler | ValidationChain[])[] = [
+  groupIdValidator,
+  async (req, res, next) => {
+    const validationErrors = validationResult(req);
+
+    if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
+
+    const {id} = matchedData(req);
+
+    const targetGroup = await handleError(prisma.group.findUnique({
+      where: {id}
+    }))
+
+    if (targetGroup instanceof PromiseError) return res.status(400).send(targetGroup.error);
+
+    if (!targetGroup) return res.sendStatus(404);
+
+    const {id: userId} = req.user as User;
+
+    const leftOutUser = await handleError(prisma.userOfGroup.delete({
+      where: {
+        userId_groupId: {
+          groupId: id,
+          userId
+        }
+      }
+    }))
+
+    if (leftOutUser instanceof PromiseError) return res.status(400).send(leftOutUser.error);
+
+    return res.sendStatus(200);
+}]
+
 export const getUserGroups: RequestHandler = async (req, res, next) => {
+  const {id} = req.user as User;
 
+  const userGroupsData = await handleError(prisma.user.findUnique({
+    where: { id },
+    select: { groups: { select: { group: true } } }
+  }))
 
-  return next();
-}
+  if (userGroupsData instanceof PromiseError) return res.status(400).send(userGroupsData.error);
 
-export const leaveGroup: RequestHandler = async (req, res, next) => {
-
-
-  return next();
+  return res.json(userGroupsData ? userGroupsData.groups : []);
 }

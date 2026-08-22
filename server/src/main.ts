@@ -135,7 +135,7 @@ io.on("connection", (socket) => {
 
     if (!recieverExists) return socket.send(`Reciever (${recieverKind}) ${recieverIdentification} doesn't exist.`);
 
-    const {id, ...createdMessage} = await createMessage(
+    const createdMessage = await createMessage(
       user.id,
       content,
       { kind: recieverKind, id: recieverExists.id }

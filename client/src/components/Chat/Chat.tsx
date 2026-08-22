@@ -1,7 +1,7 @@
 import Message from "../Message/Message";
 import MessageInput from "../MessageInput/MessageInput";
 import { SelectedChatContext } from "../../utils";
-import { Suspense, useContext, useRef } from "react";
+import { Suspense, useContext, useEffect, useRef } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser, getMessagesFromChat } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
@@ -20,6 +20,7 @@ const Chat = ({ kind }: Props) => {
   })
 
   const details = useRef<HTMLDialogElement>(null);
+  const messagesList = useRef<HTMLDivElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
 
@@ -28,6 +29,28 @@ const Chat = ({ kind }: Props) => {
     queryFn: () => getMessagesFromChat(kind, "name" in selectedChat! ? selectedChat.name : selectedChat?.id!),
     staleTime: Infinity
   })
+
+  useEffect(() => {
+    const list = messagesList.current!;
+
+    const messageBlockCountThreshold = 2 // how many messages up high should trigger scrolling on new messages
+
+    const messageBlockHeight = 35.1 // estimate in pixels of the height of message blocks
+
+    const scrollThreshold = 
+      messageBlockHeight + // height of the new incoming message
+      (messageBlockHeight * messageBlockCountThreshold)
+
+    if (
+      list.scrollHeight - (list.clientHeight + list.scrollTop) <=
+      scrollThreshold
+    ) {
+      list.scrollTo({
+        behavior: "smooth",
+        top: list.scrollHeight + scrollThreshold,
+      });
+    }
+  }, [messages])
 
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
@@ -41,8 +64,11 @@ const Chat = ({ kind }: Props) => {
           <button>s</button>
         </div>
       </header>
-      <main className="overflow-hidden overflow-y-auto">
-        <ul id={`current-${kind}-messages`} className="flex flex-col items-start gap-1 p-1 px-10">
+      <main className="overflow-hidden overflow-y-auto" onScroll={() => console.log(messagesList.current!.scrollHeight - (messagesList.current!.clientHeight + messagesList.current!.scrollTop))} ref={messagesList}>
+        <ul 
+          id={`current-${kind}-messages`} 
+          className="flex flex-col items-start gap-1 p-1 px-10" 
+        >
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
               {messages.messages.map((message, i) => 
@@ -52,7 +78,7 @@ const Chat = ({ kind }: Props) => {
           </ErrorBoundary>
         </ul>
       </main>
-      <MessageInput/>
+      <MessageInput kind={kind}/>
     </div>
   )
 }
