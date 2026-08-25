@@ -1,6 +1,6 @@
 import { Suspense, useContext, useRef } from "react";
 import type { ChatType, Contact } from "../../utils";
-import AddChat from "../AddChat/AddChat";
+import NewChat from "../NewChat/NewChat";
 import { SelectedChatContext } from "../../utils";
 import type { Group } from "@types";
 import type { EntityKind } from "@packages/utils";
@@ -13,13 +13,15 @@ type Props<T extends Contact | Group> = {
 const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
   const newChatModal = useRef<HTMLDialogElement>(null);
   const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);
+  const isUserSelected = selectedChat && "user" in selectedChat!;
+  const isGroupSelected = selectedChat && "group" in selectedChat!;
 
   return (
     <nav id={`${kind}s-sidebar`} className="overflow-hidden">
-      <AddChat kind={kind} ref={newChatModal}/>
+      <NewChat kind={kind} ref={newChatModal}/>
       <div id="new_chat">
         <button id={`add_${kind}`} onClick={() => newChatModal.current!.showModal()}>
-          {`Add ${kind[0].toUpperCase()}${kind.slice(1)}`}
+          {`${kind === "user" ? "Add" : "Create"} ${kind[0].toUpperCase()}${kind.slice(1)}`}
         </button>
       </div>
       <div className="list">
@@ -33,24 +35,18 @@ const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
               <li 
                 className={`${kind} bg-gray-600 hover:bg-gray-500 cursor-pointer data-[selected=true]:bg-white py-2 rounded-md`} 
                 data-selected={
-                  selectedChat?.kind === "user" && kind === "user" ? 
-                  selectedChat?.name === chat.chat.name :
-                  (selectedChat?.kind === "group" && "id" in chat.chat) &&
-                  selectedChat?.id === chat.chat.id
+                  isUserSelected && kind === "user" ? 
+                  selectedChat?.user.name === chat.chat.name :
+                  (isGroupSelected && "id" in chat.chat) &&
+                  selectedChat?.group.id === chat.chat.id
                 }
                 key={i} 
                 onClick={() => setSelectedChat(() => {
-                  if (kind === "user") return {
-                    kind,
-                    name: chat.chat.name
-                  }
+                  if (kind === "user") return { [kind]: chat.chat } as { user: Contact }
 
-                  const groupChat = (chat as unknown) as {chat: {kind: string, id: string}}
+                  const groupChat = (chat as unknown) as {chat: Group}
 
-                  return {
-                    kind,
-                    id: groupChat.chat.id
-                  }
+                  return { [kind]: groupChat.chat }
                 })}
               >
                 {

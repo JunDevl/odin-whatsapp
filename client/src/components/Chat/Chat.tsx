@@ -23,10 +23,11 @@ const Chat = ({ kind }: Props) => {
   const messagesList = useRef<HTMLDivElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
+  const isUserSelected = selectedChat && "user" in selectedChat!;
 
   const {data: messages, error} = useSuspenseQuery({
-    queryKey: [`${kind}_chats`, "name" in selectedChat! ? selectedChat.name : selectedChat?.id!],
-    queryFn: () => getMessagesFromChat(kind, "name" in selectedChat! ? selectedChat.name : selectedChat?.id!),
+    queryKey: [`${kind}_chats`, isUserSelected ? selectedChat.user.name : selectedChat?.group.id],
+    queryFn: () => getMessagesFromChat(kind, isUserSelected ? selectedChat.user.name : selectedChat?.group.id!),
     staleTime: Infinity
   })
 
@@ -57,17 +58,17 @@ const Chat = ({ kind }: Props) => {
       <ChatDetailModal kind={kind} ref={details}/>
       <header id={`current-${kind}-details`} className="border-b-2 flex p-3">
         <div className="details flex-1 cursor-pointer" onClick={() => details.current!.showModal()}>
-          {"name" in selectedChat! ? selectedChat.name : selectedChat!.id!}
+          {isUserSelected ? selectedChat.user.name : selectedChat!.group.name}
         </div>
         <div className="search search-message">
           <input type="text" name="searchMessage" id="search-message" placeholder="Search Messages"/>
           <button>s</button>
         </div>
       </header>
-      <main className="overflow-hidden overflow-y-auto" onScroll={() => console.log(messagesList.current!.scrollHeight - (messagesList.current!.clientHeight + messagesList.current!.scrollTop))} ref={messagesList}>
+      <main className="overflow-hidden overflow-y-auto flex-1" ref={messagesList}>
         <ul 
           id={`current-${kind}-messages`} 
-          className="flex flex-col items-start gap-1 p-1 px-10" 
+          className="flex flex-col gap-1 p-1" 
         >
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>

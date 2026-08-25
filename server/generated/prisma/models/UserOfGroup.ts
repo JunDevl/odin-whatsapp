@@ -28,18 +28,21 @@ export type UserOfGroupMinAggregateOutputType = {
   userId: string | null
   groupId: string | null
   joinedAt: Date | null
+  authority: $Enums.GroupAuthority | null
 }
 
 export type UserOfGroupMaxAggregateOutputType = {
   userId: string | null
   groupId: string | null
   joinedAt: Date | null
+  authority: $Enums.GroupAuthority | null
 }
 
 export type UserOfGroupCountAggregateOutputType = {
   userId: number
   groupId: number
   joinedAt: number
+  authority: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type UserOfGroupMinAggregateInputType = {
   userId?: true
   groupId?: true
   joinedAt?: true
+  authority?: true
 }
 
 export type UserOfGroupMaxAggregateInputType = {
   userId?: true
   groupId?: true
   joinedAt?: true
+  authority?: true
 }
 
 export type UserOfGroupCountAggregateInputType = {
   userId?: true
   groupId?: true
   joinedAt?: true
+  authority?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type UserOfGroupGroupByOutputType = {
   userId: string
   groupId: string
   joinedAt: Date
+  authority: $Enums.GroupAuthority
   _count: UserOfGroupCountAggregateOutputType | null
   _min: UserOfGroupMinAggregateOutputType | null
   _max: UserOfGroupMaxAggregateOutputType | null
@@ -166,6 +173,7 @@ export type UserOfGroupWhereInput = {
   userId?: Prisma.StringFilter<"UserOfGroup"> | string
   groupId?: Prisma.StringFilter<"UserOfGroup"> | string
   joinedAt?: Prisma.DateTimeFilter<"UserOfGroup"> | Date | string
+  authority?: Prisma.EnumGroupAuthorityFilter<"UserOfGroup"> | $Enums.GroupAuthority
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
 }
@@ -174,6 +182,7 @@ export type UserOfGroupOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  authority?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   group?: Prisma.GroupOrderByWithRelationInput
 }
@@ -186,6 +195,7 @@ export type UserOfGroupWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"UserOfGroup"> | string
   groupId?: Prisma.StringFilter<"UserOfGroup"> | string
   joinedAt?: Prisma.DateTimeFilter<"UserOfGroup"> | Date | string
+  authority?: Prisma.EnumGroupAuthorityFilter<"UserOfGroup"> | $Enums.GroupAuthority
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
 }, "userId_groupId">
@@ -194,6 +204,7 @@ export type UserOfGroupOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  authority?: Prisma.SortOrder
   _count?: Prisma.UserOfGroupCountOrderByAggregateInput
   _max?: Prisma.UserOfGroupMaxOrderByAggregateInput
   _min?: Prisma.UserOfGroupMinOrderByAggregateInput
@@ -206,10 +217,12 @@ export type UserOfGroupScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"UserOfGroup"> | string
   groupId?: Prisma.StringWithAggregatesFilter<"UserOfGroup"> | string
   joinedAt?: Prisma.DateTimeWithAggregatesFilter<"UserOfGroup"> | Date | string
+  authority?: Prisma.EnumGroupAuthorityWithAggregatesFilter<"UserOfGroup"> | $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateInput = {
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
   user: Prisma.UserCreateNestedOneWithoutGroupsInput
   group: Prisma.GroupCreateNestedOneWithoutUsersOfGroupInput
 }
@@ -218,10 +231,12 @@ export type UserOfGroupUncheckedCreateInput = {
   userId: string
   groupId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupUpdateInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
   user?: Prisma.UserUpdateOneRequiredWithoutGroupsNestedInput
   group?: Prisma.GroupUpdateOneRequiredWithoutUsersOfGroupNestedInput
 }
@@ -230,22 +245,26 @@ export type UserOfGroupUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateManyInput = {
   userId: string
   groupId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupUpdateManyMutationInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupListRelationFilter = {
@@ -267,18 +286,21 @@ export type UserOfGroupCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  authority?: Prisma.SortOrder
 }
 
 export type UserOfGroupMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  authority?: Prisma.SortOrder
 }
 
 export type UserOfGroupMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   groupId?: Prisma.SortOrder
   joinedAt?: Prisma.SortOrder
+  authority?: Prisma.SortOrder
 }
 
 export type UserOfGroupCreateNestedManyWithoutUserInput = {
@@ -365,14 +387,20 @@ export type UserOfGroupUncheckedUpdateManyWithoutGroupNestedInput = {
   deleteMany?: Prisma.UserOfGroupScalarWhereInput | Prisma.UserOfGroupScalarWhereInput[]
 }
 
+export type EnumGroupAuthorityFieldUpdateOperationsInput = {
+  set?: $Enums.GroupAuthority
+}
+
 export type UserOfGroupCreateWithoutUserInput = {
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
   group: Prisma.GroupCreateNestedOneWithoutUsersOfGroupInput
 }
 
 export type UserOfGroupUncheckedCreateWithoutUserInput = {
   groupId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateOrConnectWithoutUserInput = {
@@ -408,16 +436,19 @@ export type UserOfGroupScalarWhereInput = {
   userId?: Prisma.StringFilter<"UserOfGroup"> | string
   groupId?: Prisma.StringFilter<"UserOfGroup"> | string
   joinedAt?: Prisma.DateTimeFilter<"UserOfGroup"> | Date | string
+  authority?: Prisma.EnumGroupAuthorityFilter<"UserOfGroup"> | $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateWithoutGroupInput = {
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
   user: Prisma.UserCreateNestedOneWithoutGroupsInput
 }
 
 export type UserOfGroupUncheckedCreateWithoutGroupInput = {
   userId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateOrConnectWithoutGroupInput = {
@@ -449,41 +480,49 @@ export type UserOfGroupUpdateManyWithWhereWithoutGroupInput = {
 export type UserOfGroupCreateManyUserInput = {
   groupId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupUpdateWithoutUserInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
   group?: Prisma.GroupUpdateOneRequiredWithoutUsersOfGroupNestedInput
 }
 
 export type UserOfGroupUncheckedUpdateWithoutUserInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupUncheckedUpdateManyWithoutUserInput = {
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupCreateManyGroupInput = {
   userId: string
   joinedAt?: Date | string
+  authority: $Enums.GroupAuthority
 }
 
 export type UserOfGroupUpdateWithoutGroupInput = {
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
   user?: Prisma.UserUpdateOneRequiredWithoutGroupsNestedInput
 }
 
 export type UserOfGroupUncheckedUpdateWithoutGroupInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 export type UserOfGroupUncheckedUpdateManyWithoutGroupInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authority?: Prisma.EnumGroupAuthorityFieldUpdateOperationsInput | $Enums.GroupAuthority
 }
 
 
@@ -492,6 +531,7 @@ export type UserOfGroupSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userId?: boolean
   groupId?: boolean
   joinedAt?: boolean
+  authority?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userOfGroup"]>
@@ -500,6 +540,7 @@ export type UserOfGroupSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   groupId?: boolean
   joinedAt?: boolean
+  authority?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userOfGroup"]>
@@ -508,6 +549,7 @@ export type UserOfGroupSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   groupId?: boolean
   joinedAt?: boolean
+  authority?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userOfGroup"]>
@@ -516,9 +558,10 @@ export type UserOfGroupSelectScalar = {
   userId?: boolean
   groupId?: boolean
   joinedAt?: boolean
+  authority?: boolean
 }
 
-export type UserOfGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "groupId" | "joinedAt", ExtArgs["result"]["userOfGroup"]>
+export type UserOfGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "groupId" | "joinedAt" | "authority", ExtArgs["result"]["userOfGroup"]>
 export type UserOfGroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
@@ -542,6 +585,7 @@ export type $UserOfGroupPayload<ExtArgs extends runtime.Types.Extensions.Interna
     userId: string
     groupId: string
     joinedAt: Date
+    authority: $Enums.GroupAuthority
   }, ExtArgs["result"]["userOfGroup"]>
   composites: {}
 }
@@ -970,6 +1014,7 @@ export interface UserOfGroupFieldRefs {
   readonly userId: Prisma.FieldRef<"UserOfGroup", 'String'>
   readonly groupId: Prisma.FieldRef<"UserOfGroup", 'String'>
   readonly joinedAt: Prisma.FieldRef<"UserOfGroup", 'DateTime'>
+  readonly authority: Prisma.FieldRef<"UserOfGroup", 'GroupAuthority'>
 }
     
 

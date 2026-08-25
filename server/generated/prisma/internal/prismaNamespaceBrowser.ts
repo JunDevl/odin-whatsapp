@@ -109,7 +109,8 @@ export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof Gr
 export const UserOfGroupScalarFieldEnum = {
   userId: 'userId',
   groupId: 'groupId',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  authority: 'authority'
 } as const
 
 export type UserOfGroupScalarFieldEnum = (typeof UserOfGroupScalarFieldEnum)[keyof typeof UserOfGroupScalarFieldEnum]

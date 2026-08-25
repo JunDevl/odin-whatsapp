@@ -9,7 +9,10 @@
 * 🟢 You can import this file directly.
 */
 
+export const GroupAuthority = {
+  owner: 'owner',
+  admin: 'admin',
+  member: 'member'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type GroupAuthority = (typeof GroupAuthority)[keyof typeof GroupAuthority]

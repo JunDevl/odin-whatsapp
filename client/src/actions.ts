@@ -141,6 +141,25 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   return result;
 }
 
+export const createGroup = async (name: string, description?: string) => {
+  const data = {name, description};
+
+  const createdGroup = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups`, { 
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }
+  )
+
+  if (!createdGroup.ok) throw new Error(await createdGroup.text());
+
+  const group = await createdGroup.text();
+
+  return group;
+}
+
 // WEBSOCKET ACTIONS BELOW
 
 // export const getMessage = async () => {
@@ -148,11 +167,13 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 // }
 
 export const createMessage = async (content: string, chat: SelectedChat) => {
-  const { kind } = chat;
+  const isUser = "user" in chat;
+
+  const kind = isUser ? "user" : "group";
 
   const reciever = {
     kind, 
-    [kind === "user" ? "name" : "id"]: kind === "user" ? chat.name : chat.id
+    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
   } as const;
 
   let createdMessage: MessageResponse;

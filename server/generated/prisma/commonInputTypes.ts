@@ -110,6 +110,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumGroupAuthorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.GroupAuthority | Prisma.EnumGroupAuthorityFieldRefInput<$PrismaModel>
+  in?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel> | $Enums.GroupAuthority
+}
+
+export type EnumGroupAuthorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GroupAuthority | Prisma.EnumGroupAuthorityFieldRefInput<$PrismaModel>
+  in?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGroupAuthorityWithAggregatesFilter<$PrismaModel> | $Enums.GroupAuthority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel>
+}
+
 export type DateTimeNullableFilter<$PrismaModel = never> = {
   equals?: Date | string | Prisma.DateTimeFieldRefInput<$PrismaModel> | null
   in?: Date[] | string[] | Prisma.ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -242,6 +259,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumGroupAuthorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.GroupAuthority | Prisma.EnumGroupAuthorityFieldRefInput<$PrismaModel>
+  in?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel> | $Enums.GroupAuthority
+}
+
+export type NestedEnumGroupAuthorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GroupAuthority | Prisma.EnumGroupAuthorityFieldRefInput<$PrismaModel>
+  in?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GroupAuthority[] | Prisma.ListEnumGroupAuthorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGroupAuthorityWithAggregatesFilter<$PrismaModel> | $Enums.GroupAuthority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGroupAuthorityFilter<$PrismaModel>
 }
 
 export type NestedDateTimeNullableFilter<$PrismaModel = never> = {

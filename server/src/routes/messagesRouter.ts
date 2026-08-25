@@ -19,4 +19,7 @@ messagesRouter.use("/group", groupsRouter);
 usersRouter.route("/:userName")
   .get(JWTProtectedRoute, getTargetMessages);
 
+groupsRouter.route("/:groupId")
+  .get(JWTProtectedRoute, getTargetMessages);
+
 export default messagesRouter;

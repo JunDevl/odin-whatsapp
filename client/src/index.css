@@ -195,3 +195,7 @@ dialog {
   padding: 1.25rem;
   border-radius: 0.5rem;
 }
+
+textarea {
+  resize: none;
+}

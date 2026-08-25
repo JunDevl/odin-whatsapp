@@ -46,12 +46,19 @@ model Group {
   messagesToGroup MessageToGroup[]
 }
 
+enum GroupAuthority {
+  owner
+  admin
+  member
+}
+
 model UserOfGroup {
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String
-  group    Group    @relation(fields: [groupId], references: [id])
-  groupId  String
-  joinedAt DateTime @default(now())
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String
+  group     Group          @relation(fields: [groupId], references: [id])
+  groupId   String
+  joinedAt  DateTime       @default(now())
+  authority GroupAuthority
 
   @@id([userId, groupId])
 }

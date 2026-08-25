@@ -18,6 +18,7 @@ const MessageInput = ({ kind }: Props) => {
   const input = useRef<HTMLTextAreaElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
+  const isSelectedUser = selectedChat && "user" in selectedChat;
 
   const onSubmitMessage = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ const MessageInput = ({ kind }: Props) => {
     if (!createdMessage) throw new Error("Wasn't able to send message to the server.");
 
     queryClient.setQueryData(
-      [`${kind}_chats`, "name" in selectedChat! ? selectedChat.name : selectedChat!.id!],
+      [`${kind}_chats`, isSelectedUser ? selectedChat.user.name : selectedChat!.group.id],
       (prevMessages: {contact: string, messages: MessageResponse[]}) => ({
         contact: prevMessages.contact,
         messages: [...prevMessages.messages, createdMessage]
@@ -60,7 +61,7 @@ const MessageInput = ({ kind }: Props) => {
         <label className="flex bg-gray-600 rounded-2xl p-2" htmlFor="content">
           <button id="send" className="p-2 px-3">Send</button>
           <textarea 
-            className="min-w-0 flex-1 resize-none field-sizing-content"
+            className="min-w-0 flex-1 field-sizing-content"
             name="content" 
             id="content" 
             ref={input} 

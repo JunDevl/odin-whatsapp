@@ -20,9 +20,17 @@ export const createGroup: (RequestHandler | ValidationChain[])[] = [
 
     if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
 
-    const data: {name: string, description: string} = matchedData(req);
+    const {name, description}: {name: string, description?: string} = matchedData(req);
+
+    const user = req.user as User;
     
-    const createdGroup = await handleError(prisma.group.create({ data }));
+    const createdGroup = await handleError(prisma.group.create({ 
+      data: {
+        name,
+        description: description ?? null,
+        usersOfGroup: { create: { userId: user.id, authority: "owner" } }
+      }
+    }));
 
     if (createdGroup instanceof PromiseError) return res.status(400).send(createdGroup.error);
 
@@ -96,7 +104,8 @@ export const joinGroup: (RequestHandler | ValidationChain[])[] = [
     const joinedUser = await handleError(prisma.userOfGroup.create({
       data: {
         groupId: id,
-        userId
+        userId,
+        authority: "member"
       }
     }))
 

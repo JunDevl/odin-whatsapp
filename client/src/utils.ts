@@ -23,11 +23,9 @@ export interface ChatType<T extends Contact | Group> {
 import { createContext } from "react";
 
 export type SelectedChat = {
-  kind: "group",
-  id: string
+  group: Group
 } | {
-  kind: "user",
-  name: string
+  user: Contact
 }
 
 export const SelectedChatContext = createContext<{
