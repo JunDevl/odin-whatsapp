@@ -1,14 +1,11 @@
 import { io } from "socket.io-client";
-import { handleError, PromiseError } from "@packages/utils";
-import type { Contact, MessageResponse, SelectedChat, UserResponse } from "./utils";
+import type { Contact, GroupMemberResponse, MessageResponse, SelectedChat, UserResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
 import type { Group } from "@types";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true
 });
-
-socket.on("message", message => console.log(message));
 
 // REST API ACTIONS BELOW
 
@@ -28,6 +25,24 @@ export const createUser = async (formData: FormData) => {
   const created = await userResponse.text();
 
   return created;
+}
+
+export const editUserData = async (formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+
+  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!userResponse.ok) throw new Error(await userResponse.text());
+
+  const edited = await userResponse.text();
+
+  return edited;
 }
 
 export const loginUser = async (formData: FormData) => {
@@ -77,18 +92,6 @@ export const getUserContacts = async () => {
   return contacts;
 }
 
-export const getUserGroups = async () => {
-  const fetchedGroups = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
-    credentials: "include"
-  });
-
-  if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
-
-  const groups: { group: Group }[] = await fetchedGroups.json();
-
-  return groups;
-}
-
 export const addContact = async (name: string) => {
   const data = { name };
 
@@ -121,24 +124,12 @@ export const removeContact = async (name: string) => {
   return removed;
 }
 
-export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentification: string) => {
-  const result = {
-    contact: chatIdentification,
-    messages: [] as { message: MessageResponse }[]
-  }
+export const joinGroup = async () => {
 
-  if (chatIdentification === "") return result;
+}
 
-  const messagesResponse = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
-    { credentials: "include" }
-  )
+export const leaveGroup = async () => {
 
-  if (!messagesResponse.ok) throw new Error(await messagesResponse.text());
-
-  result.messages = await messagesResponse.json()
-
-  return result;
 }
 
 export const createGroup = async (name: string, description?: string) => {
@@ -160,6 +151,50 @@ export const createGroup = async (name: string, description?: string) => {
   return group;
 }
 
+export const getUserGroups = async () => {
+  const fetchedGroups = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
+    credentials: "include"
+  });
+
+  if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
+
+  const groups: { group: Group }[] = await fetchedGroups.json();
+
+  return groups;
+}
+
+export const getGroupMembers = async (id: string) => {
+  const fetchedMembers = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, {
+    credentials: "include"
+  });
+
+  if (!fetchedMembers.ok) throw new Error(await fetchedMembers.text());
+
+  const members: GroupMemberResponse[] = await fetchedMembers.json();
+
+  return members;
+}
+
+export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentification: string) => {
+  const result = {
+    contact: chatIdentification,
+    messages: [] as { message: MessageResponse }[]
+  }
+
+  if (chatIdentification === "") return result;
+
+  const messagesResponse = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
+    { credentials: "include" }
+  )
+
+  if (!messagesResponse.ok) throw new Error(await messagesResponse.text());
+
+  result.messages = await messagesResponse.json()
+
+  return result;
+}
+
 // WEBSOCKET ACTIONS BELOW
 
 // export const getMessage = async () => {
@@ -176,10 +211,40 @@ export const createMessage = async (content: string, chat: SelectedChat) => {
     [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
   } as const;
 
-  let createdMessage: MessageResponse;
+  let createdMessage: {data: MessageResponse} | {data: null, error: any};
 
-  try {createdMessage = await socket.emitWithAck("userMessage", content, reciever)} 
+  try {createdMessage = await socket.emitWithAck("createMessage", content, reciever)} 
   catch (e) {throw new Error(e as any)}
 
-  return createdMessage;
+  if ("error" in createdMessage) throw new Error(createdMessage.error);
+
+  const {data} = createdMessage;
+
+  return data;
+}
+
+export const editMessage = async (id: string, content: string) => {
+  let editedMessage: {data: MessageResponse} | {data: null, error: any};
+
+  try {editedMessage = await socket.emitWithAck("editMessage", {id, content})} 
+  catch (e) {throw new Error(e as any)}
+
+  if ("error" in editedMessage) throw new Error(editedMessage.error);
+
+  const {data} = editedMessage;
+
+  return data;
+}
+
+export const deleteMesssage = async (id: string) => {
+  let deletedMessage: {data: MessageResponse} | {data: null, error: any};;
+
+  try {deletedMessage = await socket.emitWithAck("deleteMessage", id)} 
+  catch (e) {throw new Error(e as any)}
+
+  if ("error" in deletedMessage) throw new Error(deletedMessage.error);
+
+  const {data} = deletedMessage;
+
+  return data;
 }

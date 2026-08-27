@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
 
   connectedUsers.set(user.name, socket);
 
-  socket.on("userMessage", async (
+  socket.on("createMessage", async (
     content: string, 
     reciever: { kind: "user", name: string } | { kind: "group", id: string },
     ack
@@ -131,9 +131,15 @@ io.on("connection", (socket) => {
       })
     )
 
-    if (recieverExists instanceof PromiseError) throw new Error(recieverExists.error);
+    if (recieverExists instanceof PromiseError) return ack({
+      data: null,
+      error: recieverExists.error
+    });
 
-    if (!recieverExists) return socket.send(`Reciever (${recieverKind}) ${recieverIdentification} doesn't exist.`);
+    if (!recieverExists) return ack({
+      data: null,
+      error: `Reciever (${recieverKind}) ${recieverIdentification} doesn't exist.`
+    });
 
     const createdMessage = await createMessage(
       user.id,
@@ -143,34 +149,39 @@ io.on("connection", (socket) => {
 
     const message = { message: createdMessage };
 
-    const eventName = "recievedMessage"
+    const eventName = "recieveMessage"
 
     const eventEmitPayload = [
       message, 
-      {
-        [recieverKind === "user" ? "name" : "id"]: recieverIdentification
-      }
+      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
     ]
 
     if (recieverKind === "group") {
       if (!socket.rooms.has(recieverIdentification)) socket.join(recieverIdentification);
 
       socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload)
-    }else {
+    } else {
       const connectedReciever = connectedUsers.get(recieverIdentification);
 
       if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
     }
 
-    ack(message);
+    ack({data: message});
   })
 
-  // socket.on("message", message => {
-  //   message = message ?? "[empty]";
+  socket.on("editMessage", async (
+    {id, content}: {id: string, content: string},
+    ack
+  ) => {
+    const targetMessage = await handleError(prisma.message.findUnique({
+      where: { id },
+      include: { messageToGroups: true }
+    }))
 
-  //   socket.send(`SERVER ### Recieved message: "${message}" ### SERVER`);
-  //   socket.emit(`SERVER ### Emitted message: "${message}" ### SERVER`); // emits to everybody connected to the websocket
-  // })
+    if (targetMessage instanceof PromiseError) throw new Error(targetMessage.error);
+
+    if (!targetMessage) throw new Error(`Message of id ${id} is non-existent`)
+  })
 
   socket.send("connected!");
 })

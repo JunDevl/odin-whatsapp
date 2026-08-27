@@ -54,7 +54,7 @@ export const ModelName = {
   User: 'User',
   FriendOfUser: 'FriendOfUser',
   Group: 'Group',
-  UserOfGroup: 'UserOfGroup',
+  MemberOfGroup: 'MemberOfGroup',
   Message: 'Message',
   MessageSeenByUser: 'MessageSeenByUser',
   MessageToGroup: 'MessageToGroup',
@@ -106,14 +106,14 @@ export const GroupScalarFieldEnum = {
 export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
 
 
-export const UserOfGroupScalarFieldEnum = {
+export const MemberOfGroupScalarFieldEnum = {
   userId: 'userId',
   groupId: 'groupId',
   joinedAt: 'joinedAt',
   authority: 'authority'
 } as const
 
-export type UserOfGroupScalarFieldEnum = (typeof UserOfGroupScalarFieldEnum)[keyof typeof UserOfGroupScalarFieldEnum]
+export type MemberOfGroupScalarFieldEnum = (typeof MemberOfGroupScalarFieldEnum)[keyof typeof MemberOfGroupScalarFieldEnum]
 
 
 export const MessageScalarFieldEnum = {

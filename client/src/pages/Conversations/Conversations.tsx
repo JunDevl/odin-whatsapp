@@ -88,7 +88,7 @@ const Conversations = (props: Props) => {
         <ChatList kind="user" chats={chats}/>
       </ErrorBoundary>
       {selectedChat ? 
-        <Chat kind="user"/> :
+        <Chat/> :
         <div id="chat" className="flex flex-col flex-1 overflow-hidden">
           No chats selected.
         </div>

@@ -41,8 +41,9 @@ const friendsRouter = Router();
 usersRouter.use("/friends", friendsRouter);
 
 friendsRouter.route("/")
-  .post(JWTProtectedRoute, addUserFriend as RequestHandler[])
-  .get(JWTProtectedRoute, getUserFriends);
+  .all(JWTProtectedRoute)
+  .post(addUserFriend as RequestHandler[])
+  .get(getUserFriends);
 
 friendsRouter.route("/:friendName")
   .delete(JWTProtectedRoute, removeUserFriend);
@@ -53,9 +54,5 @@ usersRouter.use("/groups", groupsRouter);
 
 groupsRouter.route("/")
   .get(JWTProtectedRoute, getUserGroups);
-
-groupsRouter.route("/:groupId")
-  .post(JWTProtectedRoute, joinGroup as RequestHandler[])
-  .delete(JWTProtectedRoute, leaveGroup as RequestHandler[]);
 
 export default usersRouter;

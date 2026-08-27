@@ -57,10 +57,10 @@ export type FriendOfUser = Prisma.FriendOfUserModel
  */
 export type Group = Prisma.GroupModel
 /**
- * Model UserOfGroup
+ * Model MemberOfGroup
  * 
  */
-export type UserOfGroup = Prisma.UserOfGroupModel
+export type MemberOfGroup = Prisma.MemberOfGroupModel
 /**
  * Model Message
  * 

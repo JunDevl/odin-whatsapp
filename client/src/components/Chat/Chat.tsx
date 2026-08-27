@@ -5,15 +5,13 @@ import { Suspense, useContext, useEffect, useRef } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser, getMessagesFromChat } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
-import ChatDetailModal from "../ChatDetail/ChatDetail";
+import ChatDetailModal from "../ChatDetailModal/ChatDetailModal";
 import type { EntityKind } from "@packages/utils";
 
 
-type Props = {
-  kind: EntityKind
-}
+type Props = {}
 
-const Chat = ({ kind }: Props) => {
+const Chat = (props: Props) => {
   const {data: user} = useSuspenseQuery({
     queryKey: ["user"],
     queryFn: () => getLoggedUser()
@@ -23,6 +21,7 @@ const Chat = ({ kind }: Props) => {
   const messagesList = useRef<HTMLDivElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
+  const kind = "user" in selectedChat! ? "user" : "group";
   const isUserSelected = selectedChat && "user" in selectedChat!;
 
   const {data: messages, error} = useSuspenseQuery({
@@ -34,9 +33,9 @@ const Chat = ({ kind }: Props) => {
   useEffect(() => {
     const list = messagesList.current!;
 
-    const messageBlockCountThreshold = 2 // how many messages up high should trigger scrolling on new messages
+    const messageBlockCountThreshold = 2; // how many messages up high should trigger scrolling on new messages
 
-    const messageBlockHeight = 35.1 // estimate in pixels of the height of message blocks
+    const messageBlockHeight = 35.1; // estimate in pixels of the height of message blocks
 
     const scrollThreshold = 
       messageBlockHeight + // height of the new incoming message
@@ -55,7 +54,7 @@ const Chat = ({ kind }: Props) => {
 
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
-      <ChatDetailModal kind={kind} ref={details}/>
+      <ChatDetailModal ref={details}/>
       <header id={`current-${kind}-details`} className="border-b-2 flex p-3">
         <div className="details flex-1 cursor-pointer" onClick={() => details.current!.showModal()}>
           {isUserSelected ? selectedChat.user.name : selectedChat!.group.name}

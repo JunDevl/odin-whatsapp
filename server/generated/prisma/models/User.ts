@@ -184,7 +184,7 @@ export type UserWhereInput = {
   password_hash?: Prisma.StringFilter<"User"> | string
   messages?: Prisma.MessageListRelationFilter
   friends?: Prisma.FriendOfUserListRelationFilter
-  groups?: Prisma.UserOfGroupListRelationFilter
+  groups?: Prisma.MemberOfGroupListRelationFilter
   messagesToUser?: Prisma.MessageToUserListRelationFilter
   originUserFriend?: Prisma.FriendOfUserListRelationFilter
   seenMessages?: Prisma.MessageSeenByUserListRelationFilter
@@ -198,7 +198,7 @@ export type UserOrderByWithRelationInput = {
   password_hash?: Prisma.SortOrder
   messages?: Prisma.MessageOrderByRelationAggregateInput
   friends?: Prisma.FriendOfUserOrderByRelationAggregateInput
-  groups?: Prisma.UserOfGroupOrderByRelationAggregateInput
+  groups?: Prisma.MemberOfGroupOrderByRelationAggregateInput
   messagesToUser?: Prisma.MessageToUserOrderByRelationAggregateInput
   originUserFriend?: Prisma.FriendOfUserOrderByRelationAggregateInput
   seenMessages?: Prisma.MessageSeenByUserOrderByRelationAggregateInput
@@ -215,7 +215,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password_hash?: Prisma.StringFilter<"User"> | string
   messages?: Prisma.MessageListRelationFilter
   friends?: Prisma.FriendOfUserListRelationFilter
-  groups?: Prisma.UserOfGroupListRelationFilter
+  groups?: Prisma.MemberOfGroupListRelationFilter
   messagesToUser?: Prisma.MessageToUserListRelationFilter
   originUserFriend?: Prisma.FriendOfUserListRelationFilter
   seenMessages?: Prisma.MessageSeenByUserListRelationFilter
@@ -251,7 +251,7 @@ export type UserCreateInput = {
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserCreateNestedManyWithoutRecieverUserInput
@@ -265,7 +265,7 @@ export type UserUncheckedCreateInput = {
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutRecieverUserInput
@@ -279,7 +279,7 @@ export type UserUpdateInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUpdateManyWithoutRecieverUserNestedInput
@@ -293,7 +293,7 @@ export type UserUncheckedUpdateInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutRecieverUserNestedInput
@@ -448,7 +448,7 @@ export type UserCreateWithoutOriginUserFriendInput = {
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
   seenMessages?: Prisma.MessageSeenByUserCreateNestedManyWithoutRecieverUserInput
 }
@@ -461,7 +461,7 @@ export type UserUncheckedCreateWithoutOriginUserFriendInput = {
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutRecieverUserInput
 }
@@ -478,7 +478,7 @@ export type UserCreateWithoutFriendsInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserCreateNestedManyWithoutRecieverUserInput
@@ -491,7 +491,7 @@ export type UserUncheckedCreateWithoutFriendsInput = {
   email: string
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutRecieverUserInput
@@ -521,7 +521,7 @@ export type UserUpdateWithoutOriginUserFriendInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUpdateManyWithoutRecieverUserNestedInput
 }
@@ -534,7 +534,7 @@ export type UserUncheckedUpdateWithoutOriginUserFriendInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutRecieverUserNestedInput
 }
@@ -557,7 +557,7 @@ export type UserUpdateWithoutFriendsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUpdateManyWithoutRecieverUserNestedInput
@@ -570,7 +570,7 @@ export type UserUncheckedUpdateWithoutFriendsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutRecieverUserNestedInput
@@ -651,7 +651,7 @@ export type UserCreateWithoutMessagesInput = {
   email: string
   password_hash: string
   friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserCreateNestedManyWithoutRecieverUserInput
@@ -664,7 +664,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   email: string
   password_hash: string
   friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutRecieverUserInput
@@ -693,7 +693,7 @@ export type UserUpdateWithoutMessagesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUpdateManyWithoutRecieverUserNestedInput
@@ -706,7 +706,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutRecieverUserNestedInput
@@ -720,7 +720,7 @@ export type UserCreateWithoutSeenMessagesInput = {
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
 }
@@ -733,7 +733,7 @@ export type UserUncheckedCreateWithoutSeenMessagesInput = {
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   messagesToUser?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutRecieverUserInput
   originUserFriend?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
 }
@@ -762,7 +762,7 @@ export type UserUpdateWithoutSeenMessagesInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
 }
@@ -775,7 +775,7 @@ export type UserUncheckedUpdateWithoutSeenMessagesInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   messagesToUser?: Prisma.MessageToUserUncheckedUpdateManyWithoutRecieverUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
 }
@@ -788,7 +788,7 @@ export type UserCreateWithoutMessagesToUserInput = {
   password_hash: string
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupCreateNestedManyWithoutUserInput
   originUserFriend?: Prisma.FriendOfUserCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserCreateNestedManyWithoutRecieverUserInput
 }
@@ -801,7 +801,7 @@ export type UserUncheckedCreateWithoutMessagesToUserInput = {
   password_hash: string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   friends?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutFriendUserInput
-  groups?: Prisma.UserOfGroupUncheckedCreateNestedManyWithoutUserInput
+  groups?: Prisma.MemberOfGroupUncheckedCreateNestedManyWithoutUserInput
   originUserFriend?: Prisma.FriendOfUserUncheckedCreateNestedManyWithoutOriginUserInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutRecieverUserInput
 }
@@ -830,7 +830,7 @@ export type UserUpdateWithoutMessagesToUserInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUpdateManyWithoutUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUpdateManyWithoutRecieverUserNestedInput
 }
@@ -843,7 +843,7 @@ export type UserUncheckedUpdateWithoutMessagesToUserInput = {
   password_hash?: Prisma.StringFieldUpdateOperationsInput | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   friends?: Prisma.FriendOfUserUncheckedUpdateManyWithoutFriendUserNestedInput
-  groups?: Prisma.UserOfGroupUncheckedUpdateManyWithoutUserNestedInput
+  groups?: Prisma.MemberOfGroupUncheckedUpdateManyWithoutUserNestedInput
   originUserFriend?: Prisma.FriendOfUserUncheckedUpdateManyWithoutOriginUserNestedInput
   seenMessages?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutRecieverUserNestedInput
 }
@@ -899,7 +899,7 @@ export type UserCountOutputTypeCountFriendsArgs<ExtArgs extends runtime.Types.Ex
  * UserCountOutputType without action
  */
 export type UserCountOutputTypeCountGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.UserOfGroupWhereInput
+  where?: Prisma.MemberOfGroupWhereInput
 }
 
 /**
@@ -981,7 +981,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     messages: Prisma.$MessagePayload<ExtArgs>[]
     friends: Prisma.$FriendOfUserPayload<ExtArgs>[]
-    groups: Prisma.$UserOfGroupPayload<ExtArgs>[]
+    groups: Prisma.$MemberOfGroupPayload<ExtArgs>[]
     messagesToUser: Prisma.$MessageToUserPayload<ExtArgs>[]
     originUserFriend: Prisma.$FriendOfUserPayload<ExtArgs>[]
     seenMessages: Prisma.$MessageSeenByUserPayload<ExtArgs>[]
@@ -1388,7 +1388,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   friends<T extends Prisma.User$friendsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$friendsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendOfUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  groups<T extends Prisma.User$groupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  groups<T extends Prisma.User$groupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$groupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MemberOfGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messagesToUser<T extends Prisma.User$messagesToUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesToUserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   originUserFriend<T extends Prisma.User$originUserFriendArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$originUserFriendArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FriendOfUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   seenMessages<T extends Prisma.User$seenMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$seenMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageSeenByUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1871,23 +1871,23 @@ export type User$friendsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
  */
 export type User$groupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the UserOfGroup
+   * Select specific fields to fetch from the MemberOfGroup
    */
-  select?: Prisma.UserOfGroupSelect<ExtArgs> | null
+  select?: Prisma.MemberOfGroupSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the UserOfGroup
+   * Omit specific fields from the MemberOfGroup
    */
-  omit?: Prisma.UserOfGroupOmit<ExtArgs> | null
+  omit?: Prisma.MemberOfGroupOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserOfGroupInclude<ExtArgs> | null
-  where?: Prisma.UserOfGroupWhereInput
-  orderBy?: Prisma.UserOfGroupOrderByWithRelationInput | Prisma.UserOfGroupOrderByWithRelationInput[]
-  cursor?: Prisma.UserOfGroupWhereUniqueInput
+  include?: Prisma.MemberOfGroupInclude<ExtArgs> | null
+  where?: Prisma.MemberOfGroupWhereInput
+  orderBy?: Prisma.MemberOfGroupOrderByWithRelationInput | Prisma.MemberOfGroupOrderByWithRelationInput[]
+  cursor?: Prisma.MemberOfGroupWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.UserOfGroupScalarFieldEnum | Prisma.UserOfGroupScalarFieldEnum[]
+  distinct?: Prisma.MemberOfGroupScalarFieldEnum | Prisma.MemberOfGroupScalarFieldEnum[]
 }
 
 /**

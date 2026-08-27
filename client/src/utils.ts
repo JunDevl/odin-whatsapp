@@ -1,5 +1,5 @@
 // TYPESCRIPT UTILS
-import type { User, Group, Message } from "@types";
+import type { User, Group, MemberOfGroup, Message } from "@types";
 import type { Dispatch } from "react";
 import type { EntityKind } from "@packages/utils";
 
@@ -12,6 +12,11 @@ export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "senderId"> 
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
 
 export type UserResponse = Omit<User, "id" | "password_hash">;
+
+export type GroupMemberResponse = Omit<MemberOfGroup, "userId" | "joinedAt"> & {
+  user: Contact,
+  joinedAt: string
+}
 
 export interface ChatType<T extends Contact | Group> {
   chat: T,

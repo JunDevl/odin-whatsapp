@@ -12,7 +12,7 @@ const App = () => {
   const selectedChatState = {selectedChat, setSelectedChat};
 
   useEffect(() => {
-    socket.on("recievedMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
+    socket.on("recieveMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
       if ("name" in reciever) 
         return queryClient.setQueryData(
           ["conversations", message.message.sender.name],
@@ -26,7 +26,7 @@ const App = () => {
       //TODO: write code for when it's an incoming group message (reciever obj has an ID.)
     })
 
-    return () => {socket.off("recievedMessage")};
+    return () => {socket.off("recieveMessage")};
   }, [selectedChat])
 
   return (

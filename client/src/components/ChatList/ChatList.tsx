@@ -1,6 +1,6 @@
 import { Suspense, useContext, useRef } from "react";
 import type { ChatType, Contact } from "../../utils";
-import NewChat from "../NewChat/NewChat";
+import NewChatModal from "../NewChatModal/NewChatModal";
 import { SelectedChatContext } from "../../utils";
 import type { Group } from "@types";
 import type { EntityKind } from "@packages/utils";
@@ -18,7 +18,7 @@ const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
 
   return (
     <nav id={`${kind}s-sidebar`} className="overflow-hidden">
-      <NewChat kind={kind} ref={newChatModal}/>
+      <NewChatModal kind={kind} ref={newChatModal}/>
       <div id="new_chat">
         <button id={`add_${kind}`} onClick={() => newChatModal.current!.showModal()}>
           {`${kind === "user" ? "Add" : "Create"} ${kind[0].toUpperCase()}${kind.slice(1)}`}

@@ -8,7 +8,7 @@ type Props = {
   ref: RefObject<HTMLDialogElement | null>
 } & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
 
-const NewChat = ({ kind, ...props }: Props) => {
+const NewChatModal = ({ kind, ...props }: Props) => {
   const queryClient = useQueryClient();
 
   const modal = props.ref;
@@ -82,4 +82,4 @@ const NewChat = ({ kind, ...props }: Props) => {
   )
 }
 
-export default NewChat
+export default NewChatModal

@@ -28,7 +28,7 @@ export const createGroup: (RequestHandler | ValidationChain[])[] = [
       data: {
         name,
         description: description ?? null,
-        usersOfGroup: { create: { userId: user.id, authority: "owner" } }
+        members: { create: { userId: user.id, authority: "owner" } }
       }
     }));
 
@@ -101,7 +101,7 @@ export const joinGroup: (RequestHandler | ValidationChain[])[] = [
 
     const {id: userId} = req.user as User;
 
-    const joinedUser = await handleError(prisma.userOfGroup.create({
+    const joinedUser = await handleError(prisma.memberOfGroup.create({
       data: {
         groupId: id,
         userId,
@@ -134,7 +134,7 @@ export const leaveGroup: (RequestHandler | ValidationChain[])[] = [
 
     const {id: userId} = req.user as User;
 
-    const leftOutUser = await handleError(prisma.userOfGroup.delete({
+    const leftOutUser = await handleError(prisma.memberOfGroup.delete({
       where: {
         userId_groupId: {
           groupId: id,
@@ -153,10 +153,46 @@ export const getUserGroups: RequestHandler = async (req, res, next) => {
 
   const userGroupsData = await handleError(prisma.user.findUnique({
     where: { id },
-    select: { groups: { select: { group: true } } }
+    select: { 
+      groups: { 
+        select: { 
+          group: true
+        } 
+      } 
+    }
   }))
 
   if (userGroupsData instanceof PromiseError) return res.status(400).send(userGroupsData.error);
 
-  return res.json(userGroupsData ? userGroupsData.groups : []);
+  if (!userGroupsData) return res.json([]);
+
+  return res.json(userGroupsData.groups);
+}
+
+export const getGroupMembers: RequestHandler = async (req, res, next) => {
+  const id = String(req.params.groupId);
+
+  const members = await handleError(prisma.group.findUnique({
+    where: { id },
+    select: { 
+      members: { 
+        omit: { userId: true },
+        include: { 
+          user: { 
+            select: { 
+              name: true, 
+              profile_name: true 
+            }
+          }
+        },
+        orderBy: { user: { profile_name: "asc" } }
+      } 
+    }
+  }))
+
+  if (members instanceof PromiseError) return res.status(400).send(members.error);
+
+  if (!members) return res.json([]);
+
+  return res.json(members.members);
 }
