@@ -1,0 +1,9 @@
+.message-menu-arrow {
+  anchor-name: --message-menu-arrow;
+}
+
+.message-menu {
+  position: absolute;
+  position-anchor: --message-menu-arrow;
+  position-area: bottom span-left;
+}

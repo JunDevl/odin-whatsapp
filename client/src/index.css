@@ -199,3 +199,10 @@ dialog {
 textarea {
   resize: none;
 }
+
+svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  color: currentColor;
+}

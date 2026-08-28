@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
     socket.on("recieveMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
-      if ("name" in reciever) 
+      if ("name" in reciever)
         return queryClient.setQueryData(
           ["conversations", message.message.sender.name],
           (prevMessages: {contact: string, messages: MessageResponse[]}) => ({
