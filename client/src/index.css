@@ -102,6 +102,11 @@
   }
 }
 
+#root,
+body {
+  overflow: hidden;
+}
+
 body,
 p,
 h1,

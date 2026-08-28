@@ -56,7 +56,7 @@ const MessageInput = ({ kind }: Props) => {
   }
 
   return (
-    <footer className="border-t-2">
+    <footer className="border-t-2 z-20">
       <form id="message_form" method="POST" onSubmit={onSubmitMessage} ref={form}>
         <label className="flex bg-gray-600 rounded-2xl p-2" htmlFor="content">
           <button id="send" className="p-2 px-3">Send</button>

@@ -49,10 +49,13 @@ const Message = ({ message, user }: Props) => {
         >
           &gt;
         </button>
-        <div id={`${id}-message-menu`} className="message-menu bg-gray-800 z-10 p-2" popover="auto" onToggle={(e) => setMenuActive(e.newState === "open" ? true : false)}>
-          <ul>
-            <li>test</li>
-            <li>test2</li>
+        <div id={`${id}-message-menu`} className="message-menu bg-gray-800 z-10" popover="auto" onToggle={(e) => setMenuActive(e.newState === "open" ? true : false)}>
+          <ul className="p-1 *:p-1 *:bg-amber-400 flex flex-col gap-1">
+            {isOwn && <>
+              <li className=""><button>Edit</button></li>
+              <li className=""><button>Delete</button></li>
+            </>}            
+            <li className=""><button>Send to</button></li>
           </ul>
         </div>
         {content}

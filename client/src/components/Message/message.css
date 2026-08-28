@@ -3,7 +3,14 @@
 }
 
 .message-menu {
-  position: absolute;
+  position-try-fallbacks: --popover;
   position-anchor: --message-menu-arrow;
+  position: absolute;
   position-area: bottom span-left;
+}
+
+.message-menu:popover-open {}
+
+@position-try --popover {
+  position-area: left span-top;
 }
