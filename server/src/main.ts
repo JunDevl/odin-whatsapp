@@ -104,16 +104,15 @@ io.engine.on("initial_headers", (headers, request) => {
   } catch (e) {return}
 })
 
+type Reciever = { kind: "user", name: string } | { kind: "group", id: string };
+type AckFunction = (arg: {data: any} | {data: null, error: any}) => void;
+
 io.on("connection", (socket) => {
   const user = socket.data.user as User;
 
   connectedUsers.set(user.name, socket);
 
-  socket.on("createMessage", async (
-    content: string, 
-    reciever: { kind: "user", name: string } | { kind: "group", id: string },
-    ack
-  ) => {
+  socket.on("createMessage", async (content: string, reciever: Reciever, ack: AckFunction) => {
     const {kind: recieverKind} = reciever;
     const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
 
@@ -169,18 +168,128 @@ io.on("connection", (socket) => {
     ack({data: message});
   })
 
-  socket.on("editMessage", async (
-    {id, content}: {id: string, content: string},
-    ack
-  ) => {
+  socket.on("editMessage", async (id: string, content: string, ack: AckFunction) => {
     const targetMessage = await handleError(prisma.message.findUnique({
       where: { id },
       include: { messageToGroups: true }
     }))
 
-    if (targetMessage instanceof PromiseError) throw new Error(targetMessage.error);
+    if (targetMessage instanceof PromiseError) return ack({
+      data: null,
+      error: targetMessage.error
+    });
 
-    if (!targetMessage) throw new Error(`Message of id ${id} is non-existent`)
+    if (!targetMessage) return ack({
+      data: null,
+      error: `Message of id ${id} is non-existent`
+    })
+
+    const editedMessage = await handleError(prisma.message.update({
+      where: { id: targetMessage.id },
+      data: { 
+        content: content,
+        editedAt: new Date()
+      },
+      include: {
+        messageToGroups: { select: { recieverGroup: { select: { id: true } } } },
+        messageToUsers: { select: { recieverUser: { select: { name: true } } } },
+        sender: { select: { name: true } }
+      }
+    }))
+
+    if (editedMessage instanceof PromiseError) return ack({
+      data: null,
+      error: editedMessage.error
+    })
+
+    const {messageToGroups, messageToUsers, ...returnMessage} = editedMessage;
+
+    const message = { message: returnMessage };
+
+    const eventName = "editMessage"
+
+    const recieverKind = messageToUsers.length > 0 ? "user" : "group";
+
+    const recieverIdentification = recieverKind === "user" ? 
+      messageToUsers[0]!.recieverUser.name :
+      messageToGroups[0]!.recieverGroup.id
+
+    const eventEmitPayload = [
+      message, 
+      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
+    ]
+
+    if (recieverKind === "group") {
+      if (!socket.rooms.has(recieverIdentification)) socket.join(recieverIdentification);
+
+      socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload)
+    } else {
+      const connectedReciever = connectedUsers.get(recieverIdentification);
+
+      if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
+    }
+
+    ack({data: message})
+  })
+
+  socket.on("deleteMessage", async (id: string, ack: (...args: any) => void) => {
+    const targetMessage = await handleError(prisma.message.findUnique({
+      where: { id }
+    }))
+
+    if (targetMessage instanceof PromiseError) return ack({
+      data: null,
+      error: targetMessage.error
+    });
+
+    if (!targetMessage) return ack({
+      data: null,
+      error: `Message of id ${id} is non-existent`
+    })
+
+    const deletedMessage = await handleError(prisma.message.delete({
+      where: { id },
+      omit: { senderId: true },
+      include: { 
+        messageToGroups: { select: { recieverGroup: { select: { id: true } } } },
+        messageToUsers: { select: { recieverUser: { select: { name: true } } } },
+        sender: { select: { name: true } }
+       }
+    }))
+
+    if (deletedMessage instanceof PromiseError) return ack({
+      data: null,
+      error: deletedMessage.error
+    })
+
+    const {messageToGroups, messageToUsers, ...returnMessage} = deletedMessage;
+
+    const message = { message: returnMessage };
+
+    const eventName = "deleteMessage";
+
+    const recieverKind = messageToUsers.length > 0 ? "user" : "group";
+
+    const recieverIdentification = recieverKind === "user" ? 
+      messageToUsers[0]!.recieverUser.name :
+      messageToGroups[0]!.recieverGroup.id
+
+    const eventEmitPayload = [
+      message, 
+      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
+    ]
+
+    if (recieverKind === "group") {
+      if (!socket.rooms.has(recieverIdentification)) socket.join(recieverIdentification);
+
+      socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload)
+    } else {
+      const connectedReciever = connectedUsers.get(recieverIdentification);
+
+      if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
+    }
+
+    ack({data: message});
   })
 
   socket.send("connected!");

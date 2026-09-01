@@ -226,7 +226,7 @@ export const createMessage = async (content: string, chat: SelectedChat) => {
 export const editMessage = async (id: string, content: string) => {
   let editedMessage: {data: MessageResponse} | {data: null, error: any};
 
-  try {editedMessage = await socket.emitWithAck("editMessage", {id, content})} 
+  try {editedMessage = await socket.emitWithAck("editMessage", id, content)} 
   catch (e) {throw new Error(e as any)}
 
   if ("error" in editedMessage) throw new Error(editedMessage.error);

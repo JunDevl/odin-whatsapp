@@ -25,7 +25,7 @@ export const localStrategy = new LocalStrategy.Strategy(
     if (!user) return done(null, false, { message: "Incorrect email" });
 
     const validated = await argon2.verify(user.password_hash, password);
-    
+
     if (!validated) return done(null, false, { message: "Incorrect password" });
 
     return done(null, user);
@@ -33,7 +33,7 @@ export const localStrategy = new LocalStrategy.Strategy(
 );
 
 const extractJwtFromCookie = (req: Request) => {
-  return req.cookies["session_token"] ?? null
+  return req.cookies["session_token"] ?? null;
 };
 
 export const JWTStrategy = new Jwt.Strategy(
@@ -53,6 +53,7 @@ export const JWTStrategy = new Jwt.Strategy(
     if (!user) return done(null, false, { message: "User doesn't exist" });
 
     return done(null, user);
-});
+  }
+);
 
 export const JWTProtectedRoute = passport.authenticate("jwt", { session: false });

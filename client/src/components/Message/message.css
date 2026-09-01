@@ -1,11 +1,24 @@
+.message-info {
+  anchor-scope: --message-menu-arrow;
+}
+
 .message-menu-arrow {
   anchor-name: --message-menu-arrow;
 }
 
+svg.arrow-icon {
+  color: currentColor;
+  transition: all 200ms;
+
+  &.open {
+    transform: rotate(90deg);
+  }
+}
+
 .message-menu {
+  position: absolute;
   position-try-fallbacks: --popover;
   position-anchor: --message-menu-arrow;
-  position: absolute;
   position-area: bottom span-left;
 }
 

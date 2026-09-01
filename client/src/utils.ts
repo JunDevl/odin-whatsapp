@@ -3,10 +3,11 @@ import type { User, Group, MemberOfGroup, Message } from "@types";
 import type { Dispatch } from "react";
 import type { EntityKind } from "@packages/utils";
 
-export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "senderId"> & { 
+export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "deletedAt" | "senderId"> & { 
   sender: { name: string },
   sentAt: string,
-  editedAt: string | null
+  editedAt: string | null,
+  deletedAt: string | null
 }
 
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
