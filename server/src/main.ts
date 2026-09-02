@@ -21,7 +21,7 @@ import usersRouter from "./routes/usersRouter.ts";
 import type { User } from "../generated/prisma/client.ts";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../lib/prisma.ts";
-import { createMessage } from "./controllers/messagesController.ts";
+import { createMessage, deleteMessages, updateMessage } from "./controllers/messagesController.ts";
 import messagesRouter from "./routes/messagesRouter.ts";
 import groupsRouter from "./routes/groupsRouter.ts";
 
@@ -140,11 +140,14 @@ io.on("connection", (socket) => {
       error: `Reciever (${recieverKind}) ${recieverIdentification} doesn't exist.`
     });
 
-    const createdMessage = await createMessage(
-      user.id,
-      content,
-      { kind: recieverKind, id: recieverExists.id }
-    );
+    const createdMessage = await handleError(
+      createMessage(user.id, content, { kind: recieverKind, id: recieverExists.id }
+    ));
+
+    if (createdMessage instanceof PromiseError) return ack({
+      data: null,
+      error: createdMessage.error
+    })
 
     const message = { message: createdMessage };
 
@@ -184,39 +187,30 @@ io.on("connection", (socket) => {
       error: `Message of id ${id} is non-existent`
     })
 
-    const editedMessage = await handleError(prisma.message.update({
-      where: { id: targetMessage.id },
-      data: { 
-        content: content,
-        editedAt: new Date()
-      },
-      include: {
-        messageToGroups: { select: { recieverGroup: { select: { id: true } } } },
-        messageToUsers: { select: { recieverUser: { select: { name: true } } } },
-        sender: { select: { name: true } }
-      }
-    }))
+    const editedMessage = await handleError(updateMessage(id, content));
 
     if (editedMessage instanceof PromiseError) return ack({
       data: null,
       error: editedMessage.error
     })
 
-    const {messageToGroups, messageToUsers, ...returnMessage} = editedMessage;
+    const {destination, ...returnMessage} = editedMessage;
 
     const message = { message: returnMessage };
 
     const eventName = "editMessage"
 
-    const recieverKind = messageToUsers.length > 0 ? "user" : "group";
+    const isRecieverUser = "recieverUser" in destination;
 
-    const recieverIdentification = recieverKind === "user" ? 
-      messageToUsers[0]!.recieverUser.name :
-      messageToGroups[0]!.recieverGroup.id
+    const recieverKind = isRecieverUser ? "user" : "group";
+
+    const recieverIdentification = isRecieverUser ? 
+      destination.recieverUser.name :
+      destination.recieverGroup.id
 
     const eventEmitPayload = [
       message, 
-      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
+      { [isRecieverUser ? "name" : "id"]: recieverIdentification }
     ]
 
     if (recieverKind === "group") {
@@ -232,51 +226,51 @@ io.on("connection", (socket) => {
     ack({data: message})
   })
 
-  socket.on("deleteMessage", async (id: string, ack: (...args: any) => void) => {
-    const targetMessage = await handleError(prisma.message.findUnique({
-      where: { id }
+  socket.on("deleteMessages", async (ids: string[], ack: (...args: any) => void) => {
+    const targetMessages = await handleError(prisma.message.findMany({
+      where: { id: { in: ids } }
     }))
 
-    if (targetMessage instanceof PromiseError) return ack({
+    if (targetMessages instanceof PromiseError) return ack({
       data: null,
-      error: targetMessage.error
+      error: targetMessages.error
     });
 
-    if (!targetMessage) return ack({
+    if (targetMessages.length === 0) return ack({
       data: null,
-      error: `Message of id ${id} is non-existent`
+      error: `Messages of ids: ${ids} are non-existent`
     })
 
-    const deletedMessage = await handleError(prisma.message.delete({
-      where: { id },
-      omit: { senderId: true },
-      include: { 
-        messageToGroups: { select: { recieverGroup: { select: { id: true } } } },
-        messageToUsers: { select: { recieverUser: { select: { name: true } } } },
-        sender: { select: { name: true } }
-       }
-    }))
+    const deleted = await handleError(deleteMessages(ids));
 
-    if (deletedMessage instanceof PromiseError) return ack({
+    if (deleted instanceof PromiseError) return ack({
       data: null,
-      error: deletedMessage.error
+      error: deleted.error
     })
 
-    const {messageToGroups, messageToUsers, ...returnMessage} = deletedMessage;
+    const {destination, deletedMessages} = deleted;
 
-    const message = { message: returnMessage };
+    const returnMessages = deletedMessages.map(message => {
+      const {messageToGroups, messageToUsers, ...returnMessage} = message;
 
-    const eventName = "deleteMessage";
+      return returnMessage;
+    })
 
-    const recieverKind = messageToUsers.length > 0 ? "user" : "group";
+    const messages = { messages: returnMessages };
 
-    const recieverIdentification = recieverKind === "user" ? 
-      messageToUsers[0]!.recieverUser.name :
-      messageToGroups[0]!.recieverGroup.id
+    const eventName = "deleteMessages";
+
+    const isRecieverUser = "recieverUser" in destination;
+
+    const recieverKind = "recieverUser" in destination ? "user" : "group";
+
+    const recieverIdentification = isRecieverUser ? 
+      destination.recieverUser!.name :
+      destination.recieverGroup.id
 
     const eventEmitPayload = [
-      message, 
-      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
+      messages, 
+      { [isRecieverUser ? "name" : "id"]: recieverIdentification }
     ]
 
     if (recieverKind === "group") {
@@ -289,7 +283,7 @@ io.on("connection", (socket) => {
       if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
     }
 
-    ack({data: message});
+    ack({data: messages});
   })
 
   socket.send("connected!");

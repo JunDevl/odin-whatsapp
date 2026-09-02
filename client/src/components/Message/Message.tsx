@@ -1,17 +1,22 @@
 import "./message.css";
 
-import type { MessageResponse, UserResponse } from "../../utils";
+import { SelectedChatContext, type MessageResponse, type UserResponse } from "../../utils";
 import { format } from "date-fns";
-import { useEffect, useRef, useState, type MouseEvent, type SubmitEvent, type ToggleEvent } from "react";
-import { deleteMesssage, editMessage, getMessagesFromChat } from "../../actions";
+import { useContext, useEffect, useRef, useState, type MouseEvent, type SubmitEvent, type ToggleEvent } from "react";
+import { deleteMesssages, editMessage, getMessagesFromChat } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   message: MessageResponse
   user: UserResponse
+  index: number
 }
 
-const Message = ({ message, user }: Props) => {
+const Message = ({ message, user, index }: Props) => {
+  const {selectedChat} = useContext(SelectedChatContext);
+  const kind = "user" in selectedChat! ? "user" : "group";
+  const isUserSelected = selectedChat && "user" in selectedChat!;
+
   const queryClient = useQueryClient();
 
   const checkbox = useRef<HTMLInputElement>(null);
@@ -34,12 +39,20 @@ const Message = ({ message, user }: Props) => {
   const selectCheckbox = <input type="checkbox" name="select" className="select-message" hidden={!(hovering === "row") && !(checkbox.current && checkbox.current.checked)} ref={checkbox}/>;
 
   const handleDelete = async (e: MouseEvent) => {
-    const deletedMessage = await deleteMesssage(message.id);
+    const deletedMessages = await deleteMesssages([message.id]);
 
-    await queryClient.fetchQuery({
-      queryKey: ["user_chats", message.sender.name],
-      queryFn: () => getMessagesFromChat("user", message.sender.name)
-    })
+    const deletedSingleMessage = deletedMessages[0]!;
+
+    queryClient.setQueryData(
+      [`${kind}_chats`, isUserSelected ? selectedChat.user.name : selectedChat?.group.id],
+      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
+        const {contact, messages} = prevMessages;
+
+        messages[index] = deletedSingleMessage;
+
+        return {contact, messages};
+      }
+    )
   }
 
   const openMessageModal = (e: MouseEvent) => {

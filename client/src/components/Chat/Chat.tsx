@@ -82,7 +82,7 @@ const Chat = (props: Props) => {
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
               {messages.messages.map(({message}, i) => 
-                <Message user={user!} message={message} key={i}/>
+                <Message user={user!} message={message} key={i} index={i}/>
               )}
             </Suspense>
           </ErrorBoundary>

@@ -26,7 +26,17 @@ const App = () => {
       //TODO: write code for when it's an incoming group message (reciever obj has an ID.)
     })
 
-    return () => {socket.off("recieveMessage")};
+    socket.on("editMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
+
+    })
+
+    socket.on("deleteMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
+      
+    })
+
+    return () => {
+      socket.off("recieveMessage")
+    };
   }, [selectedChat])
 
   return (

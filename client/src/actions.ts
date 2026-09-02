@@ -236,15 +236,15 @@ export const editMessage = async (id: string, content: string) => {
   return data;
 }
 
-export const deleteMesssage = async (id: string) => {
-  let deletedMessage: {data: MessageResponse} | {data: null, error: any};;
+export const deleteMesssages = async (ids: string[]) => {
+  let deletedMessages: {data: MessageResponse[]} | {data: null, error: any};;
 
-  try {deletedMessage = await socket.emitWithAck("deleteMessage", id)} 
+  try {deletedMessages = await socket.emitWithAck("deleteMessages", ids)} 
   catch (e) {throw new Error(e as any)}
 
-  if ("error" in deletedMessage) throw new Error(deletedMessage.error);
+  if ("error" in deletedMessages) throw new Error(deletedMessages.error);
 
-  const {data} = deletedMessage;
+  const {data} = deletedMessages;
 
   return data;
 }

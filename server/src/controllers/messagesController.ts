@@ -85,25 +85,68 @@ export const getTargetMessages: RequestHandler = async (req, res, next) => {
   return res.json(messages);
 }
 
-export const deleteMessages: RequestHandler = async (req, res, next) => {
+export const deleteMessages = async (messageIds: string[]) => {
+  const deletedMessages = await handleError(prisma.message.updateManyAndReturn({
+    where: { id: { in: messageIds } },
+    data: { deletedAt: new Date() },
+    omit: { senderId: true },
+    include: { 
+      messageToGroups: true,
+      messageToUsers: true,
+      sender: { select: { name: true } }
+    }
+  }))
 
-  return next();
+  if (deletedMessages instanceof PromiseError) throw new Error(deletedMessages.error);
+
+  const { id, messageToGroups, messageToUsers } = deletedMessages[0]!;
+
+  const messagesToDestination = messageToUsers ?
+    await prisma.messageToUser.findUnique({
+      where: { messageId_recieverUserId: { messageId: id, recieverUserId: messageToUsers[0]!.recieverUserId } },
+      select: { recieverUser: { select: { name: true } } }
+    }) :
+    await prisma.messageToGroup.findUnique({
+      where: { messageId_recieverGroupId: { messageId: id, recieverGroupId: messageToGroups[0]!.recieverGroupId } },
+      select: { recieverGroup: { select: { id: true } } }
+    })
+  
+  if (!messagesToDestination) throw new Error("Code smell right here...");
+  
+  return {destination: messagesToDestination, deletedMessages};
 }
 
-export const updateMessage = async (user: User, messageId: string, content: string) => {
-  const updatedMessage = await handleError(prisma.message.update({ 
-    data: {
-      content
+export const updateMessage = async (messageId: string, content: string) => {
+  const updatedMessage = await handleError(prisma.message.update({
+    where: { id: messageId },
+    data: { 
+      content: content,
+      editedAt: new Date()
     },
-    where: {
-      id: "aba", // TODO: change this so the request knows the message it's referencing
-      senderId: user.id
+    include: {
+      messageToGroups: true,
+      messageToUsers: true,
+      sender: { select: { name: true } }
     }
-  }));
+  }))
 
   if (updatedMessage instanceof PromiseError) throw new Error(updatedMessage.error);
   
-  return updatedMessage;
+  const { id, messageToGroups, messageToUsers } = updatedMessage;
+
+  const messagesToDestination = messageToUsers ?
+    await prisma.messageToUser.findUnique({
+      where: { messageId_recieverUserId: { messageId: id, recieverUserId: messageToUsers[0]!.recieverUserId } },
+      select: { recieverUser: { select: { name: true } } }
+    }) :
+    await prisma.messageToGroup.findUnique({
+      where: { messageId_recieverGroupId: { messageId: id, recieverGroupId: messageToGroups[0]!.recieverGroupId } },
+      select: { recieverGroup: { select: { id: true } } }
+    })
+  
+  if (!messagesToDestination) throw new Error("Code smell right here...");
+  
+  return {destination: messagesToDestination, updatedMessage};
 }
 
 
