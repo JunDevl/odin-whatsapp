@@ -211,7 +211,7 @@ export const createMessage = async (content: string, chat: SelectedChat) => {
     [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
   } as const;
 
-  let createdMessage: {data: MessageResponse} | {data: null, error: any};
+  let createdMessage: {data: { message: MessageResponse } } | {data: null, error: any};
 
   try {createdMessage = await socket.emitWithAck("createMessage", content, reciever)} 
   catch (e) {throw new Error(e as any)}
@@ -223,10 +223,19 @@ export const createMessage = async (content: string, chat: SelectedChat) => {
   return data;
 }
 
-export const editMessage = async (id: string, content: string) => {
-  let editedMessage: {data: MessageResponse} | {data: null, error: any};
+export const editMessage = async (id: string, content: string, chat: SelectedChat) => {
+  const isUser = "user" in chat;
 
-  try {editedMessage = await socket.emitWithAck("editMessage", id, content)} 
+  const kind = isUser ? "user" : "group";
+
+  const reciever = {
+    kind, 
+    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
+  } as const;
+  
+  let editedMessage: {data: { message: MessageResponse } } | {data: null, error: any};
+
+  try {editedMessage = await socket.emitWithAck("editMessage", id, content, reciever)} 
   catch (e) {throw new Error(e as any)}
 
   if ("error" in editedMessage) throw new Error(editedMessage.error);
@@ -236,10 +245,19 @@ export const editMessage = async (id: string, content: string) => {
   return data;
 }
 
-export const deleteMesssages = async (ids: string[]) => {
-  let deletedMessages: {data: MessageResponse[]} | {data: null, error: any};;
+export const deleteMesssages = async (ids: string[], chat: SelectedChat) => {
+  const isUser = "user" in chat;
 
-  try {deletedMessages = await socket.emitWithAck("deleteMessages", ids)} 
+  const kind = isUser ? "user" : "group";
+
+  const reciever = {
+    kind, 
+    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
+  } as const;
+
+  let deletedMessages: {data: MessageResponse[] } | {data: null, error: any};
+
+  try {deletedMessages = await socket.emitWithAck("deleteMessages", ids, reciever)} 
   catch (e) {throw new Error(e as any)}
 
   if ("error" in deletedMessages) throw new Error(deletedMessages.error);

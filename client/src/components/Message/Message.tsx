@@ -39,16 +39,16 @@ const Message = ({ message, user, index }: Props) => {
   const selectCheckbox = <input type="checkbox" name="select" className="select-message" hidden={!(hovering === "row") && !(checkbox.current && checkbox.current.checked)} ref={checkbox}/>;
 
   const handleDelete = async (e: MouseEvent) => {
-    const deletedMessages = await deleteMesssages([message.id]);
+    const deletedMessages = await deleteMesssages([message.id], selectedChat!);
 
     const deletedSingleMessage = deletedMessages[0]!;
 
     queryClient.setQueryData(
       [`${kind}_chats`, isUserSelected ? selectedChat.user.name : selectedChat?.group.id],
-      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
+      (prevMessages: {contact: string, messages: { message: MessageResponse }[] }) => {
         const {contact, messages} = prevMessages;
 
-        messages[index] = deletedSingleMessage;
+        messages[index] = { message: deletedSingleMessage };
 
         return {contact, messages};
       }
@@ -69,7 +69,7 @@ const Message = ({ message, user, index }: Props) => {
   return (
     <li 
       id={id}
-      className={`message px-10 flex-1 flex gap-2 relative ${isOwn ? "justify-end" : "justify-start"}`}
+      className={`message${deletedAt && " deleted"} px-10 flex-1 flex gap-2 relative ${isOwn ? "justify-end" : "justify-start"}`}
       onMouseEnter={() => setHovering("row")}
       onMouseLeave={() => setHovering(null)}
       onClick={(e) => {
@@ -153,7 +153,9 @@ const Message = ({ message, user, index }: Props) => {
             </li>
           </ul>
         </div>
+
         {deletedAt ? "Message has been deleted." : content}
+
         <span className="text-xs float-right ml-3 mt-2">
           {format(sentAt, "HH:mm")}
         </span>

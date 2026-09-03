@@ -171,7 +171,10 @@ io.on("connection", (socket) => {
     ack({data: message});
   })
 
-  socket.on("editMessage", async (id: string, content: string, ack: AckFunction) => {
+  socket.on("editMessage", async (id: string, content: string, reciever: Reciever, ack: AckFunction) => {
+    const {kind: recieverKind} = reciever;
+    const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
+
     const targetMessage = await handleError(prisma.message.findUnique({
       where: { id },
       include: { messageToGroups: true }
@@ -194,23 +197,13 @@ io.on("connection", (socket) => {
       error: editedMessage.error
     })
 
-    const {destination, ...returnMessage} = editedMessage;
-
-    const message = { message: returnMessage };
+    const message = { message: editedMessage };
 
     const eventName = "editMessage"
 
-    const isRecieverUser = "recieverUser" in destination;
-
-    const recieverKind = isRecieverUser ? "user" : "group";
-
-    const recieverIdentification = isRecieverUser ? 
-      destination.recieverUser.name :
-      destination.recieverGroup.id
-
     const eventEmitPayload = [
       message, 
-      { [isRecieverUser ? "name" : "id"]: recieverIdentification }
+      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
     ]
 
     if (recieverKind === "group") {
@@ -226,7 +219,10 @@ io.on("connection", (socket) => {
     ack({data: message})
   })
 
-  socket.on("deleteMessages", async (ids: string[], ack: (...args: any) => void) => {
+  socket.on("deleteMessages", async (ids: string[], reciever: Reciever, ack: (...args: any) => void) => {
+    const {kind: recieverKind} = reciever;
+    const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
+
     const targetMessages = await handleError(prisma.message.findMany({
       where: { id: { in: ids } }
     }))
@@ -241,36 +237,18 @@ io.on("connection", (socket) => {
       error: `Messages of ids: ${ids} are non-existent`
     })
 
-    const deleted = await handleError(deleteMessages(ids));
+    const deletedMessages = await handleError(deleteMessages(ids));
 
-    if (deleted instanceof PromiseError) return ack({
+    if (deletedMessages instanceof PromiseError) return ack({
       data: null,
-      error: deleted.error
+      error: deletedMessages.error
     })
-
-    const {destination, deletedMessages} = deleted;
-
-    const returnMessages = deletedMessages.map(message => {
-      const {messageToGroups, messageToUsers, ...returnMessage} = message;
-
-      return returnMessage;
-    })
-
-    const messages = { messages: returnMessages };
 
     const eventName = "deleteMessages";
 
-    const isRecieverUser = "recieverUser" in destination;
-
-    const recieverKind = "recieverUser" in destination ? "user" : "group";
-
-    const recieverIdentification = isRecieverUser ? 
-      destination.recieverUser!.name :
-      destination.recieverGroup.id
-
     const eventEmitPayload = [
-      messages, 
-      { [isRecieverUser ? "name" : "id"]: recieverIdentification }
+      deletedMessages, 
+      { [recieverKind === "user" ? "name" : "id"]: recieverIdentification }
     ]
 
     if (recieverKind === "group") {
@@ -283,7 +261,7 @@ io.on("connection", (socket) => {
       if (connectedReciever) io.to(connectedReciever.id).emit(eventName, ...eventEmitPayload);
     }
 
-    ack({data: messages});
+    ack({data: deletedMessages});
   })
 
   socket.send("connected!");

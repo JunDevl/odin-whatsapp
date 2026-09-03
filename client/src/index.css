@@ -19,22 +19,23 @@
   --color-semantic-error-500: oklch(80% .4 35);
   --color-semantic-error-600: oklch(70% .4 35);
 
-  --color-dark-400: oklch(25% .02 var(--hue));
-  --color-dark-500: oklch(18% .015 var(--hue));
-  --color-dark-600: oklch(15% .01 var(--hue));
-  --color-dark-900: oklch(10% .005 var(--hue));
+  --color-dark-300: oklch(32% .010 var(--hue));
+  --color-dark-400: oklch(26% .008 var(--hue));
+  --color-dark-500: oklch(22% .006 var(--hue));
+  --color-dark-600: oklch(18% .004 var(--hue));
+  --color-dark-900: oklch(14% .002 var(--hue));
 
-  --color-light-400: oklch(96% .025 var(--hue));
-  --color-light-500: oklch(92% .02 var(--hue));
-  --color-light-600: oklch(86% .015 var(--hue));
-  --color-light-900: oklch(82% .01 var(--hue));
+  --color-light-400: oklch(94% .016 var(--hue));
+  --color-light-500: oklch(86% .012 var(--hue));
+  --color-light-600: oklch(82% .006 var(--hue));
+  --color-light-900: oklch(76% .002 var(--hue));
 }
 
 :root {
-  --color-light-400: oklch(96%, 0.025, 160);
-  --color-light-500: oklch(92%, 0.02, 160);
-  --color-light-600: oklch(86%, 0.015, 160);
-  --color-light-900: oklch(82%, 0.01, 160);
+  /* --color-light-400: oklch(96% .025 160);
+  --color-light-500: oklch(92% .02 160);
+  --color-light-600: oklch(86% .015 160);
+  --color-light-900: oklch(82% .01 160); */
 
   --text: #6b6375;
   --text-h: #08060d;
@@ -56,7 +57,7 @@
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -69,9 +70,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    color: var(--color-light-500);
+    background-color: var(--color-dark-500);
+    /* --text: #9ca3af; */
     --text-h: #f3f4f6;
-    --bg: #16171d;
+    /* --bg: #16171d; */
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -85,6 +88,10 @@
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
+
+  #root>*:not(#menu) {
+    background-color: var(--color-dark-400);
+  }
 }
 
 #root {
@@ -97,7 +104,7 @@
 
   &>*:not(#menu) {
     margin-block: 0.5rem;
-    background-color: #1f2028;
+    background-color: var(--color-dark-400);
     border-radius: 1rem;
   }
 }
@@ -187,7 +194,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-inline: 1rem;
+    width: 2.25rem;
   }
 
   &:has(input:focus) {

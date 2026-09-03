@@ -1,3 +1,9 @@
+.message.deleted {
+  &>.message-info {
+    color: red;
+  }
+}
+
 .message-info {
   anchor-scope: --message-menu-arrow;
 }

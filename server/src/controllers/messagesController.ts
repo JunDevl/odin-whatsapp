@@ -90,30 +90,16 @@ export const deleteMessages = async (messageIds: string[]) => {
     where: { id: { in: messageIds } },
     data: { deletedAt: new Date() },
     omit: { senderId: true },
-    include: { 
-      messageToGroups: true,
-      messageToUsers: true,
+    include: {
       sender: { select: { name: true } }
     }
   }))
 
   if (deletedMessages instanceof PromiseError) throw new Error(deletedMessages.error);
 
-  const { id, messageToGroups, messageToUsers } = deletedMessages[0]!;
-
-  const messagesToDestination = messageToUsers ?
-    await prisma.messageToUser.findUnique({
-      where: { messageId_recieverUserId: { messageId: id, recieverUserId: messageToUsers[0]!.recieverUserId } },
-      select: { recieverUser: { select: { name: true } } }
-    }) :
-    await prisma.messageToGroup.findUnique({
-      where: { messageId_recieverGroupId: { messageId: id, recieverGroupId: messageToGroups[0]!.recieverGroupId } },
-      select: { recieverGroup: { select: { id: true } } }
-    })
+  if (deletedMessages.length === 0) throw new Error(`No messages of ids: ${messageIds}`);
   
-  if (!messagesToDestination) throw new Error("Code smell right here...");
-  
-  return {destination: messagesToDestination, deletedMessages};
+  return deletedMessages;
 }
 
 export const updateMessage = async (messageId: string, content: string) => {
@@ -124,29 +110,15 @@ export const updateMessage = async (messageId: string, content: string) => {
       editedAt: new Date()
     },
     include: {
-      messageToGroups: true,
-      messageToUsers: true,
       sender: { select: { name: true } }
     }
   }))
 
   if (updatedMessage instanceof PromiseError) throw new Error(updatedMessage.error);
-  
-  const { id, messageToGroups, messageToUsers } = updatedMessage;
 
-  const messagesToDestination = messageToUsers ?
-    await prisma.messageToUser.findUnique({
-      where: { messageId_recieverUserId: { messageId: id, recieverUserId: messageToUsers[0]!.recieverUserId } },
-      select: { recieverUser: { select: { name: true } } }
-    }) :
-    await prisma.messageToGroup.findUnique({
-      where: { messageId_recieverGroupId: { messageId: id, recieverGroupId: messageToGroups[0]!.recieverGroupId } },
-      select: { recieverGroup: { select: { id: true } } }
-    })
-  
-  if (!messagesToDestination) throw new Error("Code smell right here...");
-  
-  return {destination: messagesToDestination, updatedMessage};
+  if (!updatedMessage) throw new Error(`No messages of id: ${messageId}`);
+
+  return updatedMessage;
 }
 
 
