@@ -20,6 +20,7 @@
   --color-semantic-error-500: oklch(80% .4 35);
   --color-semantic-error-600: oklch(70% .4 35);
 
+  --color-dark-200: oklch(38% .011 var(--hue));
   --color-dark-300: oklch(32% .010 var(--hue));
   --color-dark-400: oklch(26% .008 var(--hue));
   --color-dark-500: oklch(22% .006 var(--hue));
@@ -180,7 +181,7 @@ code {
 }
 
 button {
-  transition: all 250ms;
+  transition: all 100ms;
   padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
 }
