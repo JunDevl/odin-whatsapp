@@ -3,10 +3,10 @@
 @theme {
   --hue: 160;
 
-  --color-primary-400: oklch(85% .3 var(--hue));
-  --color-primary-500: oklch(80% .35 var(--hue));
-  --color-primary-600: oklch(75% .4 var(--hue));
-  --color-primary-900: oklch(55% .4 var(--hue));
+  --color-primary-400: oklch(85% .15 var(--hue));
+  --color-primary-500: oklch(80% .2 var(--hue));
+  --color-primary-600: oklch(75% .25 var(--hue));
+  --color-primary-900: oklch(35% .4 var(--hue));
 
   --color-semantic-ok-400: oklch(85% .4 140);
   --color-semantic-ok-500: oklch(80% .4 140);

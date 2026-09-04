@@ -9,7 +9,7 @@ const Menu = (props: Props) => {
 
   return (
     <nav id="menu" className="p-0.5 overflow-hidden">
-      <ul className="flex flex-col gap-2 [&>li>a]:p-2 [&>li>a]:block *:rounded-lg *:aspect-square *:w-10 *:hover:bg-gray-700">
+      <ul className="flex flex-col gap-2 [&>li>a]:p-2 [&>li>a]:block *:rounded-lg *:aspect-square *:w-10 *:hover:bg-dark-300">
         <li>
           <Link to={"priv"} onClick={() => setSelectedChat(null)} title="Conversations">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
