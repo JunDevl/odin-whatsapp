@@ -3,10 +3,13 @@
 @theme {
   --hue: 160;
 
-  --color-primary-400: oklch(85% .15 var(--hue));
-  --color-primary-500: oklch(80% .2 var(--hue));
-  --color-primary-600: oklch(75% .25 var(--hue));
-  --color-primary-900: oklch(35% .4 var(--hue));
+  --color-primary-100: oklch(35% .3 var(--hue));
+  --color-primary-400: oklch(50% .25 var(--hue));
+  --color-primary-500: oklch(66% .22 var(--hue));
+  --color-primary-600: oklch(74% .18 var(--hue));
+  --color-primary-700: oklch(80% .15 var(--hue));
+  --color-primary-800: oklch(84% .11 var(--hue));
+  --color-primary-900: oklch(89% .08 var(--hue));
 
   --color-semantic-ok-400: oklch(85% .4 140);
   --color-semantic-ok-500: oklch(80% .4 140);
@@ -16,9 +19,12 @@
   --color-semantic-alert-500: oklch(80% .4 100);
   --color-semantic-alert-600: oklch(70% .4 100);
 
-  --color-semantic-error-400: oklch(85% .4 35);
-  --color-semantic-error-500: oklch(80% .4 35);
-  --color-semantic-error-600: oklch(70% .4 35);
+  --color-semantic-error-100: oklch(82% .25 25);
+  --color-semantic-error-200: oklch(70% .25 25);
+  --color-semantic-error-300: oklch(58% .25 25);
+  --color-semantic-error-400: oklch(47% .25 25);
+  --color-semantic-error-500: oklch(40% .25 25);
+  --color-semantic-error-600: oklch(32% .25 25);
 
   --color-dark-200: oklch(38% .011 var(--hue));
   --color-dark-300: oklch(32% .010 var(--hue));
@@ -34,10 +40,13 @@
 }
 
 :root {
-  /* --color-light-400: oklch(96% .025 160);
-  --color-light-500: oklch(92% .02 160);
-  --color-light-600: oklch(86% .015 160);
-  --color-light-900: oklch(82% .01 160); */
+  --color-primary-100: oklch(35% .28 160);
+  --color-primary-400: oklch(50% .24 160);
+  --color-primary-500: oklch(66% .20 160);
+  --color-primary-600: oklch(74% .17 160);
+  --color-primary-700: oklch(80% .14 160);
+  --color-primary-800: oklch(84% .11 160);
+  --color-primary-900: oklch(89% .08 160);
 
   --text: #6b6375;
   --text-h: #08060d;
@@ -181,6 +190,7 @@ code {
 }
 
 button {
+  cursor: pointer;
   transition: all 100ms;
   padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
@@ -215,8 +225,6 @@ textarea {
 }
 
 svg {
-  width: 100%;
-  height: 100%;
   fill: currentColor;
   color: currentColor;
 }
