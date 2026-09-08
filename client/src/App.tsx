@@ -42,7 +42,9 @@ const App = () => {
   return (
     <SelectedChatContext value={selectedChatState}>
       <Menu/>
-      <Outlet/>
+      <div className="flex flex-1 gap-2 bg-dark-500 *:rounded-2xl py-1" id="page">
+        <Outlet/>
+      </div>
     </SelectedChatContext>
   )
 }

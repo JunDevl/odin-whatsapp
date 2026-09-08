@@ -40,7 +40,7 @@ const ChatDetailModal = (props: Props) => {
   const modal = props.ref;
 
   return (
-    <dialog {...props} className={`${kind}`}>
+    <dialog {...props}>
       {kind === "user" && 
         <>
           <p>{isUserSelected && selectedChat!.user.profile_name}</p>
@@ -52,7 +52,7 @@ const ChatDetailModal = (props: Props) => {
       }
       <button 
         onClick={() => modal.current!.close()}
-        className="hover:bg-amber-300 active:bg-amber-500"
+        className="hover:bg-dark-300 active:bg-dark-400"
       >
         Back
       </button>

@@ -39,7 +39,7 @@ const NewChatModal = ({ kind, ...props }: Props) => {
   }
 
   return (
-    <dialog {...props} className="bg-black">
+    <dialog {...props}>
       <form 
         method="POST" 
         onSubmit={handleSubmit} 
@@ -70,10 +70,10 @@ const NewChatModal = ({ kind, ...props }: Props) => {
           </>
         }
         <div className="buttons flex justify-around">
-          <button type="submit" className="bg-primary-500 hover:bg-primary-400">
+          <button type="submit" className="bg-primary-400 hover:bg-primary-500 active:bg-primary-100">
             Submit
           </button>
-          <button type="reset" onClick={() => modal.current!.close()} className="bg-dark-600 hover:bg-dark-500">
+          <button type="reset" onClick={() => modal.current!.close()} className="hover:bg-dark-400 active:bg-dark-500">
             Cancel
           </button>
         </div>

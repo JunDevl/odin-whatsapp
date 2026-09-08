@@ -100,7 +100,7 @@
     filter: invert(1) brightness(2);
   }
 
-  #root>*:not(#menu) {
+  #page>* {
     background-color: var(--color-dark-400);
   }
 }
@@ -111,12 +111,13 @@
   text-align: center;
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
 
-  &>*:not(#menu) {
-    margin-block: 0.5rem;
+  #page>* {
     background-color: var(--color-dark-400);
-    border-radius: 1rem;
+  }
+
+  dialog {
+    background-color: var(--color-dark-600);
   }
 }
 
@@ -174,8 +175,7 @@ input:focus {
   outline: none;
 }
 
-code,
-.counter {
+code {
   font-family: var(--mono);
   display: inline-flex;
   border-radius: 4px;
@@ -218,6 +218,7 @@ dialog {
   margin: auto;
   padding: 1.25rem;
   border-radius: 0.5rem;
+  background-color: var(--color-light-600);
 }
 
 textarea {

@@ -5,6 +5,7 @@ import { getMessagesFromChat, getUserContacts } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
 import { useContext } from "react";
 import { SelectedChatContext } from "../../utils";
+import UnselectedChat from "../../components/UnselectedChat/UnselectedChat";
 
 // const boilerplateMessages = [
 //   {
@@ -89,9 +90,7 @@ const Conversations = (props: Props) => {
       </ErrorBoundary>
       {selectedChat ? 
         <Chat/> :
-        <div id="chat" className="flex flex-col flex-1 overflow-hidden">
-          No chats selected.
-        </div>
+        <UnselectedChat kind="group"/>
       }
     </>
   )

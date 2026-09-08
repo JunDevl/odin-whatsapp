@@ -61,7 +61,7 @@ const Chat = (props: Props) => {
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
       <ChatDetailModal ref={details}/>
-      <header id={`current-${kind}-details`} className="border-b-2 flex p-3">
+      <header id={`current-${kind}-details`} className="flex p-3 to-dark-500 shadow-2xl">
         <div className="details flex-1 cursor-pointer" onClick={() => details.current!.showModal()}>
           {isUserSelected ? selectedChat.user.name : selectedChat!.group.name}
         </div>
