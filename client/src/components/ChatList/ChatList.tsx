@@ -1,17 +1,16 @@
 import "./chatlist.css";
 import { Suspense, useContext, useRef } from "react";
-import type { ChatType, Contact } from "../../utils";
+import type { ChatType, Contact, GroupResponse } from "../../utils";
 import NewChatModal from "../NewChatModal/NewChatModal";
 import { SelectedChatContext } from "../../utils";
-import type { Group } from "@types";
 import type { EntityKind } from "@packages/utils";
 
-type Props<T extends Contact | Group> = {
+type Props<T extends Contact | GroupResponse> = {
   kind: EntityKind
   chats: ChatType<T>[]
 }
 
-const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
+const ChatList = <T extends Contact | GroupResponse, >({ kind, chats }: Props<T>) => {
   const newChatModal = useRef<HTMLDialogElement>(null);
   const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);
   const isUserSelected = selectedChat && "user" in selectedChat!;
@@ -58,7 +57,7 @@ const ChatList = <T extends Contact | Group, >({ kind, chats }: Props<T>) => {
                 onClick={() => setSelectedChat(() => {
                   if (kind === "user") return { [kind]: chat.chat } as { user: Contact }
 
-                  const groupChat = (chat as unknown) as {chat: Group}
+                  const groupChat = (chat as unknown) as {chat: GroupResponse}
 
                   return { [kind]: groupChat.chat }
                 })}

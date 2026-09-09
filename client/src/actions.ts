@@ -1,7 +1,6 @@
 import { io } from "socket.io-client";
-import type { Contact, GroupMemberResponse, MessageResponse, SelectedChat, UserResponse } from "./utils";
+import type { Contact, GroupMemberResponse, GroupResponse, MessageResponse, SelectedChat, UserResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
-import type { Group } from "@types";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true
@@ -158,7 +157,7 @@ export const getUserGroups = async () => {
 
   if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
 
-  const groups: { group: Group }[] = await fetchedGroups.json();
+  const groups: { group: GroupResponse }[] = await fetchedGroups.json();
 
   return groups;
 }
@@ -196,10 +195,6 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 }
 
 // WEBSOCKET ACTIONS BELOW
-
-// export const getMessage = async () => {
-//   const message = socket.on("userMessage", (content) => content);
-// }
 
 export const createMessage = async (content: string, chat: SelectedChat) => {
   const isUser = "user" in chat;

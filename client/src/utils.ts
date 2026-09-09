@@ -1,7 +1,6 @@
 // TYPESCRIPT UTILS
 import type { User, Group, MemberOfGroup, Message } from "@types";
 import type { Dispatch } from "react";
-import type { EntityKind } from "@packages/utils";
 
 export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "deletedAt" | "senderId"> & { 
   sender: { name: string },
@@ -12,6 +11,8 @@ export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "deletedAt" 
 
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
 
+export type GroupResponse = Omit<Group, "createdAt"> & {createdAt: string}; 
+
 export type UserResponse = Omit<User, "id" | "password_hash">;
 
 export type GroupMemberResponse = Omit<MemberOfGroup, "userId" | "joinedAt"> & {
@@ -19,7 +20,7 @@ export type GroupMemberResponse = Omit<MemberOfGroup, "userId" | "joinedAt"> & {
   joinedAt: string
 }
 
-export interface ChatType<T extends Contact | Group> {
+export interface ChatType<T extends Contact | GroupResponse> {
   chat: T,
   lastMessage: MessageResponse
 }
@@ -29,7 +30,7 @@ export interface ChatType<T extends Contact | Group> {
 import { createContext } from "react";
 
 export type SelectedChat = {
-  group: Group
+  group: GroupResponse
 } | {
   user: Contact
 }

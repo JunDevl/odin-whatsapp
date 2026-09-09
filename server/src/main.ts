@@ -107,7 +107,7 @@ io.engine.on("initial_headers", (headers, request) => {
 type Reciever = { kind: "user", name: string } | { kind: "group", id: string };
 type AckFunction = (arg: {data: any} | {data: null, error: any}) => void;
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   const user = socket.data.user as User;
 
   connectedUsers.set(user.name, socket);
@@ -264,7 +264,15 @@ io.on("connection", (socket) => {
     ack({data: deletedMessages});
   })
 
-  socket.send("connected!");
+  socket.on("disconnect", () => {
+    console.log(`Disconnected user: ${user.name}`);
+
+    socket.emit(`status:${user.name}`, "offline");
+  })
+
+  console.log(`Connected user: ${user.name}`);
+
+  socket.emit(`status:${user.name}`, "online");
 })
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));

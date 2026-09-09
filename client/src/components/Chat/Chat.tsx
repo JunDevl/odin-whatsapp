@@ -61,11 +61,14 @@ const Chat = (props: Props) => {
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
       <ChatDetailModal ref={details}/>
-      <header id={`current-${kind}-details`} className="flex p-3 to-dark-500 shadow-2xl">
-        <div className="details flex-1 cursor-pointer" onClick={() => details.current!.showModal()}>
-          {isUserSelected ? selectedChat.user.name : selectedChat!.group.name}
+      <header id={`current-${kind}-details`} className="flex to-dark-500 shadow-2xl">
+        <div className="details flex flex-1 cursor-pointer p-3 justify-center items-center gap-4" onClick={() => details.current!.showModal()}>
+          <div className="chat-image rounded-full bg-amber-400 size-10"></div>
+          <h2 className="chat-name">
+            {isUserSelected ? selectedChat.user.profile_name : selectedChat!.group.name}
+          </h2>
         </div>
-        <div className="search search-message h-8 bg-dark-500">
+        <div className="search search-message h-8 bg-dark-500 self-center mr-2">
           <input type="text" name="searchMessage" id="search-message" placeholder="Search Messages"/>
           <button>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
