@@ -22,9 +22,9 @@ const GroupDetails = () => {
     <h3 className="mt-3">
       {group.description}
     </h3>
-    <fieldset className="mt-6 flex flex-col border border-dark-400 rounded-2xl p-3 gap-2">
+    <fieldset className="mt-6 flex flex-col border border-dark-400 rounded-2xl p-3 gap-2 self-center">
       <h3 className="self-start">Members:</h3>
-      <ul className="flex-1 bg-dark-500 rounded-2xl">
+      <ul className="flex-1 bg-dark-900 rounded-2xl">
         {members.map(member => <li key={member.user.name} className="flex justify-start border border-dark-300 rounded-2xl p-2 px-4">
           <p>
             {member.user.profile_name}
@@ -50,7 +50,7 @@ const ChatDetailModal = (props: Props) => {
   const modal = props.ref;
 
   return (
-    <dialog {...props} className="w-[50%]">
+    <dialog {...props} className="w-[50%] open:flex flex-col">
       {kind === "user" && 
         <>
           <p>{isUserSelected && selectedChat!.user.profile_name}</p>

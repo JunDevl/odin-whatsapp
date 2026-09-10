@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { Contact, GroupMemberResponse, GroupResponse, MessageResponse, SelectedChat, UserResponse } from "./utils";
+import type { Contact, GroupMemberResponse, GroupResponse, MessageResponse, SelectedChat, LoggedUserResponse, UserContacts, UserGroups } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
@@ -74,7 +74,7 @@ export const getLoggedUser = async () => {
     throw new Error(await userResponse.text());
   }
 
-  const user: UserResponse = await await userResponse.json();
+  const user: LoggedUserResponse = await await userResponse.json();
 
   return user;
 }
@@ -86,7 +86,7 @@ export const getUserContacts = async () => {
 
   if (!fetchedContacts.ok) throw new Error(await fetchedContacts.text());
 
-  const contacts: { friendUser: Contact }[] = await fetchedContacts.json();
+  const contacts: UserContacts = await fetchedContacts.json();
 
   return contacts;
 }
@@ -157,7 +157,7 @@ export const getUserGroups = async () => {
 
   if (!fetchedGroups.ok) throw new Error(await fetchedGroups.text());
 
-  const groups: { group: GroupResponse }[] = await fetchedGroups.json();
+  const groups: UserGroups = await fetchedGroups.json();
 
   return groups;
 }

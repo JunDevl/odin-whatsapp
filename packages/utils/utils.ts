@@ -21,3 +21,5 @@ export type Prettify<T> = T extends infer O
   : never;
 
 export type EntityKind = "group" | "user";
+
+export type Status = "online" | "offline";

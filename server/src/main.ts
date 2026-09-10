@@ -58,7 +58,7 @@ const io = new Server(server, {
   cookie: true
 });
 
-const connectedUsers = new Map<string, Socket>();
+export const connectedUsers = new Map<string, Socket>();
 
 io.use((socket, next) => {
   try {
@@ -267,12 +267,14 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     console.log(`Disconnected user: ${user.name}`);
 
-    socket.emit(`status:${user.name}`, "offline");
+    connectedUsers.delete(user.name);
+
+    io.emit(`status:${user.name}`, "offline");
   })
 
   console.log(`Connected user: ${user.name}`);
 
-  socket.emit(`status:${user.name}`, "online");
+  io.emit(`status:${user.name}`, "online");
 })
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));

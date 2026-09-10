@@ -57,37 +57,9 @@ type Props = {}
 const Conversations = (props: Props) => {
   const {selectedChat} = useContext(SelectedChatContext);
 
-  const {data: contacts, error} = useSuspenseQuery({
-    queryKey: ["user", "friends"],
-    queryFn: () => getUserContacts(),
-    staleTime: Infinity
-  })
-
-  const messages = useQueries({
-    queries: contacts ? contacts.map(contact => ({
-      queryKey: ["user_chats", contact.friendUser.name],
-      queryFn: () => getMessagesFromChat("user", contact.friendUser.name),
-      staleTime: Infinity
-    })) : []
-  });
-
-  const chats = contacts.map(contact => ({
-    chat: contact.friendUser,
-    lastMessage: {
-      id: "abcd",
-      content: "test",
-      sentAt: "2026-03-05 10:00",
-      editedAt: null,
-      deletedAt: null,
-      sender: { name: contact.friendUser.name }
-    }
-  }))
-
   return (
     <>
-      <ErrorBoundary fallback={<p>Something went wrong when loading user's contacts: <br/>{error ? error.stack : ""}</p>}>
-        <ChatList kind="user" chats={chats}/>
-      </ErrorBoundary>
+      <ChatList kind="user"/>
       {selectedChat ? 
         <Chat/> :
         <UnselectedChat kind="group"/>

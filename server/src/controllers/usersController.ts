@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
+import { connectedUsers } from "../main.ts";
 
 const createUserValidator: ValidationChain[] = [
   body("name")
@@ -135,7 +136,18 @@ export const getUserFriends: RequestHandler = async (req, res) => {
 
   if (userFriendsData instanceof PromiseError) return res.status(400).send(userFriendsData.error);
 
-  return res.json(userFriendsData ? userFriendsData.originUserFriend : []);
+  const userFriends = userFriendsData ?
+    userFriendsData.originUserFriend.map(friend => {
+      const friendWithStatus = {
+        ...friend,
+        status: connectedUsers.has(friend.friendUser.name) ? "online" : "offline"
+      } as const
+
+      return friendWithStatus;
+    }) 
+  : [];
+
+  return res.json(userFriends);
 }
 
 const addFriendValidator: ValidationChain[] = [
