@@ -87,7 +87,6 @@ const App = () => {
   return (
     <SelectedChatContext value={selectedChatState}>
       <Menu/>
-      <p>{contacts.data[0]!.status}</p>
       <div className="flex flex-1 gap-2 bg-dark-500 *:rounded-2xl py-1" id="page">
         <ErrorBoundary fallback={<p>An error ocurred within the contacts and groups context.</p>}>
           <ContactsContext value={contacts.data}>
