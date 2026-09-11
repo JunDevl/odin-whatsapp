@@ -1,26 +1,28 @@
 import "./chatlist.css";
-import { Suspense, useContext, useRef, type Context } from "react";
-import type { ChatType, Contact, GroupResponse, UserContacts, UserGroups } from "../../utils";
+import { Suspense, useContext, useRef } from "react";
+import type { UserContacts, UserGroups } from "../../utils";
 import NewChatModal from "../NewChatModal/NewChatModal";
 import { ContactsContext, GroupsContext, SelectedChatContext } from "../../utils";
 import type { EntityKind } from "@packages/utils";
-import { useQueries, type UseSuspenseQueryResult } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { getMessagesFromChat } from "../../actions";
 
-type Props<T extends EntityKind> = {
+type Props<T extends EntityKind> = T extends "user" ? {
   kind: T
+  chats: UserContacts
+} : {
+  kind: T
+  chats: UserGroups
 }
 
-const ChatList = <T extends EntityKind, >({ kind }: Props<T>) => {
-  const chats: any[] = useContext(kind === "user" ? ContactsContext as any : GroupsContext);
-
-  const {data: messages, error} = useQueries({
-    queries: chats.map(chat => ({
-      queryKey: [`${kind}_chats`, "friendUser" in chat ? chat.friendUser.name : chat.group.id],
-      queryFn: () => getMessagesFromChat(kind, "friendUser" in chat ? chat.friendUser.name : chat.group.id),
-      staleTime: Infinity
-    }))
-  })
+const ChatList = <T extends EntityKind, >({ kind, chats }: Props<T>) => {
+  // const {data: messages, error} = useQueries({
+  //   queries: chats.map(chat => ({
+  //     queryKey: [`${kind}_chats`, "friendUser" in chat ? chat.friendUser.name : chat.group.id],
+  //     queryFn: () => getMessagesFromChat(kind, "friendUser" in chat ? chat.friendUser.name : chat.group.id),
+  //     staleTime: Infinity
+  //   }))
+  // })
 
   const newChatModal = useRef<HTMLDialogElement>(null);
   const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);

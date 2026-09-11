@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { Contact, GroupMemberResponse, GroupResponse, MessageResponse, SelectedChat, LoggedUserResponse, UserContacts, UserGroups } from "./utils";
+import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
@@ -196,14 +196,14 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 
 // WEBSOCKET ACTIONS BELOW
 
-export const createMessage = async (content: string, chat: SelectedChat) => {
-  const isUser = "user" in chat;
+export const createMessage = async (content: string, chat: {name: string} | {id: string} ) => {
+  const isUser = "name" in chat;
 
   const kind = isUser ? "user" : "group";
 
   const reciever = {
     kind, 
-    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
+    [isUser ? "name" : "id"]: isUser ? chat.name : chat.id
   } as const;
 
   let createdMessage: {data: { message: MessageResponse } } | {data: null, error: any};
@@ -218,14 +218,14 @@ export const createMessage = async (content: string, chat: SelectedChat) => {
   return data;
 }
 
-export const editMessage = async (id: string, content: string, chat: SelectedChat) => {
-  const isUser = "user" in chat;
+export const editMessage = async (id: string, content: string, chat: {name: string} | {id: string}) => {
+  const isUser = "name" in chat;
 
   const kind = isUser ? "user" : "group";
 
   const reciever = {
     kind, 
-    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
+    [isUser ? "name" : "id"]: isUser ? chat.name : chat.id
   } as const;
   
   let editedMessage: {data: { message: MessageResponse } } | {data: null, error: any};
@@ -240,14 +240,14 @@ export const editMessage = async (id: string, content: string, chat: SelectedCha
   return data;
 }
 
-export const deleteMesssages = async (ids: string[], chat: SelectedChat) => {
-  const isUser = "user" in chat;
+export const deleteMesssages = async (ids: string[], chat: {name: string} | {id: string}) => {
+  const isUser = "name" in chat;
 
   const kind = isUser ? "user" : "group";
 
   const reciever = {
     kind, 
-    [isUser ? "name" : "id"]: isUser ? chat.user.name : chat.group.id
+    [isUser ? "name" : "id"]: isUser ? chat.name : chat.id
   } as const;
 
   let deletedMessages: {data: MessageResponse[] } | {data: null, error: any};

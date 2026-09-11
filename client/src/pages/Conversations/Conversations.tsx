@@ -4,7 +4,7 @@ import ChatList from "../../components/ChatList/ChatList";
 import { getMessagesFromChat, getUserContacts } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
 import { useContext } from "react";
-import { SelectedChatContext } from "../../utils";
+import { ContactsContext, SelectedChatContext } from "../../utils";
 import UnselectedChat from "../../components/UnselectedChat/UnselectedChat";
 
 // const boilerplateMessages = [
@@ -55,11 +55,12 @@ import UnselectedChat from "../../components/UnselectedChat/UnselectedChat";
 type Props = {}
 
 const Conversations = (props: Props) => {
+  const contacts = useContext(ContactsContext)!;
   const {selectedChat} = useContext(SelectedChatContext);
 
   return (
     <>
-      <ChatList kind="user"/>
+      <ChatList kind="user" chats={contacts}/>
       {selectedChat ? 
         <Chat/> :
         <UnselectedChat kind="group"/>

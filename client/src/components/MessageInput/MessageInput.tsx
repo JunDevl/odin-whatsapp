@@ -1,10 +1,10 @@
 import "./messageinput.css"
 
 import { useEffect, useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
-import { SelectedChatContext, type MessageResponse } from "../../utils";
+import { SelectedChatContext, type MessageResponse, type SelectedChat } from "../../utils";
 import { useContext } from "react";
 import { createMessage } from "../../actions";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
 
 type Props = {
@@ -22,6 +22,19 @@ const MessageInput = ({ kind }: Props) => {
   const {selectedChat} = useContext(SelectedChatContext);
   const isSelectedUser = selectedChat && "user" in selectedChat;
 
+  const { mutateAsync: sendMessage } = useMutation({
+    mutationFn: ({content, chat}: {content: string, chat: {name: string} | {id: string}}) => createMessage(content, chat),
+    onSuccess: (data, params, result, context) => {
+      return queryClient.setQueryData(
+        [`${kind}_chats`, isSelectedUser ? selectedChat.user.name : selectedChat!.group.id],
+        (prevMessages: {contact: string, messages: { message: MessageResponse }[] }) => ({
+          contact: prevMessages.contact,
+          messages: [...prevMessages.messages, data]
+        })
+      )
+    }
+  });
+
   const onSubmitMessage = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -30,17 +43,7 @@ const MessageInput = ({ kind }: Props) => {
     const messageContent = String(formData.get("content"));
     const reciever = selectedChat!;
 
-    const createdMessage = await createMessage(messageContent, reciever);
-
-    if (!createdMessage) throw new Error("Wasn't able to send message to the server.");
-
-    queryClient.setQueryData(
-      [`${kind}_chats`, isSelectedUser ? selectedChat.user.name : selectedChat!.group.id],
-      (prevMessages: {contact: string, messages: { message: MessageResponse }[] }) => ({
-        contact: prevMessages.contact,
-        messages: [...prevMessages.messages, createdMessage]
-      })
-    )
+    const createdMessage = await sendMessage({content: messageContent, chat: "user" in reciever ? {name: reciever.user.name} : {id: reciever.group.id}});
 
     setText("");
   }

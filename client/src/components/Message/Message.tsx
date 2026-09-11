@@ -1,6 +1,6 @@
 import "./message.css";
 
-import { SelectedChatContext, type MessageResponse, type UserResponse } from "../../utils";
+import { SelectedChatContext, type MessageResponse, type LoggedUserResponse } from "../../utils";
 import { format } from "date-fns";
 import { useContext, useEffect, useRef, useState, type MouseEvent, type SubmitEvent, type ToggleEvent } from "react";
 import { deleteMesssages, editMessage, getMessagesFromChat } from "../../actions";
@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   message: MessageResponse
-  user: UserResponse
+  user: LoggedUserResponse
   index: number
 }
 
@@ -39,7 +39,7 @@ const Message = ({ message, user, index }: Props) => {
   const selectCheckbox = <input type="checkbox" name="select" className="select-message" hidden={!(hovering === "row") && !(checkbox.current && checkbox.current.checked)} ref={checkbox}/>;
 
   const handleDelete = async (e: MouseEvent) => {
-    const deletedMessages = await deleteMesssages([message.id], selectedChat!);
+    const deletedMessages = await deleteMesssages([message.id], "user" in selectedChat! ? {name: selectedChat.user.name} : {id: selectedChat?.group.id!});
 
     const deletedSingleMessage = deletedMessages[0]!;
 
