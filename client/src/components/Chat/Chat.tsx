@@ -1,6 +1,6 @@
 import Message from "../Message/Message";
 import MessageInput from "../MessageInput/MessageInput";
-import { SelectedChatContext, type MessageResponse } from "../../utils";
+import { cn, SelectedChatContext, type MessageResponse } from "../../utils";
 import { Suspense, useContext, useEffect, useRef } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser, getMessagesFromChat } from "../../actions";
@@ -9,9 +9,11 @@ import ChatDetailModal from "../ChatDetailModal/ChatDetailModal";
 import type { EntityKind } from "@packages/utils";
 
 
-type Props = {}
+type Props = {
+  kind: EntityKind
+}
 
-const Chat = (props: Props) => {
+const Chat = ({kind}: Props) => {
   const {data: user} = useSuspenseQuery({
     queryKey: ["user"],
     queryFn: () => getLoggedUser()
@@ -21,7 +23,6 @@ const Chat = (props: Props) => {
   const messagesList = useRef<HTMLDivElement>(null);
 
   const {selectedChat} = useContext(SelectedChatContext);
-  const kind = "user" in selectedChat! ? "user" : "group";
   const isUserSelected = selectedChat && "user" in selectedChat!;
 
   const {data: messages, error} = useSuspenseQuery({
@@ -63,7 +64,7 @@ const Chat = (props: Props) => {
       <ChatDetailModal ref={details}/>
       <header id={`current-${kind}-details`} className="flex to-dark-500 shadow-2xl">
         <div className="details flex flex-1 cursor-pointer p-3 justify-center items-center gap-4" onClick={() => details.current!.showModal()}>
-          <div className="chat-image rounded-full bg-amber-400 size-10"></div>
+          <div className={cn("chat-image rounded-full bg-amber-400 size-10", isUserSelected && selectedChat.status === "online" ? "bg-semantic-ok-600" : "bg-dark-200")}></div>
           <h2 className="chat-name">
             {isUserSelected ? selectedChat.user.profile_name : selectedChat!.group.name}
           </h2>

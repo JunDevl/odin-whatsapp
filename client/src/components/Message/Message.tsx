@@ -1,6 +1,6 @@
 import "./message.css";
 
-import { SelectedChatContext, type MessageResponse, type LoggedUserResponse } from "../../utils";
+import { SelectedChatContext, type MessageResponse, type LoggedUserResponse, cn } from "../../utils";
 import { format } from "date-fns";
 import { useContext, useEffect, useRef, useState, type MouseEvent, type SubmitEvent, type ToggleEvent } from "react";
 import { deleteMesssages, editMessage, getMessagesFromChat } from "../../actions";
@@ -69,7 +69,11 @@ const Message = ({ message, user, index }: Props) => {
   return (
     <li 
       id={id}
-      className={`message${deletedAt && " deleted"} px-10 flex-1 flex gap-2 relative ${isOwn ? "justify-end" : "justify-start"}`}
+      className={cn(
+        "message px-10 flex-1 flex gap-2 relative", 
+        deletedAt && "deleted", 
+        isOwn ? "justify-end" : "justify-start"
+      )}
       onMouseEnter={() => setHovering("row")}
       onMouseLeave={() => setHovering(null)}
       onClick={(e) => {
@@ -90,14 +94,20 @@ const Message = ({ message, user, index }: Props) => {
       </dialog>
       {isOwn && selectCheckbox}
       <article 
-        className={`message-info py-1 px-2 text-start wrap-anywhere relative box-border inline-block text-gray-100 rounded-lg max-w-[60%] ${isOwn ? "bg-blue-800" : "bg-green-600"}`} 
+        className={cn(
+          "message-info py-1 px-2 text-start wrap-anywhere relative box-border inline-block text-gray-100 rounded-lg max-w-[60%]", 
+          isOwn ? "bg-blue-800" : "bg-green-600"
+        )} 
         title={`${sender.name}, ${format(sentAt, "P HH:mm:ss")}`}
         onMouseEnter={() => setHovering("message")}
         onMouseLeave={(e) => (e.relatedTarget as HTMLElement).matches("li.message") ? setHovering("row") : setHovering(null)}
       >
         <button 
           popoverTarget={`${id}-message-menu`}
-          className={`message-menu-arrow absolute right-0 top-0 rounded-full select-none h-8 aspect-square bg-radial ${isOwn ? "from-blue-800" : "from-green-600"} from-35% flex justify-center items-center`} 
+          className={cn(
+            "message-menu-arrow absolute right-0 top-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center", 
+            isOwn ? "from-blue-800" : "from-green-600"
+          )} 
           hidden={!(hovering === "message") && !menuActive}
         >
           <svg className="arrow-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" ref={selectArrowIcon}>

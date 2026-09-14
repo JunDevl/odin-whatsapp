@@ -17,7 +17,7 @@ const Groups = (props: Props) => {
     <>
       <ChatList kind="group" chats={groups}/>
       {selectedChat ? 
-        <Chat/> :
+        <Chat kind="group"/> :
         <UnselectedChat kind="group"/>
       }
     </>

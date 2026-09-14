@@ -19,7 +19,7 @@ export type GroupResponse = Omit<Group, "createdAt"> & {createdAt: string};
 
 export type UserContacts = {friendUser: Contact; status: Status}[];
 
-export type UserGroups = {group: Group}[];
+export type UserGroups = {group: GroupResponse}[];
 
 export type GroupMemberResponse = Omit<MemberOfGroup, "userId" | "joinedAt"> & {
   user: Contact,
@@ -34,6 +34,13 @@ export type ChatType<T> = T extends Contact ? {
   chat: GroupResponse,
   lastMessage: MessageResponse
 }
+
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export const cn = (...inputs: ClassValue[]): string => {
+  return twMerge(clsx(inputs));
+};
 
 // REACT UTILS
 
