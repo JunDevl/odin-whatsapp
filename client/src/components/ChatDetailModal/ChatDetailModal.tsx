@@ -1,13 +1,15 @@
-import { useContext, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject } from "react";
-import { SelectedChatContext, type GroupResponse } from "../../utils";
+import type { DetailedHTMLProps, DialogHTMLAttributes, RefObject } from "react";
+import type { UserContacts, UserGroups } from "../../utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getGroupMembers } from "../../actions";
 import { format } from "date-fns";
 
-const GroupDetails = () => {
-  const {selectedChat} = useContext(SelectedChatContext);
+interface GroupDetailsProps {
+  chat: UserGroups[number]
+}
 
-  const {group} = selectedChat as { group: GroupResponse };
+const GroupDetails = ({chat}: GroupDetailsProps) => {
+  const {group} = chat;
 
   const {data: members} = useSuspenseQuery({
     queryKey: ["group_members", group.id],
@@ -17,7 +19,7 @@ const GroupDetails = () => {
   return <>
     <h2 className="group-name">
       {group.name}
-      <sub className="created-date ml-1">{format((group as any).createdAt, "P")}</sub>
+      <sub className="created-date ml-1">{format(group.createdAt, "P")}</sub>
     </h2>
     <h3 className="mt-3">
       {group.description}
@@ -38,14 +40,13 @@ const GroupDetails = () => {
 
 type Props = {
   ref: RefObject<HTMLDialogElement | null>
+  chat: UserGroups[number] | UserContacts[number]
 } & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
 
-const ChatDetailModal = (props: Props) => {
-  const {selectedChat} = useContext(SelectedChatContext);
+const ChatDetailModal = ({chat, ...props}: Props) => {
+  const isUserSelected = "friendUser" in chat;
 
-  const isUserSelected = "user" in selectedChat!;
-
-  const kind = "user" in selectedChat! ? "user" : "group";
+  const kind = "friendUser" in chat ? "user" : "group";
 
   const modal = props.ref;
 
@@ -53,12 +54,12 @@ const ChatDetailModal = (props: Props) => {
     <dialog {...props} className="w-[50%] open:flex flex-col">
       {kind === "user" && 
         <>
-          <p>{isUserSelected && selectedChat!.user.profile_name}</p>
-          <p>{isUserSelected && selectedChat!.user.name}</p>
+          <p>{isUserSelected && chat.friendUser.profile_name}</p>
+          <p>{isUserSelected && chat.friendUser.name}</p>
         </>
       }
       {kind == "group" &&
-        <GroupDetails/>
+        <GroupDetails chat={chat as any}/>
       }
       <button 
         onClick={() => modal.current!.close()}

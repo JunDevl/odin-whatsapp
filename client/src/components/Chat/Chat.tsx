@@ -1,19 +1,27 @@
 import Message from "../Message/Message";
 import MessageInput from "../MessageInput/MessageInput";
-import { cn, SelectedChatContext, type MessageResponse } from "../../utils";
-import { Suspense, useContext, useEffect, useRef } from "react";
+import { cn } from "../../utils";
+import { Suspense, useEffect, useRef } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser, getMessagesFromChat } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
 import ChatDetailModal from "../ChatDetailModal/ChatDetailModal";
+import UnselectedChat from "../UnselectedChat/UnselectedChat";
+import type { UserContacts, UserGroups } from "../../utils";
 import type { EntityKind } from "@packages/utils";
 
 
-type Props = {
-  kind: EntityKind
+type Props<T extends EntityKind> = T extends "user" ? {
+  kind: T
+  selectedChat?: UserContacts[number] | null
+} : {
+  kind: T
+  selectedChat?: UserGroups[number] | null
 }
 
-const Chat = ({kind}: Props) => {
+const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
+  if (!selectedChat) return <UnselectedChat kind={kind}/>
+
   const {data: user} = useSuspenseQuery({
     queryKey: ["user"],
     queryFn: () => getLoggedUser()
@@ -22,12 +30,13 @@ const Chat = ({kind}: Props) => {
   const details = useRef<HTMLDialogElement>(null);
   const messagesList = useRef<HTMLDivElement>(null);
 
-  const {selectedChat} = useContext(SelectedChatContext);
-  const isUserSelected = selectedChat && "user" in selectedChat!;
+  const isUserChat = "friendUser" in selectedChat;
+
+  const chat = isUserChat ? selectedChat.friendUser : selectedChat.group;
 
   const {data: messages, error} = useSuspenseQuery({
-    queryKey: [`${kind}_chats`, isUserSelected ? selectedChat.user.name : selectedChat?.group.id],
-    queryFn: () => getMessagesFromChat(kind, isUserSelected ? selectedChat.user.name : selectedChat?.group.id!),
+    queryKey: [`${kind}_chats`, isUserChat ? chat.name : (chat as any).id],
+    queryFn: () => getMessagesFromChat(kind, isUserChat ? chat.name : (chat as any).id),
     staleTime: Infinity
   })
 
@@ -61,12 +70,12 @@ const Chat = ({kind}: Props) => {
 
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
-      <ChatDetailModal ref={details}/>
+      <ChatDetailModal ref={details} chat={selectedChat}/>
       <header id={`current-${kind}-details`} className="flex to-dark-500 shadow-2xl">
         <div className="details flex flex-1 cursor-pointer p-3 justify-center items-center gap-4" onClick={() => details.current!.showModal()}>
-          <div className={cn("chat-image rounded-full bg-amber-400 size-10", isUserSelected && selectedChat.status === "online" ? "bg-semantic-ok-600" : "bg-dark-200")}></div>
+          <div className={cn("chat-image rounded-full bg-amber-400 size-10", isUserChat && selectedChat.status === "online" ? "bg-semantic-ok-600" : "bg-dark-200")}></div>
           <h2 className="chat-name">
-            {isUserSelected ? selectedChat.user.profile_name : selectedChat!.group.name}
+            {isUserChat ? (chat as any).profile_name : chat.name}
           </h2>
         </div>
         <div className="search search-message h-8 bg-dark-500 self-center mr-2">
@@ -86,13 +95,13 @@ const Chat = ({kind}: Props) => {
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
               {messages.messages.map(({message}, i) => 
-                <Message user={user!} message={message} key={i} index={i}/>
+                <Message user={user!} message={message} chat={selectedChat} index={i} key={i}/>
               )}
             </Suspense>
           </ErrorBoundary>
         </ul>
       </main>
-      <MessageInput kind={kind}/>
+      <MessageInput kind={kind} chat={selectedChat}/>
     </div>
   )
 }

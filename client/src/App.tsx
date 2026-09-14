@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import Menu from "./components/Menu/Menu";
-import { ContactsContext, GroupsContext, SelectedChatContext, type Contact, type MessageResponse, type SelectedChat } from "./utils";
+import { ContactsContext, GroupsContext, SelectedChatContext, type Contact, type MessageResponse, type SelectedChatID } from "./utils";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getUserContacts, getUserGroups, socket } from "./actions";
@@ -10,8 +10,8 @@ import { ErrorBoundary } from "react-error-boundary";
 const App = () => {
   const queryClient = useQueryClient();
 
-  const [selectedChat, setSelectedChat] = useState<SelectedChat | null>(null);
-  const selectedChatState = {selectedChat, setSelectedChat};
+  const [selectedChatID, setSelectedChatID] = useState<SelectedChatID | null>(null);
+  const selectedChatState = {selectedChatID, setSelectedChatID};
 
   const groups = useSuspenseQuery({
     queryKey: ["user", "groups"],
@@ -82,7 +82,7 @@ const App = () => {
       socket.off("editMessage");
       socket.off("deleteMessage");
     };
-  }, [selectedChat])
+  }, [selectedChatID])
 
   return (
     <SelectedChatContext value={selectedChatState}>

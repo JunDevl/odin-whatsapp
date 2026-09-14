@@ -1,21 +1,23 @@
 import "./message.css";
 
-import { SelectedChatContext, type MessageResponse, type LoggedUserResponse, cn } from "../../utils";
+import type { MessageResponse, LoggedUserResponse, UserContacts, UserGroups } from "../../utils";
+import { cn } from "../../utils";
 import { format } from "date-fns";
-import { useContext, useEffect, useRef, useState, type MouseEvent, type SubmitEvent, type ToggleEvent } from "react";
-import { deleteMesssages, editMessage, getMessagesFromChat } from "../../actions";
+import type { MouseEvent } from "react";
+import { useRef, useState,  } from "react";
+import { deleteMesssages } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   message: MessageResponse
   user: LoggedUserResponse
+  chat: UserGroups[number] | UserContacts[number]
   index: number
 }
 
-const Message = ({ message, user, index }: Props) => {
-  const {selectedChat} = useContext(SelectedChatContext);
-  const kind = "user" in selectedChat! ? "user" : "group";
-  const isUserSelected = selectedChat && "user" in selectedChat!;
+const Message = ({ message, user, chat, index }: Props) => {
+  const kind = "friendUser" in chat ? "user" : "group";
+  const isUserSelected = "friendUser" in chat;
 
   const queryClient = useQueryClient();
 
@@ -38,13 +40,13 @@ const Message = ({ message, user, index }: Props) => {
 
   const selectCheckbox = <input type="checkbox" name="select" className="select-message" hidden={!(hovering === "row") && !(checkbox.current && checkbox.current.checked)} ref={checkbox}/>;
 
-  const handleDelete = async (e: MouseEvent) => {
-    const deletedMessages = await deleteMesssages([message.id], "user" in selectedChat! ? {name: selectedChat.user.name} : {id: selectedChat?.group.id!});
+  const handleDelete = async () => {
+    const deletedMessages = await deleteMesssages([message.id], "friendUser" in chat ? {name: chat.friendUser.name} : {id: chat.group.id});
 
     const deletedSingleMessage = deletedMessages[0]!;
 
     queryClient.setQueryData(
-      [`${kind}_chats`, isUserSelected ? selectedChat.user.name : selectedChat?.group.id],
+      [`${kind}_chats`, isUserSelected ? chat.friendUser.name : chat.group.id],
       (prevMessages: {contact: string, messages: { message: MessageResponse }[] }) => {
         const {contact, messages} = prevMessages;
 

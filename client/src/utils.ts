@@ -46,19 +46,18 @@ export const cn = (...inputs: ClassValue[]): string => {
 
 import { createContext } from "react";
 
-export type SelectedChat = {
-  group: GroupResponse
+export type SelectedChatID = {
+  id: string // If it's a group
 } | {
-  user: Contact
-  status: "online" | "offline"
+  name: string // If it's a contact
 }
 
 export const SelectedChatContext = createContext<{
-  selectedChat: SelectedChat | null,
-  setSelectedChat: Dispatch<React.SetStateAction<SelectedChat | null>>
+  selectedChatID: SelectedChatID | null,
+  setSelectedChatID: Dispatch<React.SetStateAction<SelectedChatID | null>>
 }>({
-  selectedChat: null,
-  setSelectedChat: () => {}
+  selectedChatID: null,
+  setSelectedChatID: () => {}
 });
 
 export const ContactsContext = createContext<UserContacts | null>(null);

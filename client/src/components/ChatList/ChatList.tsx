@@ -2,42 +2,27 @@ import "./chatlist.css";
 import { Suspense, useContext, useRef } from "react";
 import type { UserContacts, UserGroups } from "../../utils";
 import NewChatModal from "../NewChatModal/NewChatModal";
-import { ContactsContext, GroupsContext, SelectedChatContext } from "../../utils";
+import { SelectedChatContext } from "../../utils";
 import type { EntityKind } from "@packages/utils";
-import { useQueries } from "@tanstack/react-query";
-import { getMessagesFromChat } from "../../actions";
 import { cn } from "../../utils";
 
 type Props<T extends EntityKind> = T extends "user" ? {
   kind: T
   chats: UserContacts
+  selectedChat?: UserContacts[number] | null
 } : {
   kind: T
   chats: UserGroups
+  selectedChat?: UserGroups[number] | null
 }
 
-const ChatList = <T extends EntityKind, >({ kind, chats }: Props<T>) => {
-  // const {data: messages, error} = useQueries({
-  //   queries: chats.map(chat => ({
-  //     queryKey: [`${kind}_chats`, "friendUser" in chat ? chat.friendUser.name : chat.group.id],
-  //     queryFn: () => getMessagesFromChat(kind, "friendUser" in chat ? chat.friendUser.name : chat.group.id),
-  //     staleTime: Infinity
-  //   }))
-  // })
-
-  const testable = () => {
-    if (kind === "user") {
-      chats[0]!.friendUser
-    } else if (kind === "group") {
-      chats[0]!.group
-    }
-  }
-
+const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T>) => {
   const isContacts = kind === "user";
 
+  const {setSelectedChatID} = useContext(SelectedChatContext);
+
   const newChatModal = useRef<HTMLDialogElement>(null);
-  const {selectedChat, setSelectedChat} = useContext(SelectedChatContext);
-  const isUserSelected = selectedChat && "user" in selectedChat!;
+  const isUserSelected = selectedChat && "friendUser" in selectedChat!;
   const isGroupSelected = selectedChat && "group" in selectedChat!;
 
   const capitalKind = `${kind[0].toUpperCase()}${kind.slice(1)}`;
@@ -75,23 +60,28 @@ const ChatList = <T extends EntityKind, >({ kind, chats }: Props<T>) => {
                 className={`${kind} hover:bg-dark-300 cursor-pointer data-[selected=true]:bg-dark-300 py-2 rounded-md flex items-center justify-center gap-2`} 
                 data-selected={
                   isUserSelected && isContacts ? 
-                  "friendUser" in chat && (selectedChat?.user.name === chat.friendUser.name) :
+                  "friendUser" in chat && (selectedChat?.friendUser.name === chat.friendUser.name) :
                   (isGroupSelected && "group" in chat) &&
                   selectedChat?.group.id === chat.group.id
                 }
                 key={i} 
-                onClick={() => setSelectedChat(() => {
-                  if ("status" in chat) return { [kind]: chat.friendUser, status: chat.status } as any
+                onClick={() => setSelectedChatID(() => {
+                  if ("status" in chat) return { name: chat.friendUser.name };
 
-                  return { [kind]: chat.group }
+                  return { id: chat.group.id };
                 })}
               >
-                {isContacts && <span className={cn(
-                  `block size-2 rounded-full`, 
-                  (chat && "status" in chat) 
-                  && chat.status === "online" ? 
-                  "bg-semantic-ok-600" : "bg-dark-200")
-                  }></span>}
+                {isContacts && 
+                  <span 
+                    className={cn(
+                      `block size-2 rounded-full`, 
+                      (chat && "status" in chat) 
+                      && chat.status === "online" ? 
+                      "bg-semantic-ok-600" : "bg-dark-200"
+                    )}
+                  >
+                    
+                  </span>}
                 {
                   "status" in chat ? 
                   chat.friendUser.profile_name : 

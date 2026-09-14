@@ -1,70 +1,22 @@
-import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import Chat from "../../components/Chat/Chat";
 import ChatList from "../../components/ChatList/ChatList";
-import { getMessagesFromChat, getUserContacts } from "../../actions";
-import { ErrorBoundary } from "react-error-boundary";
 import { useContext } from "react";
 import { ContactsContext, SelectedChatContext } from "../../utils";
-import UnselectedChat from "../../components/UnselectedChat/UnselectedChat";
-
-// const boilerplateMessages = [
-//   {
-//     content: "Yo!",
-//     sentAt: new Date("2026-08-05 8:00"),
-//     editedAt: null,
-//   },
-//   {
-//     content: "You aight?",
-//     sentAt: new Date("2026-08-05 9:00"),
-//     editedAt: null,
-//   },
-//   {
-//     content: "...",
-//     sentAt: new Date("2026-08-05 10:00"),
-//     editedAt: null,
-//   },
-// ]
-
-// const boilerplateConvos = [
-//   {
-//     chat: {name: "john_doe", profile_name: "John Doe"},
-//     lastMessage: {
-//       content: "...",
-//       sentAt: new Date("2026-08-05 10:00"),
-//       editedAt: null
-//     }
-//   },
-//   {
-//     chat: {name: "yo_mama", profile_name: "Yo Mama"},
-//     lastMessage: {
-//       content: "Fuck the police!",
-//       sentAt: new Date("2026-08-04 10:00"),
-//       editedAt: null
-//     }
-//   },
-//   {
-//     chat: {name: "jun", profile_name: "Jun"},
-//     lastMessage: {
-//       content: "I am ironman",
-//       sentAt: new Date("2026-03-05 10:00"),
-//       editedAt: null
-//     }
-//   },
-// ]
 
 type Props = {}
 
 const Conversations = (props: Props) => {
   const contacts = useContext(ContactsContext)!;
-  const {selectedChat} = useContext(SelectedChatContext);
+  const {selectedChatID} = useContext(SelectedChatContext);
+
+  const selectedContactID = selectedChatID && selectedChatID as {name: string};
+
+  const selectedChat = selectedChatID && contacts.find(({friendUser}) => friendUser.name === selectedContactID?.name);
 
   return (
     <>
-      <ChatList kind="user" chats={contacts}/>
-      {selectedChat ? 
-        <Chat kind="user"/> :
-        <UnselectedChat kind="user"/>
-      }
+      <ChatList kind="user" chats={contacts} selectedChat={selectedChat}/>
+      <Chat kind="user" selectedChat={selectedChat}/> :
     </>
   )
 }

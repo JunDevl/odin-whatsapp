@@ -1,17 +1,18 @@
 import "./messageinput.css"
 
-import { useEffect, useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
-import { cn, SelectedChatContext, type MessageResponse, type SelectedChat } from "../../utils";
-import { useContext } from "react";
+import { useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
+import { cn } from "../../utils";
+import type { MessageResponse, UserContacts, UserGroups } from "../../utils";
 import { createMessage } from "../../actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
 
 type Props = {
   kind: EntityKind
+  chat: UserGroups[number] | UserContacts[number]
 };
 
-const MessageInput = ({ kind }: Props) => {
+const MessageInput = ({ kind, chat }: Props) => {
   const [text, setText] = useState("");
 
   const queryClient = useQueryClient();
@@ -19,14 +20,13 @@ const MessageInput = ({ kind }: Props) => {
   const form = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
 
-  const {selectedChat} = useContext(SelectedChatContext);
-  const isSelectedUser = selectedChat && "user" in selectedChat;
+  const isSelectedUser = "friendUser" in chat;
 
   const { mutateAsync: sendMessage } = useMutation({
     mutationFn: ({content, chat}: {content: string, chat: {name: string} | {id: string}}) => createMessage(content, chat),
     onSuccess: (data, params, result, context) => {
       return queryClient.setQueryData(
-        [`${kind}_chats`, isSelectedUser ? selectedChat.user.name : selectedChat!.group.id],
+        [`${kind}_chats`, isSelectedUser ? chat.friendUser.name : chat!.group.id],
         (prevMessages: {contact: string, messages: { message: MessageResponse }[] }) => ({
           contact: prevMessages.contact,
           messages: [...prevMessages.messages, data]
@@ -41,9 +41,9 @@ const MessageInput = ({ kind }: Props) => {
     const formData = new FormData(form.current!);
     
     const messageContent = String(formData.get("content"));
-    const reciever = selectedChat!;
+    const reciever = chat;
 
-    const createdMessage = await sendMessage({content: messageContent, chat: "user" in reciever ? {name: reciever.user.name} : {id: reciever.group.id}});
+    const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}});
 
     setText("");
   }
