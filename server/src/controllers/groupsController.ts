@@ -3,6 +3,7 @@ import { param, body, validationResult, matchedData, type ValidationChain } from
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
 import type { Group, User } from "../../generated/prisma/client.ts";
+import { connectedUsers } from "../main.ts";
 
 const createGroupValidator: ValidationChain[] = [
   body("name")
@@ -192,7 +193,16 @@ export const getGroupMembers: RequestHandler = async (req, res, next) => {
 
   if (members instanceof PromiseError) return res.status(400).send(members.error);
 
-  if (!members) return res.json([]);
+  const groupMembers = members ?
+      members.members.map(member => {
+        const friendWithStatus = {
+          ...member,
+          status: connectedUsers.has(member.user.name) ? "online" : "offline"
+        } as const
+  
+        return friendWithStatus;
+      }) 
+    : [];
 
-  return res.json(members.members);
+  return res.json(groupMembers);
 }

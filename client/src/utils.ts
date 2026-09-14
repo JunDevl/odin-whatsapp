@@ -23,6 +23,7 @@ export type UserGroups = {group: GroupResponse}[];
 
 export type GroupMemberResponse = Omit<MemberOfGroup, "userId" | "joinedAt"> & {
   user: Contact,
+  status: Status,
   joinedAt: string
 }
 
