@@ -1,4 +1,4 @@
-import { useRef, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject, type SubmitEvent } from "react";
+import { useRef, type ComponentProps, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject, type SubmitEvent } from "react";
 import { addContact, createGroup, getUserContacts, getUserGroups } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
@@ -6,7 +6,7 @@ import type { EntityKind } from "@packages/utils";
 type Props = {
   kind: EntityKind,
   ref: RefObject<HTMLDialogElement | null>
-} & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
+} & Omit<ComponentProps<"dialog">, "className" | "ref">
 
 const NewChatModal = ({ kind, ...props }: Props) => {
   const queryClient = useQueryClient();

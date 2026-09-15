@@ -254,7 +254,7 @@ io.on("connection", socket => {
     if (recieverKind === "group") {
       if (!socket.rooms.has(recieverIdentification)) socket.join(recieverIdentification);
 
-      socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload)
+      socket.broadcast.to(recieverIdentification).emit(eventName, ...eventEmitPayload);
     } else {
       const connectedReciever = connectedUsers.get(recieverIdentification);
 
