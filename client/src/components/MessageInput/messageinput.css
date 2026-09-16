@@ -15,3 +15,15 @@
   padding: 0.6rem;
   border-radius: 100vw;
 }
+
+#attach {
+  anchor-name: --input;
+}
+
+#file-attach-menu {
+  position: absolute;
+  position-anchor: --input;
+  position-area: top span-right;
+}
+
+#file-attach-menu:popover-open {}
