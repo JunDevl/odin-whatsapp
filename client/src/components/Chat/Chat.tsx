@@ -1,11 +1,13 @@
-import Message from "../Message/Message";
-import MessageInput from "../MessageInput/MessageInput";
+import "./chat.css"
+
+import Message from "./Message/Message";
+import MessageInput from "./MessageInput/MessageInput";
 import { cn } from "../../utils";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getLoggedUser, getMessagesFromChat } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
-import ChatDetailModal from "../ChatDetailModal/ChatDetailModal";
+import ChatDetailModal  from "./ChatDetailModal/ChatDetailModal";
 import UnselectedChat from "../UnselectedChat/UnselectedChat";
 import type { UserContacts, UserGroups } from "../../utils";
 import type { EntityKind } from "@packages/utils";
@@ -30,13 +32,13 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
   const details = useRef<HTMLDialogElement>(null);
   const messagesList = useRef<HTMLDivElement>(null);
 
+  const [selectedMessages, setSelectedMessages] = useState<Set<number>>(new Set());
+
   const isUserChat = "friendUser" in selectedChat;
-
-  const chat = isUserChat ? selectedChat.friendUser : selectedChat.group;
-
+  
   const {data: messages, error} = useSuspenseQuery({
-    queryKey: [`${kind}_chats`, isUserChat ? chat.name : (chat as any).id],
-    queryFn: () => getMessagesFromChat(kind, isUserChat ? chat.name : (chat as any).id),
+    queryKey: [`${kind}_chats`, isUserChat ? selectedChat.friendUser.name : selectedChat.group.id],
+    queryFn: () => getMessagesFromChat(kind, isUserChat ? selectedChat.friendUser.name : selectedChat.group.id),
     staleTime: Infinity
   })
 
@@ -71,18 +73,18 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
   return (
     <div id="chat" className="flex flex-col flex-1 overflow-hidden">
       <ChatDetailModal ref={details} chat={selectedChat}/>
-      <header id={`current-${kind}-details`} className="flex to-dark-500 shadow-2xl">
+      <header id={`current-${kind}-details`} className="chat-header flex to-dark-500 shadow-2xl">
         <div className="details flex flex-1 cursor-pointer p-3 justify-center items-center gap-4" onClick={() => details.current!.showModal()}>
           <div className={cn("chat-image rounded-full bg-amber-400 size-10", isUserChat && selectedChat.status === "online" ? "bg-semantic-ok-600" : "bg-dark-200")}></div>
           <h2 className="chat-name">
-            {isUserChat ? (chat as any).profile_name : chat.name}
+            {isUserChat ? selectedChat.friendUser.profile_name : selectedChat.group.name}
           </h2>
         </div>
         <div className="search search-message h-8 bg-dark-500 self-center mr-2">
           <input type="text" name="searchMessage" id="search-message" placeholder="Search Messages"/>
           <button>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M 10 2 C 5.5965257 2 2 5.5965291 2 10 C 2 14.403471 5.5965257 18 10 18 C 11.752132 18 13.370523 17.422074 14.691406 16.458984 L 19.845703 21.613281 A 1.250125 1.250125 0 1 0 21.613281 19.845703 L 16.458984 14.691406 C 17.422074 13.370523 18 11.75213 18 10 C 18 5.5965291 14.403474 2 10 2 z M 10 4.5 C 13.052375 4.5 15.5 6.947627 15.5 10 C 15.5 13.052373 13.052375 15.5 10 15.5 C 6.9476251 15.5 4.5 13.052373 4.5 10 C 4.5 6.947627 6.9476251 4.5 10 4.5 z"/>
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <use href="/icons.svg#search-magnifying-glass"/>
             </svg>
           </button>
         </div>
@@ -95,12 +97,54 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
               {messages.messages.map(({message}, i) => 
-                <Message user={user!} message={message} chat={selectedChat} index={i} key={i}/>
+                <Message 
+                  user={user!} 
+                  message={message} 
+                  chat={selectedChat} 
+                  index={i} 
+                  key={i}
+                  onSelect={s => setSelectedMessages(sm => {
+                    const newSelected = new Set(sm);
+
+                    s ? newSelected.add(i) : newSelected.delete(i);
+
+                    return newSelected;
+                  })}
+                />
               )}
             </Suspense>
           </ErrorBoundary>
         </ul>
       </main>
+      <dialog 
+        id="messages-tool" 
+        open={!!selectedMessages.size}
+        className="top-4 rounded-4xl p-1 justify-between gap-2"
+      >
+        <button>edit</button>
+        <button>delete</button>
+        <button>info</button>
+        <button>share</button>
+        <button 
+          onClick={() => {
+            setSelectedMessages(sm => {
+              const newSelected = new Set(sm);
+
+              newSelected.clear();
+
+              return newSelected;
+            })
+
+            selectedMessages.forEach(i => {
+              const checkbox = document.querySelector(`input#select-button${i}`) as HTMLInputElement;
+
+              checkbox.checked = false;
+            })
+          }}
+        >
+          x
+        </button>
+      </dialog>
       <MessageInput kind={kind} chat={selectedChat}/>
     </div>
   )

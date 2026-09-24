@@ -1,11 +1,13 @@
-import { useEffect, type DetailedHTMLProps, type DialogHTMLAttributes, type RefObject } from "react";
-import { cn, type Contact, type UserContacts, type UserGroups } from "../../utils";
+import { useEffect } from "react";
+import { cn } from "../../../utils";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { getGroupMembers, socket } from "../../actions";
+import { getGroupMembers, socket } from "../../../actions";
 import { format } from "date-fns";
+import type { ComponentProps, RefObject } from "react";
+import type { Contact, UserContacts, UserGroups } from "../../../utils";
 import type { Status } from "@packages/utils";
 
-interface GroupDetailsProps {
+type GroupDetailsProps = {
   chat: UserGroups[number]
 }
 
@@ -78,7 +80,7 @@ const GroupDetails = ({chat}: GroupDetailsProps) => {
 type Props = {
   ref: RefObject<HTMLDialogElement | null>
   chat: UserGroups[number] | UserContacts[number]
-} & Omit<DetailedHTMLProps<DialogHTMLAttributes<HTMLDialogElement>, HTMLDialogElement>, "className" | "ref">
+} & Omit<ComponentProps<"dialog">, "className" | "ref">
 
 const ChatDetailModal = ({chat, ...props}: Props) => {
   const isUserSelected = "friendUser" in chat;
@@ -88,7 +90,7 @@ const ChatDetailModal = ({chat, ...props}: Props) => {
   const modal = props.ref;
 
   return (
-    <dialog {...props} className="w-[50%] open:flex flex-col">
+    <dialog {...props} className="modal w-[50%] open:flex flex-col">
       {kind === "user" && 
         <>
           <p>{isUserSelected && chat.friendUser.profile_name}</p>

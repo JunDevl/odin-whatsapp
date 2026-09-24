@@ -1,12 +1,12 @@
 import "./messageinput.css"
 
 import { useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
-import { cn } from "../../utils";
-import type { MessageResponse, UserContacts, UserGroups } from "../../utils";
-import { createMessage } from "../../actions";
+import { cn } from "../../../utils";
+import type { MessageResponse, UserContacts, UserGroups } from "../../../utils";
+import { createMessage } from "../../../actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
-import { ContextMenu, MenuItem } from "../ContextMenu/ContextMenu";
+import { ContextMenu, MenuItem } from "../../ContextMenu/ContextMenu";
 
 type Props = {
   kind: EntityKind
@@ -14,9 +14,10 @@ type Props = {
 };
 
 const MessageInput = ({ kind, chat }: Props) => {
-  const [text, setText] = useState("");
-
   const queryClient = useQueryClient();
+
+  const [text, setText] = useState("");
+  const [attachments, setAttachments] = useState<null | FileList>(null);
 
   const form = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -85,31 +86,34 @@ const MessageInput = ({ kind, chat }: Props) => {
               popoverTarget="file-attach-menu"
               type="button"
             >
-              <ContextMenu id="file-attach-menu" ref={attachMenu}>
-                <MenuItem className="m-2">
-                  <form 
-                    action="POST" 
-                    id="add-file" 
-                    onSubmit={e => e.preventDefault()}
-                  >
-                    <label 
-                      htmlFor="file-input"
-                    >
-                      Choose a file
-                    </label>
-                    <input 
-                      type="file" 
-                      name="file-input" 
-                      id="file-input"
-                      hidden
-                    />
-                  </form>
-                </MenuItem>
-              </ContextMenu>
-              <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 1024 1024">
+              <svg className="clips" xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 1024 1024">
                 <path fill="currentColor" d="M779.3 196.6c-94.2-94.2-247.6-94.2-341.7 0l-261 260.8c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0 0 12.7 0l261-260.8c32.4-32.4 75.5-50.2 121.3-50.2s88.9 17.8 121.2 50.2c32.4 32.4 50.2 75.5 50.2 121.2c0 45.8-17.8 88.8-50.2 121.2l-266 265.9l-43.1 43.1c-40.3 40.3-105.8 40.3-146.1 0c-19.5-19.5-30.2-45.4-30.2-73s10.7-53.5 30.2-73l263.9-263.8c6.7-6.6 15.5-10.3 24.9-10.3h.1c9.4 0 18.1 3.7 24.7 10.3c6.7 6.7 10.3 15.5 10.3 24.9c0 9.3-3.7 18.1-10.3 24.7L372.4 653c-1.7 1.7-2.6 4-2.6 6.4s.9 4.7 2.6 6.4l36.9 36.9a9 9 0 0 0 12.7 0l215.6-215.6c19.9-19.9 30.8-46.3 30.8-74.4s-11-54.6-30.8-74.4c-41.1-41.1-107.9-41-149 0L463 364L224.8 602.1A172.22 172.22 0 0 0 174 724.8c0 46.3 18.1 89.8 50.8 122.5c33.9 33.8 78.3 50.7 122.7 50.7s88.8-16.9 122.6-50.7l309.2-309C824.8 492.7 850 432 850 367.5c.1-64.6-25.1-125.3-70.7-170.9"/>
               </svg>
             </button>
+            <ContextMenu id="file-attach-menu" ref={attachMenu} className="[&>ul>li>button]:bg-dark-500 [&>ul>li>button:not(.delete)]:hover:bg-dark-600">
+              <MenuItem className="m-2 border border-dark-300" type="button">
+                <label 
+                  htmlFor="file-input"
+                  className="flex flex-col items-center cursor-pointer gap-1 p-2"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-9">
+                    <path d="M12 18V12M12 12L14 14M12 12L10 14M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H15.8C16.9201 21 17.4802 21 17.908 20.782C18.2843 20.5903 18.5903 20.2843 18.782 19.908C19 19.4802 19 18.9201 19 17.8V9M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                  <p>Choose a file</p>
+                </label>
+                <input 
+                  type="file" 
+                  name="file-input" 
+                  id="file-input"
+                  onInput={e => {
+                    const target = e.target as HTMLInputElement;
+
+                    setAttachments(target.files);
+                  }}
+                  hidden
+                />
+              </MenuItem>
+            </ContextMenu>
           </div>
           <textarea 
             className="pl-2 min-w-0 flex-1 field-sizing-content focus:outline-0 self-center"

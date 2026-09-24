@@ -1,0 +1,8 @@
+svg.arrow-icon {
+  color: currentColor;
+  transition: all 200ms;
+
+  &.open {
+    transform: rotate(90deg);
+  }
+}

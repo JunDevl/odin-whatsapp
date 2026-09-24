@@ -2,13 +2,14 @@ import { useRef, type ComponentProps, type DetailedHTMLProps, type DialogHTMLAtt
 import { addContact, createGroup, getUserContacts, getUserGroups } from "../../actions";
 import { useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
+import { cn } from "../../utils";
 
 type Props = {
   kind: EntityKind,
   ref: RefObject<HTMLDialogElement | null>
-} & Omit<ComponentProps<"dialog">, "className" | "ref">
+} & Omit<ComponentProps<"dialog">, "ref">
 
-const NewChatModal = ({ kind, ...props }: Props) => {
+const NewChatModal = ({ kind, className, ...props }: Props) => {
   const queryClient = useQueryClient();
 
   const modal = props.ref;
@@ -39,7 +40,7 @@ const NewChatModal = ({ kind, ...props }: Props) => {
   }
 
   return (
-    <dialog {...props}>
+    <dialog {...props} className={cn("modal", className)}>
       <form 
         method="POST" 
         onSubmit={handleSubmit} 

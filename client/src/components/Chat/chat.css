@@ -1,0 +1,12 @@
+.chat-header {
+  anchor-name: --header;
+}
+
+#messages-tool {
+  position-anchor: --header;
+  position-area: bottom;
+}
+
+#messages-tool:popover-open {
+  display: flex;
+}

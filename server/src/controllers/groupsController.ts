@@ -158,8 +158,8 @@ export const getUserGroups: RequestHandler = async (req, res, next) => {
       groups: { 
         select: { 
           group: true
-        } 
-      } 
+        }
+      }
     }
   }))
 

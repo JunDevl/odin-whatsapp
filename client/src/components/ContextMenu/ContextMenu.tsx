@@ -10,7 +10,7 @@ type MenuItemProps = {
 
 export const MenuItem = ({name, children, className, ...props}: MenuItemProps) => {
   return <li>
-    <button className={cn(className, name)} {...props}>
+    <button className={cn(name, className)} {...props}>
       {children}
       {name && <p className="info">{`${name[0].toUpperCase()}${name.slice(1)}`}</p>}
     </button>
@@ -26,10 +26,10 @@ export const ContextMenu = ({children, className, ...props}: ContextMenuProps) =
   return (
     <div 
       {...props}
-      className={cn(className, "bg-dark-500 z-10 rounded-2xl border border-dark-200 text-sm")}
+      className={cn("bg-dark-500 z-10 rounded-2xl border border-dark-200 text-sm", className)}
       popover="auto"
     >
-      <ul className="detail overflow-hidden p-1 flex *:flex flex-col items-stretch [&>li>button]:bg-dark-500 [&>li>button]:flex [&>li>button]:flex-1 [&>li>button]:items-center [&>li>button]:gap-2.5 [&>li>button:not(.trash)]:hover:bg-dark-600 [&>li>button]:cursor-pointer [&>li>button>svg]:w-5 [&>li>button>p]:flex-1 [&>li>button>p]:text-left">
+      <ul className="detail overflow-hidden p-1 flex *:flex flex-col items-stretch [&>li>button]:flex [&>li>button]:flex-1 [&>li>button]:items-center [&>li>button]:gap-2.5 [&>li>button]:cursor-pointer [&>li>button>svg]:w-5 [&>li>button>p]:flex-1 [&>li>button>p]:text-left">
         {children}
       </ul>
     </div>
