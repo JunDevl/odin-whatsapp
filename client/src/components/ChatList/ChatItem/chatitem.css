@@ -1,3 +1,11 @@
+.chat-item {
+  anchor-scope: --chat-menu-arrow;
+}
+
+.chat-menu-arrow {
+  anchor-name: --chat-menu-arrow;
+}
+
 svg.arrow-icon {
   color: currentColor;
   transition: all 200ms;
@@ -5,4 +13,17 @@ svg.arrow-icon {
   &.open {
     transform: rotate(90deg);
   }
+}
+
+.chat-menu {
+  position: absolute;
+  position-try-fallbacks: --popover;
+  position-anchor: --chat-menu-arrow;
+  position-area: bottom span-right;
+}
+
+.chat-menu:popover-open {}
+
+@position-try --popover {
+  position-area: right span-top;
 }

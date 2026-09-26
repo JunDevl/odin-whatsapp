@@ -1,6 +1,5 @@
-import type { ComponentProps, JSX, ReactElement, ReactNode, RefObject, SVGProps } from "react";
+import type { ComponentProps, ReactElement, ReactNode, RefObject } from "react";
 import "./contextmenu.css";
-import type React from "react";
 import { cn } from "../../utils";
 
 type MenuItemProps = {
@@ -10,7 +9,11 @@ type MenuItemProps = {
 
 export const MenuItem = ({name, children, className, ...props}: MenuItemProps) => {
   return <li>
-    <button className={cn(name, className)} {...props}>
+    <button 
+      className={cn(`flex flex-1 items-center gap-2.5 cursor-pointer [&>svg]:size-5 [&>p]:flex-1 [&>p]:text-left`, 
+        name, 
+        className
+      )} {...props}>
       {children}
       {name && <p className="info">{`${name[0].toUpperCase()}${name.slice(1)}`}</p>}
     </button>
@@ -29,7 +32,7 @@ export const ContextMenu = ({children, className, ...props}: ContextMenuProps) =
       className={cn("bg-dark-500 z-10 rounded-2xl border border-dark-200 text-sm", className)}
       popover="auto"
     >
-      <ul className="detail overflow-hidden p-1 flex *:flex flex-col items-stretch [&>li>button]:flex [&>li>button]:flex-1 [&>li>button]:items-center [&>li>button]:gap-2.5 [&>li>button]:cursor-pointer [&>li>button>svg]:w-5 [&>li>button>p]:flex-1 [&>li>button>p]:text-left">
+      <ul className="detail overflow-hidden p-1 flex *:flex flex-col">
         {children}
       </ul>
     </div>

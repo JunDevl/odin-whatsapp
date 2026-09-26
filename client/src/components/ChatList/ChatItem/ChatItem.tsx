@@ -1,5 +1,6 @@
+import "./chatitem.css";
+
 import type { EntityKind } from "@packages/utils";
-import "../chatlist.css";
 import { cn, type UserContacts, type UserGroups } from "../../../utils";
 import { useRef, useState, type ComponentProps } from "react";
 import { ContextMenu, MenuItem } from "../../ContextMenu/ContextMenu";
@@ -12,6 +13,8 @@ type Props = {
 } & ComponentProps<"li">
 
 const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => {
+  const id = "friendUser" in chat ? chat.friendUser.name : chat.group.id;
+
   const isContacts = kind === "user";
   const [hovering, setHovering] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
@@ -44,7 +47,7 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
         chat.group.name
       }
       <button 
-        // popoverTarget={`${id}-message-menu`}
+        popoverTarget={`${id}-chat-menu`}
         className="chat-menu-arrow absolute right-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center"
         hidden={!hovering && !menuActive}
       >
@@ -53,6 +56,7 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
         </svg>
       </button>
       <ContextMenu 
+        id={`${id}-chat-menu`}
         className="chat-menu [&>ul>li>button]:bg-dark-500 [&>ul>li>button:not(.delete)]:hover:bg-dark-600"
         ref={chatContextMenu}
         onToggle={(e) => setMenuActive(e.newState === "open" ? true : false)}
@@ -60,8 +64,10 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
           selectArrowIcon.current!.classList.toggle("open");
         }}
       >
-        <MenuItem>
-          
+        <MenuItem name="edit">
+          <svg xmlns="http://www.w3.org/2000/svg">
+            <use href="/icons.svg#edit-pencil"/>
+          </svg>
         </MenuItem>
       </ContextMenu>
     </li>
