@@ -3,6 +3,7 @@
 }
 
 .chat-menu-arrow {
+  border-radius: 100vw;
   anchor-name: --chat-menu-arrow;
 }
 

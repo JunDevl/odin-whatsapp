@@ -1,6 +1,5 @@
 // TYPESCRIPT UTILS
 import type { Status } from "@packages/utils";
-import type { UseSuspenseQueryResult } from "@tanstack/react-query";
 import type { User, Group, MemberOfGroup, Message } from "@types";
 import type { Dispatch } from "react";
 

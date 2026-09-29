@@ -28,8 +28,6 @@ const App = () => {
   useEffect(() => {
     if (contacts.error) return;
 
-    console.log("ok");
-
     const {data} = contacts;
 
     data.forEach(({friendUser}, i) => {

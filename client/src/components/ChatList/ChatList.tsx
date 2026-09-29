@@ -28,9 +28,6 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
 
   const capitalKind = `${kind[0].toUpperCase()}${kind.slice(1)}`;
 
-  const [hovering, setHovering] = useState(false);
-  const [menuActive, setMenuActive] = useState(false);
-
   return (
     <nav id={`${kind}s-sidebar`} className="overflow-hidden flex flex-col">
       <NewChatModal kind={kind} ref={newChatModal}/>
@@ -61,6 +58,7 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
           <Suspense>
             {chats.length > 0 && chats.map((chat, i) => 
               <ChatItem 
+                id={`${kind}-chats`}
                 kind={kind}
                 index={i}
                 key={i}
@@ -71,11 +69,17 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
                   selectedChat?.group.id === chat.group.id)
                 }
                 chat={chat}
-                onClick={() => setSelectedChatID(() => {
-                  if ("status" in chat) return { name: chat.friendUser.name };
+                onClickCapture={e => {
+                  const target = e.target as HTMLElement;
 
-                  return { id: chat.group.id };
-                })}
+                  if (!target.classList.contains("chat-item")) return;
+
+                  setSelectedChatID(() => {
+                    if ("status" in chat) return { name: chat.friendUser.name };
+
+                    return { id: chat.group.id };
+                  })
+                }}
               />
             )}
           </Suspense>

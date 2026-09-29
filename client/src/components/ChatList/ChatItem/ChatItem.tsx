@@ -48,7 +48,7 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
       }
       <button 
         popoverTarget={`${id}-chat-menu`}
-        className="chat-menu-arrow absolute right-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center"
+        className="chat-menu-arrow absolute right-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center hover:bg-dark-200"
         hidden={!hovering && !menuActive}
       >
         <svg className="arrow-icon" xmlns="http://www.w3.org/2000/svg" ref={selectArrowIcon}>
@@ -60,11 +60,11 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
         className="chat-menu [&>ul>li>button]:bg-dark-500 [&>ul>li>button:not(.delete)]:hover:bg-dark-600"
         ref={chatContextMenu}
         onToggle={(e) => setMenuActive(e.newState === "open" ? true : false)}
-        onBeforeToggle={() => {
+        onBeforeToggle={(e) => {
           selectArrowIcon.current!.classList.toggle("open");
         }}
       >
-        <MenuItem name="edit">
+        <MenuItem name="test">
           <svg xmlns="http://www.w3.org/2000/svg">
             <use href="/icons.svg#edit-pencil"/>
           </svg>

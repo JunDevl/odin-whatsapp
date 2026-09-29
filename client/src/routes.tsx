@@ -33,6 +33,10 @@ const routes: RouteObject[] = [
         element: <Groups/>
       },
       {
+        path: "group/join/:groupID",
+        element: <Groups/>
+      },
+      {
         path: "profile",
         element: <Profile/>
       }
