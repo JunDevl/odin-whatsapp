@@ -9,7 +9,7 @@ import { getLoggedUser, getMessagesFromChat } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
 import ChatDetailModal  from "./ChatDetailModal/ChatDetailModal";
 import UnselectedChat from "../UnselectedChat/UnselectedChat";
-import type { UserContacts, UserGroups } from "../../utils";
+import type { MessageResponse, UserContacts, UserGroups } from "../../utils";
 import type { EntityKind } from "@packages/utils";
 
 
@@ -28,18 +28,28 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
     queryKey: ["user"],
     queryFn: () => getLoggedUser()
   })
-
-  const details = useRef<HTMLDialogElement>(null);
-  const messagesList = useRef<HTMLDivElement>(null);
-
-  const [selectedMessages, setSelectedMessages] = useState<Set<number>>(new Set());
-
-  const isUserChat = "friendUser" in selectedChat;
   
-  const {data: messages, error} = useSuspenseQuery({
+  const isUserChat = "friendUser" in selectedChat;
+
+  const {data: chatMessages, error} = useSuspenseQuery({
     queryKey: [`${kind}_chats`, isUserChat ? selectedChat.friendUser.name : selectedChat.group.id],
     queryFn: () => getMessagesFromChat(kind, isUserChat ? selectedChat.friendUser.name : selectedChat.group.id),
     staleTime: Infinity
+  })
+
+  const messages = chatMessages.messages;
+  const details = useRef<HTMLDialogElement>(null);
+  const messagesList = useRef<HTMLDivElement>(null);
+
+  const [selectedMessagesIndex, setSelectedMessagesIndex] = useState<Set<number>>(new Set());
+  const selectedMessages = new Map<number, MessageResponse>();
+  let selectedMessagesHasThirdParty = false;
+
+  Array.from(selectedMessagesIndex).map(i => {
+    const {message} = messages[i];
+
+    selectedMessages.set(i, message);
+    if (!(message.sender.name === user?.name)) selectedMessagesHasThirdParty = true;
   })
 
   useEffect(() => {
@@ -96,14 +106,14 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
         >
           <ErrorBoundary fallback={<p>An error ocurred: <br/>{error ? error.stack : ""}</p>}>
             <Suspense fallback={<p>Loading messages ...</p>}>
-              {messages.messages.map(({message}, i) => 
+              {messages.map(({message}, i) => 
                 <Message 
                   user={user!} 
                   message={message} 
                   chat={selectedChat} 
                   index={i} 
                   key={i}
-                  onSelect={s => setSelectedMessages(sm => {
+                  onSelect={s => setSelectedMessagesIndex(sm => {
                     const newSelected = new Set(sm);
 
                     s ? newSelected.add(i) : newSelected.delete(i);
@@ -118,32 +128,60 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
       </main>
       <dialog 
         id="messages-tool" 
-        open={!!selectedMessages.size}
-        className="top-4 rounded-4xl p-1 justify-between gap-2"
+        open={!!selectedMessagesIndex.size}
+        className="top-4 rounded-4xl p-1"
       >
-        <button>edit</button>
-        <button>delete</button>
-        <button>info</button>
-        <button>share</button>
-        <button 
-          onClick={() => {
-            setSelectedMessages(sm => {
-              const newSelected = new Set(sm);
+        <div className="relative bg-black z-1 flex justify-between gap-2 [&>button>svg]:size-6">
+          {!selectedMessagesHasThirdParty && 
+            <>
+              <button title="Edit message(s)">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                  <use href="/icons.svg#edit-pencil"/>
+                </svg>
+              </button>
+              <button title="Delete message(s)">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                  <use href="/icons.svg#delete-trash-can"/>
+                </svg>
+              </button>
+              {selectedMessages.size === 1 && 
+                <button title="Message info">
+                  <svg xmlns="http://www.w3.org/2000/svg">
+                    <use href="/icons.svg#info"/>
+                  </svg>
+                </button>
+              }
+            </>
+          }
+          <button title="Share message(s)">
+            <svg xmlns="http://www.w3.org/2000/svg">
+              <use href="/icons.svg#share"/>
+            </svg>
+          </button>
+          <button 
+            className="absolute -right-6 hidden [dialog:hover>div>button]:block h-full aspect-square z-0"
+            style={{padding: 0}}
+            onClick={() => {
+              setSelectedMessagesIndex(sm => {
+                const newSelected = new Set(sm);
 
-              newSelected.clear();
+                newSelected.clear();
 
-              return newSelected;
-            })
+                return newSelected;
+              })
 
-            selectedMessages.forEach(i => {
-              const checkbox = document.querySelector(`input#select-button${i}`) as HTMLInputElement;
+              selectedMessagesIndex.forEach(i => {
+                const checkbox = document.querySelector(`input#select-button${i}`) as HTMLInputElement;
 
-              checkbox.checked = false;
-            })
-          }}
-        >
-          x
-        </button>
+                checkbox.checked = false;
+              })
+            }}
+          >
+            <svg className="size-5" xmlns="http://www.w3.org/2000/svg">
+              <use href="/icons.svg#close2"/>
+            </svg>
+          </button>
+        </div>
       </dialog>
       <MessageInput kind={kind} chat={selectedChat}/>
     </div>

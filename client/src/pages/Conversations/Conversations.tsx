@@ -16,7 +16,7 @@ const Conversations = (props: Props) => {
   return (
     <>
       <ChatList kind="user" chats={contacts} selectedChat={selectedChat}/>
-      <Chat kind="user" selectedChat={selectedChat}/> :
+      <Chat kind="user" selectedChat={selectedChat}/>
     </>
   )
 }
