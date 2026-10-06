@@ -1,40 +1,55 @@
 import { Suspense, type ComponentProps, type RefObject } from "react";
 import { cn, type GroupResponse } from "../../utils";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { getInvitingGroup, getUserGroups, joinGroup } from "../../actions";
+import { ErrorBoundary } from "react-error-boundary";
 
 type Props = {
-  group: GroupResponse | undefined,
-  error: Error | null,
-  status: "error" | "success" | "pending",
   ref: RefObject<HTMLDialogElement | null>
 } & Omit<ComponentProps<"dialog">, "ref">
 
-const GroupInvitationModal = ({status, group, error, className, ...props}: Props) => {
+const GroupInvitationModal = ({className, ...props}: Props) => {
+  const params = useParams();
+
+  const joinGroupID = params.groupID!;
+
+  const {data: group, error} = useSuspenseQuery({
+    queryKey: ["join_group"],
+    queryFn: () => getInvitingGroup(joinGroupID)
+  })
+
   const navigate = useNavigate();
   const modal = props.ref;
+  const queryClient = useQueryClient();
 
   return (
     <dialog {...props} className={cn("modal", className)}>
-      {status === "pending" && 
-        <p>Loading group...</p>
-      }
-      {error ? 
+      <ErrorBoundary fallback={
         <p>
           Something went wrong.
 
-          {error.stack}
-        </p> : 
-        <>
+          {error && error.stack}
+        </p>
+      }>
+        <Suspense fallback={<p>Loading group...</p>}>
           <h3>
-            You've been invited to <span>{group!.name}!</span>
+            You've been invited to <span>{group.name}!</span>
             <br />
             Want to join in?
           </h3>
 
           <div className="buttons flex justify-center">
             <button 
-              onClick={() => {
-                // Insert user to group's member table as with the "member" role
+              onClick={async () => {
+                const joined = await joinGroup(group.id);
+
+                await queryClient.fetchQuery({
+                  queryKey: ["user", "groups"],
+                  queryFn: () => getUserGroups()
+                })
+
+                navigate("/chat/group");
               }}
               className="bg-primary-500 hover:bg-primary-600 active:bg-primary-400"
             >
@@ -49,8 +64,8 @@ const GroupInvitationModal = ({status, group, error, className, ...props}: Props
               Cancel
             </button>
           </div>
-        </>
-      }
+        </Suspense>
+      </ErrorBoundary>
     </dialog>
   )
 }

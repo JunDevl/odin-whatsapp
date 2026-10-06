@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups } from "./utils";
+import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups, GroupResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
@@ -123,14 +123,6 @@ export const removeContact = async (name: string) => {
   return removed;
 }
 
-export const joinGroup = async () => {
-
-}
-
-export const leaveGroup = async () => {
-
-}
-
 export const createGroup = async (name: string, description?: string) => {
   const data = {name, description};
 
@@ -163,9 +155,10 @@ export const getUserGroups = async () => {
 }
 
 export const getGroupMembers = async (id: string) => {
-  const fetchedMembers = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, {
-    credentials: "include"
-  });
+  const fetchedMembers = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, 
+    { credentials: "include" }
+  );
 
   if (!fetchedMembers.ok) throw new Error(await fetchedMembers.text());
 
@@ -192,6 +185,51 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   result.messages = await messagesResponse.json()
 
   return result;
+}
+
+export const getInvitingGroup = async (id: string) => {
+  const groupResponse = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}`,
+    { credentials: "include" }
+  )
+
+  if (!groupResponse.ok) throw new Error(await groupResponse.text());
+
+  const group: GroupResponse = await groupResponse.json();
+
+  return group;
+}
+
+export const joinGroup = async (id: string) => {
+  const joinGroup = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    { 
+      method: "POST",
+      credentials: "include"
+    }
+  );
+
+  if (!joinGroup.ok) throw new Error(await joinGroup.text());
+
+  const joined = await joinGroup.text();
+
+  return joined;
+}
+
+export const leaveGroup = async (id: string) => {
+  const joinGroup = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    { 
+      method: "DELETE",
+      credentials: "include" 
+    }
+  );
+
+  if (!joinGroup.ok) throw new Error(await joinGroup.text());
+
+  const joined = await joinGroup.text();
+
+  return joined;
 }
 
 // WEBSOCKET ACTIONS BELOW

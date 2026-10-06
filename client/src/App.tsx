@@ -53,6 +53,33 @@ const App = () => {
   }, [contacts])
 
   useEffect(() => {
+    if (groups.error) return;
+
+    const {data} = groups;
+
+    // data.forEach(({group}, i) => {
+    //   socket.on(`status:${group.id}`, (status: Status) => {
+    //     return queryClient.setQueryData(
+    //       ["user", "friends"], 
+    //       (prevFriends: {friendUser: Contact, status: Status}[]) => {
+    //         const updatedFriend = {...prevFriends[i]};
+
+    //         updatedFriend.status = status;
+
+    //         const newFriends = [...prevFriends];
+
+    //         newFriends[i] = updatedFriend;
+
+    //         return newFriends;
+    //       }
+    //     )
+    //   })
+    // })
+
+    // return () => data.forEach(({group}) => socket.off(`status:${group.id}`));
+  }, [groups])
+
+  useEffect(() => {
     socket.on("recieveMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
       if ("name" in reciever)
         return queryClient.setQueryData(

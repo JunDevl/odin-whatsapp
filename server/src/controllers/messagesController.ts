@@ -1,8 +1,7 @@
-import type { RequestHandler, Response } from "express";
+import type { RequestHandler } from "express";
 import { body, validationResult, matchedData, type ValidationChain } from "express-validator";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
-import type { Message } from "../../generated/prisma/client.ts";
 import type { User } from "../../generated/prisma/client.ts";
 
 export const getTargetMessages: RequestHandler = async (req, res, next) => {

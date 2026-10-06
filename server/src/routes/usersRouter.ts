@@ -7,7 +7,7 @@ import { JWTProtectedRoute } from "../auth.ts";
 import { addUserFriend, createUser, deleteUser, getUser, getUserFriends, removeUserFriend, updateUser } from "../controllers/usersController.ts";
 
 import type { User } from "../../generated/prisma/client.ts";
-import { getUserGroups, joinGroup, leaveGroup } from "../controllers/groupsController.ts";
+import { getUserGroups } from "../controllers/groupsController.ts";
 
 const usersRouter = Router();
 

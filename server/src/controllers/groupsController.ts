@@ -2,8 +2,20 @@ import type { RequestHandler } from "express";
 import { param, body, validationResult, matchedData, type ValidationChain } from "express-validator";
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
-import type { Group, User } from "../../generated/prisma/client.ts";
+import type { User } from "../../generated/prisma/client.ts";
 import { connectedUsers } from "../main.ts";
+
+export const getGroup: RequestHandler = async (req, res, next) => {
+  const groupId = String(req.params.groupId);
+
+  const group = await handleError(prisma.group.findUnique({where: { id: groupId }}));
+
+  if (group instanceof PromiseError) return res.status(400).send(group.error);
+
+  if (!group) return res.sendStatus(404);
+
+  res.send(group);
+}
 
 const createGroupValidator: ValidationChain[] = [
   body("name")

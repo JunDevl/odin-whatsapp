@@ -1,12 +1,7 @@
 import { Router, type RequestHandler } from "express";
 
-import passport from "passport";
-import jwt from "jsonwebtoken";
 import { JWTProtectedRoute } from "../auth.ts";
 
-import { addUserFriend, createUser, deleteUser, getUser, getUserFriends, removeUserFriend, updateUser } from "../controllers/usersController.ts";
-
-import type { User } from "../../generated/prisma/client.ts";
 import { getTargetMessages } from "../controllers/messagesController.ts";
 
 const messagesRouter = Router();
