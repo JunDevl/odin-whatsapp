@@ -102,7 +102,7 @@ export const joinGroup: (RequestHandler | ValidationChain[])[] = [
 
     if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
 
-    const {id} = matchedData(req);
+    const {groupId: id} = matchedData(req);
 
     const targetGroup = await handleError(prisma.group.findUnique({
       where: {id}
@@ -135,7 +135,7 @@ export const leaveGroup: (RequestHandler | ValidationChain[])[] = [
 
     if (!validationErrors.isEmpty()) return res.status(400).json(validationErrors.array());
 
-    const {id} = matchedData(req);
+    const {groupId: id} = matchedData(req);
 
     const targetGroup = await handleError(prisma.group.findUnique({
       where: {id}

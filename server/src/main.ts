@@ -151,7 +151,7 @@ io.on("connection", socket => {
 
     const message = { message: createdMessage };
 
-    const eventName = "recieveMessage"
+    const eventName = "recieveMessage";
 
     const eventEmitPayload = [
       message, 
@@ -199,7 +199,7 @@ io.on("connection", socket => {
 
     const message = { message: editedMessage };
 
-    const eventName = "editMessage"
+    const eventName = "editMessage";
 
     const eventEmitPayload = [
       message, 

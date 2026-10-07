@@ -63,7 +63,6 @@ const MessageInput = ({ kind, chat }: Props) => {
     const target = e.target as HTMLTextAreaElement;
 
     setText(target.value);
-    // console.log(text);?
   }
 
   return (

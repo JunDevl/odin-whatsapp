@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import Menu from "./components/Menu/Menu";
-import { ContactsContext, GroupsContext, SelectedChatContext, type Contact, type MessageResponse, type SelectedChatID } from "./utils";
+import { ContactsContext, GroupsContext, SelectedChatContext, type Contact, type GroupMemberResponse, type MessageResponse, type SelectedChatID } from "./utils";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getUserContacts, getUserGroups, socket } from "./actions";
@@ -25,6 +25,86 @@ const App = () => {
     staleTime: Infinity
   });
 
+  type RecieverChat = {id: string} | {name: string};
+
+  const addMessageToChat = (newMessage: MessageResponse, reciever: RecieverChat) => {
+    const isRecieverContact = "name" in reciever;
+
+    queryClient.setQueryData(
+      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
+      (prevMessages: {messages: MessageResponse[]} & ({contact: string} | {group: string})) => ({
+        contact: "contact" in prevMessages ? prevMessages.contact : prevMessages.group,
+        messages: [...prevMessages.messages, newMessage]
+      })
+    )
+  }
+
+  const updateChatMessage = (updatedMessage: MessageResponse, reciever: RecieverChat) => {
+    const isRecieverContact = "name" in reciever;
+
+    return queryClient.setQueryData(
+      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
+      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
+        const messageIndex = prevMessages.messages.findIndex(message => message.id === updatedMessage.id);
+
+        const newMessages = {...prevMessages};
+
+        newMessages.messages[messageIndex] = updatedMessage;
+
+        return newMessages;
+      }
+    )
+  }
+
+  const removeChatMessage = (messageID: string, reciever: RecieverChat) => {
+    const isRecieverContact = "name" in reciever;
+
+    return queryClient.setQueryData(
+      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
+      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
+        const messageIndex = prevMessages.messages.findIndex(message => message.id === messageID);
+
+        const newMessages = {...prevMessages};
+
+        newMessages.messages.splice(messageIndex, 1);
+
+        return newMessages;
+      }
+    )
+  }
+
+  const messageEvents = {
+    recieveMessage: "recieveMessage",
+    editMessage: "editMessage",
+    deleteMessage: "deleteMessage"
+  }
+
+  const messageEventsSocketInit = () => {
+    socket.on(
+      messageEvents.recieveMessage, 
+      (
+        message: { message: MessageResponse }, 
+        reciever: RecieverChat
+      ) => addMessageToChat(message.message, reciever)
+    )
+
+    socket.on(
+      messageEvents.editMessage, 
+      (
+        message: { message: MessageResponse }, 
+        reciever: RecieverChat
+      ) => updateChatMessage(message.message, reciever)
+    )
+
+    socket.on(
+      messageEvents.deleteMessage, 
+      (
+        message: { message: MessageResponse }, 
+        reciever: RecieverChat
+      ) => removeChatMessage(message.message.id, reciever)
+    )
+  }
+
   useEffect(() => {
     if (contacts.error) return;
 
@@ -35,13 +115,9 @@ const App = () => {
         return queryClient.setQueryData(
           ["user", "friends"], 
           (prevFriends: {friendUser: Contact, status: Status}[]) => {
-            const updatedFriend = {...prevFriends[i]};
-
-            updatedFriend.status = status;
-
             const newFriends = [...prevFriends];
 
-            newFriends[i] = updatedFriend;
+            newFriends[i].status = status;
 
             return newFriends;
           }
@@ -49,65 +125,59 @@ const App = () => {
       })
     })
 
-    return () => data.forEach(({friendUser}) => socket.off(`status:${friendUser.name}`));
+    messageEventsSocketInit();
+
+    return () => {
+      data.forEach(({friendUser}) => socket.off(`status:${friendUser.name}`));
+      Object.keys(messageEvents).forEach(messageEvent => socket.off(messageEvent));
+    };
   }, [contacts])
 
   useEffect(() => {
     if (groups.error) return;
 
-    const {data} = groups;
+    // const {data} = groups;
+
+    // //TODO: implement this in the server-side as well
 
     // data.forEach(({group}, i) => {
-    //   socket.on(`status:${group.id}`, (status: Status) => {
-    //     return queryClient.setQueryData(
-    //       ["user", "friends"], 
-    //       (prevFriends: {friendUser: Contact, status: Status}[]) => {
-    //         const updatedFriend = {...prevFriends[i]};
+    //   socket.on(
+    //     `group:${group.id}:memberStatus`, 
+    //     (status: Status, memberName: string) => queryClient.setQueryData(
+    //       ["group_members", group.id], 
+    //       (prevMembers: GroupMemberResponse[]) => {
+    //         const newMembers = [...prevMembers];
 
-    //         updatedFriend.status = status;
+    //         const memberIndex = newMembers.findIndex(member => member.user.name === memberName);
 
-    //         const newFriends = [...prevFriends];
+    //         newMembers[memberIndex].status = status;
 
-    //         newFriends[i] = updatedFriend;
-
-    //         return newFriends;
+    //         return newMembers;
     //       }
     //     )
-    //   })
+    //   )
+
+    //   socket.on(
+    //     `group:${group.id}:memberJoined`, 
+    //     (status: Status, newMember: Contact) => queryClient.setQueryData(
+    //       ["group_members", group.id], 
+    //       (prevMembers: GroupMemberResponse[]) => [
+    //         ...prevMembers, {status, user: newMember}
+    //       ]
+    //     )
+    //   )
     // })
 
-    // return () => data.forEach(({group}) => socket.off(`status:${group.id}`));
-  }, [groups])
-
-  useEffect(() => {
-    socket.on("recieveMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
-      if ("name" in reciever)
-        return queryClient.setQueryData(
-          ["user_chats", message.message.sender.name],
-          (prevMessages: {contact: string, messages: MessageResponse[]}) => ({
-            contact: prevMessages.contact,
-            messages: [...prevMessages.messages, message]
-          })
-        )
-      
-      
-      //TODO: write code for when it's an incoming group message (reciever obj has an ID.)
-    })
-
-    socket.on("editMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
-
-    })
-
-    socket.on("deleteMessage", (message: { message: MessageResponse }, reciever: Record<"name" | "id", string>) => {
-      
-    })
+    messageEventsSocketInit();
 
     return () => {
-      socket.off("recieveMessage");
-      socket.off("editMessage");
-      socket.off("deleteMessage");
+      // data.forEach(({group}) => {
+      //   socket.off(`group:${group.id}:memberStatus`);
+      //   socket.off(`group:${group.id}:memberJoined`);
+      // });
+      Object.keys(messageEvents).forEach(messageEvent => socket.off(messageEvent));
     };
-  }, [selectedChatID])
+  }, [groups])
 
   return (
     <SelectedChatContext value={selectedChatState}>
