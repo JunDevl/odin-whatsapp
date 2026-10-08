@@ -48,7 +48,7 @@ const ChatItem = ({kind, index, selected, chat, className, ...props}: Props) => 
       }
       <button 
         popoverTarget={`${id}-chat-menu`}
-        className="chat-menu-arrow absolute right-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center hover:bg-dark-200"
+        className="chat-menu-arrow absolute right-0 rounded-full select-none size-8 bg-radial from-35% flex justify-center items-center hover:bg-dark-200"
         hidden={!hovering && !menuActive}
       >
         <svg className="arrow-icon" xmlns="http://www.w3.org/2000/svg" ref={selectArrowIcon}>

@@ -111,7 +111,7 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
         <button 
           popoverTarget={`${id}-message-menu`}
           className={cn(
-            "message-menu-arrow absolute right-0 top-0 rounded-full select-none h-8 aspect-square bg-radial from-35% flex justify-center items-center", 
+            "message-menu-arrow absolute right-0 top-0 rounded-full select-none size-8 bg-radial from-35% flex justify-center items-center", 
             isOwn ? "from-blue-800" : "from-green-600"
           )} 
           hidden={!(hovering === "message") && !menuActive}

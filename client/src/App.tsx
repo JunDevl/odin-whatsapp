@@ -26,26 +26,33 @@ const App = () => {
   });
 
   type RecieverChat = {id: string} | {name: string};
+  type UserChatMessages = {messages: { message: MessageResponse }[]} & ({contact: string} | {group: string});
 
-  const addMessageToChat = (newMessage: MessageResponse, reciever: RecieverChat) => {
+  const addMessageToChat = (newMessage: { message: MessageResponse }, reciever: RecieverChat) => {
     const isRecieverContact = "name" in reciever;
+    const {message} = newMessage;
 
     queryClient.setQueryData(
-      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
-      (prevMessages: {messages: MessageResponse[]} & ({contact: string} | {group: string})) => ({
-        contact: "contact" in prevMessages ? prevMessages.contact : prevMessages.group,
-        messages: [...prevMessages.messages, newMessage]
-      })
+      ["user_chats", isRecieverContact ? message.sender.name : reciever.id],
+      (prevMessages: UserChatMessages) => {
+        const result = {
+          [isRecieverContact ? "contact" : "group"]: "contact" in prevMessages ? message.sender.name : prevMessages.group,
+          messages: [...prevMessages.messages, newMessage]
+        }
+
+        return result;
+      }
     )
   }
 
-  const updateChatMessage = (updatedMessage: MessageResponse, reciever: RecieverChat) => {
+  const updateChatMessage = (updatedMessage: { message: MessageResponse }, reciever: RecieverChat) => {
     const isRecieverContact = "name" in reciever;
+    const {message} = updatedMessage;
 
     return queryClient.setQueryData(
-      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
-      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
-        const messageIndex = prevMessages.messages.findIndex(message => message.id === updatedMessage.id);
+      ["user_chats", isRecieverContact ? message.sender.name : reciever.id],
+      (prevMessages: UserChatMessages) => {
+        const messageIndex = prevMessages.messages.findIndex(message => message.message.id === message.message.id);
 
         const newMessages = {...prevMessages};
 
@@ -61,8 +68,8 @@ const App = () => {
 
     return queryClient.setQueryData(
       ["user_chats", isRecieverContact ? reciever.name : reciever.id],
-      (prevMessages: {contact: string, messages: MessageResponse[]}) => {
-        const messageIndex = prevMessages.messages.findIndex(message => message.id === messageID);
+      (prevMessages: UserChatMessages) => {
+        const messageIndex = prevMessages.messages.findIndex(message => message.message.id === messageID);
 
         const newMessages = {...prevMessages};
 
@@ -85,7 +92,7 @@ const App = () => {
       (
         message: { message: MessageResponse }, 
         reciever: RecieverChat
-      ) => addMessageToChat(message.message, reciever)
+      ) => addMessageToChat(message, reciever)
     )
 
     socket.on(
@@ -93,7 +100,7 @@ const App = () => {
       (
         message: { message: MessageResponse }, 
         reciever: RecieverChat
-      ) => updateChatMessage(message.message, reciever)
+      ) => updateChatMessage(message, reciever)
     )
 
     socket.on(

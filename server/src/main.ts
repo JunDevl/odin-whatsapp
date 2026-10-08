@@ -112,6 +112,8 @@ io.on("connection", socket => {
 
   connectedUsers.set(user.name, socket);
 
+  //TODO: implement group messaging by making a socket join a room of a group on connection (query every group which has the socket.user.id as a member and make the socket join a room of each group's id)
+
   socket.on("createMessage", async (content: string, reciever: Reciever, ack: AckFunction) => {
     const {kind: recieverKind} = reciever;
     const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
