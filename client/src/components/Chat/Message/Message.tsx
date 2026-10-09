@@ -116,7 +116,7 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
           )} 
           hidden={!(hovering === "message") && !menuActive}
         >
-          <svg className="arrow-icon" xmlns="http://www.w3.org/2000/svg" ref={selectArrowIcon}>
+          <svg className="arrow-icon size-full" xmlns="http://www.w3.org/2000/svg" ref={selectArrowIcon}>
             <use href="/icons.svg#select-arrow"/>
           </svg>
         </button>
