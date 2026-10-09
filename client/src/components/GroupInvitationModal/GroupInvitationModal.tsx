@@ -1,7 +1,7 @@
 import { Suspense, type ComponentProps, type RefObject } from "react";
-import { cn, type GroupResponse } from "../../utils";
+import { cn } from "../../utils";
 import { useNavigate, useParams } from "react-router";
-import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getInvitingGroup, getUserGroups, joinGroup } from "../../actions";
 import { ErrorBoundary } from "react-error-boundary";
 

@@ -1,14 +1,104 @@
 import { Outlet } from "react-router";
 import Menu from "./components/Menu/Menu";
-import { ContactsContext, GroupsContext, SelectedChatContext, type Contact, type GroupMemberResponse, type MessageResponse, type SelectedChatID } from "./utils";
+import { ContactsContext, GroupsContext, SelectedChatContext } from "./utils";
+import type { Contact, GroupMemberResponse, MessageResponse, SelectedChatID } from "./utils"
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getUserContacts, getUserGroups, socket } from "./actions";
 import type { Status } from "@packages/utils";
 import { ErrorBoundary } from "react-error-boundary";
+import { queryClient } from "./main";
+
+type RecieverChat = {id: string} | {name: string};
+type UserChatMessages = {messages: { message: MessageResponse }[]} & ({contact: string} | {group: string});
+
+const addMessageToChat = (newMessage: { message: MessageResponse }, reciever: RecieverChat) => {
+  const isRecieverContact = "name" in reciever;
+  const {message} = newMessage;
+  const chatQueryKey = `${isRecieverContact ? "user" : "group"}_chats`;
+
+  return queryClient.setQueryData(
+    [chatQueryKey, isRecieverContact ? message.sender.name : reciever.id],
+    (prevMessages: UserChatMessages) => {
+      const result = {
+        [isRecieverContact ? "contact" : "group"]: "contact" in prevMessages ? message.sender.name : prevMessages.group,
+        messages: [...prevMessages.messages, newMessage]
+      }
+
+      return result;
+    }
+  )
+}
+
+const updateChatMessage = (updatedMessage: { message: MessageResponse }, reciever: RecieverChat) => {
+  const isRecieverContact = "name" in reciever;
+  const {message} = updatedMessage;
+  const chatQueryKey = `${isRecieverContact ? "user" : "group"}_chats`;
+
+  return queryClient.setQueryData(
+    [chatQueryKey, isRecieverContact ? message.sender.name : reciever.id],
+    (prevMessages: UserChatMessages) => {
+      const messageIndex = prevMessages.messages.findIndex(message => message.message.id === message.message.id);
+
+      const newMessages = {...prevMessages};
+
+      newMessages.messages[messageIndex] = updatedMessage;
+
+      return newMessages;
+    }
+  )
+}
+
+const removeChatMessage = (messageID: string, reciever: RecieverChat) => {
+  const isRecieverContact = "name" in reciever;
+  const chatQueryKey = `${isRecieverContact ? "user" : "group"}_chats`;
+
+  return queryClient.setQueryData(
+    [chatQueryKey, isRecieverContact ? reciever.name : reciever.id],
+    (prevMessages: UserChatMessages) => {
+      const messageIndex = prevMessages.messages.findIndex(message => message.message.id === messageID);
+
+      const newMessages = {...prevMessages};
+
+      newMessages.messages.splice(messageIndex, 1);
+
+      return newMessages;
+    }
+  )
+}
+
+const messageEvents = {
+  recieveMessage: "recieveMessage",
+  editMessage: "editMessage",
+  deleteMessage: "deleteMessage"
+}
+
+socket.on(
+  messageEvents.recieveMessage, 
+  (
+    message: { message: MessageResponse }, 
+    reciever: RecieverChat
+  ) => addMessageToChat(message, reciever)
+)
+
+socket.on(
+  messageEvents.editMessage, 
+  (
+    message: { message: MessageResponse }, 
+    reciever: RecieverChat
+  ) => updateChatMessage(message, reciever)
+)
+
+socket.on(
+  messageEvents.deleteMessage, 
+  (
+    message: { message: MessageResponse }, 
+    reciever: RecieverChat
+  ) => removeChatMessage(message.message.id, reciever)
+)
 
 const App = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const [selectedChatID, setSelectedChatID] = useState<SelectedChatID | null>(null);
   const selectedChatState = {selectedChatID, setSelectedChatID};
@@ -24,93 +114,6 @@ const App = () => {
     queryFn: () => getUserContacts(),
     staleTime: Infinity
   });
-
-  type RecieverChat = {id: string} | {name: string};
-  type UserChatMessages = {messages: { message: MessageResponse }[]} & ({contact: string} | {group: string});
-
-  const addMessageToChat = (newMessage: { message: MessageResponse }, reciever: RecieverChat) => {
-    const isRecieverContact = "name" in reciever;
-    const {message} = newMessage;
-
-    queryClient.setQueryData(
-      ["user_chats", isRecieverContact ? message.sender.name : reciever.id],
-      (prevMessages: UserChatMessages) => {
-        const result = {
-          [isRecieverContact ? "contact" : "group"]: "contact" in prevMessages ? message.sender.name : prevMessages.group,
-          messages: [...prevMessages.messages, newMessage]
-        }
-
-        return result;
-      }
-    )
-  }
-
-  const updateChatMessage = (updatedMessage: { message: MessageResponse }, reciever: RecieverChat) => {
-    const isRecieverContact = "name" in reciever;
-    const {message} = updatedMessage;
-
-    return queryClient.setQueryData(
-      ["user_chats", isRecieverContact ? message.sender.name : reciever.id],
-      (prevMessages: UserChatMessages) => {
-        const messageIndex = prevMessages.messages.findIndex(message => message.message.id === message.message.id);
-
-        const newMessages = {...prevMessages};
-
-        newMessages.messages[messageIndex] = updatedMessage;
-
-        return newMessages;
-      }
-    )
-  }
-
-  const removeChatMessage = (messageID: string, reciever: RecieverChat) => {
-    const isRecieverContact = "name" in reciever;
-
-    return queryClient.setQueryData(
-      ["user_chats", isRecieverContact ? reciever.name : reciever.id],
-      (prevMessages: UserChatMessages) => {
-        const messageIndex = prevMessages.messages.findIndex(message => message.message.id === messageID);
-
-        const newMessages = {...prevMessages};
-
-        newMessages.messages.splice(messageIndex, 1);
-
-        return newMessages;
-      }
-    )
-  }
-
-  const messageEvents = {
-    recieveMessage: "recieveMessage",
-    editMessage: "editMessage",
-    deleteMessage: "deleteMessage"
-  }
-
-  const messageEventsSocketInit = () => {
-    socket.on(
-      messageEvents.recieveMessage, 
-      (
-        message: { message: MessageResponse }, 
-        reciever: RecieverChat
-      ) => addMessageToChat(message, reciever)
-    )
-
-    socket.on(
-      messageEvents.editMessage, 
-      (
-        message: { message: MessageResponse }, 
-        reciever: RecieverChat
-      ) => updateChatMessage(message, reciever)
-    )
-
-    socket.on(
-      messageEvents.deleteMessage, 
-      (
-        message: { message: MessageResponse }, 
-        reciever: RecieverChat
-      ) => removeChatMessage(message.message.id, reciever)
-    )
-  }
 
   useEffect(() => {
     if (contacts.error) return;
@@ -132,12 +135,11 @@ const App = () => {
       })
     })
 
-    messageEventsSocketInit();
+    // messageEventsSocketInit();
 
     return () => {
       data.forEach(({friendUser}) => socket.off(`status:${friendUser.name}`));
-      Object.keys(messageEvents).forEach(messageEvent => socket.off(messageEvent));
-    };
+    }
   }, [contacts])
 
   useEffect(() => {
@@ -175,14 +177,11 @@ const App = () => {
     //   )
     // })
 
-    messageEventsSocketInit();
-
     return () => {
       // data.forEach(({group}) => {
       //   socket.off(`group:${group.id}:memberStatus`);
       //   socket.off(`group:${group.id}:memberJoined`);
       // });
-      Object.keys(messageEvents).forEach(messageEvent => socket.off(messageEvent));
     };
   }, [groups])
 

@@ -4,8 +4,6 @@ import ChatList from "../../components/ChatList/ChatList";
 import { GroupsContext, SelectedChatContext } from "../../utils";
 import { useParams } from "react-router";
 import GroupInvitationModal from "../../components/GroupInvitationModal/GroupInvitationModal";
-import { useQuery } from "@tanstack/react-query";
-import { getInvitingGroup } from "../../actions";
 
 // const status = "success";
 

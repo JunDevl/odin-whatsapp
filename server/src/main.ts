@@ -112,6 +112,17 @@ io.on("connection", socket => {
 
   connectedUsers.set(user.name, socket);
 
+  prisma.user.findUnique({ 
+    where: { id: user.id },
+    select: { groups: true }
+  }).then(userGroups => {
+    if (!userGroups || userGroups.groups.length === 0) return;
+
+    userGroups.groups.forEach(({groupId}) => {
+      socket.join(groupId);
+    })
+  })
+
   //TODO: implement group messaging by making a socket join a room of a group on connection (query every group which has the socket.user.id as a member and make the socket join a room of each group's id)
 
   socket.on("createMessage", async (content: string, reciever: Reciever, ack: AckFunction) => {
