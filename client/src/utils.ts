@@ -1,6 +1,6 @@
 // TYPESCRIPT UTILS
 import type { Status } from "@packages/utils";
-import type { User, Group, MemberOfGroup, Message } from "@types";
+import type { User, Group, MemberOfGroup, Message, File as IFile } from "@types";
 import type { Dispatch } from "react";
 
 export type LoggedUserResponse = Omit<User, "id" | "password_hash">;
@@ -9,8 +9,11 @@ export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "deletedAt" 
   sender: { name: string },
   sentAt: string,
   editedAt: string | null,
-  deletedAt: string | null
+  deletedAt: string | null,
+  attachedFiles: IFile[]
 }
+
+export type MessageFileAttachment = { name: string, file: File }
 
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
 

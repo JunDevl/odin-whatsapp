@@ -56,6 +56,7 @@ export const ModelName = {
   Group: 'Group',
   MemberOfGroup: 'MemberOfGroup',
   Message: 'Message',
+  File: 'File',
   MessageSeenByUser: 'MessageSeenByUser',
   MessageToGroup: 'MessageToGroup',
   MessageToUser: 'MessageToUser'
@@ -126,6 +127,16 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const FileScalarFieldEnum = {
+  fileId: 'fileId',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  sizeBytes: 'sizeBytes'
+} as const
+
+export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
 
 
 export const MessageSeenByUserScalarFieldEnum = {

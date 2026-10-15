@@ -4,13 +4,18 @@ import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
 
+const MESSAGE_INCLUDE = {
+  sender: { select: { name: true } },
+  attachedFiles: true
+};
+
 export const getTargetMessages: RequestHandler = async (req, res, next) => {
   const identification = String(req.params.userName ?? req.params.groupId);
 
   const target = req.params.userName ?
     await handleError(prisma.user.findUnique({
-      where: {name: identification},
-      select: {id: true}
+      where: { name: identification} ,
+      select: { id: true }
     })) :
     {id: identification};
 
@@ -45,9 +50,7 @@ export const getTargetMessages: RequestHandler = async (req, res, next) => {
           omit: {
             senderId: true
           },
-          include: {
-            sender: { select: { name: true } }
-          }
+          include: MESSAGE_INCLUDE
         }
       },
       orderBy: {
@@ -67,9 +70,7 @@ export const getTargetMessages: RequestHandler = async (req, res, next) => {
           omit: {
             senderId: true
           },
-          include: {
-            sender: { select: { name: true } }
-          }
+          include: MESSAGE_INCLUDE
         }
       },
       orderBy: {
@@ -89,9 +90,7 @@ export const deleteMessages = async (messageIds: string[]) => {
     where: { id: { in: messageIds } },
     data: { deletedAt: new Date() },
     omit: { senderId: true },
-    include: {
-      sender: { select: { name: true } }
-    }
+    include: MESSAGE_INCLUDE
   }))
 
   if (deletedMessages instanceof PromiseError) throw new Error(deletedMessages.error);
@@ -108,9 +107,7 @@ export const updateMessage = async (messageId: string, content: string) => {
       content: content,
       editedAt: new Date()
     },
-    include: {
-      sender: { select: { name: true } }
-    }
+    include: MESSAGE_INCLUDE
   }))
 
   if (updatedMessage instanceof PromiseError) throw new Error(updatedMessage.error);
@@ -121,11 +118,12 @@ export const updateMessage = async (messageId: string, content: string) => {
 }
 
 
-export const createMessage = async (senderId: string, content: string, reciever: { kind: "user" | "group", id: string }) => {
+export const createMessage = async (senderId: string, content: string, reciever: { kind: "user" | "group", id: string }, files: Buffer[]) => {
+
   const createdMessage = await handleError(prisma.message.create({ 
     data: { senderId, content },
     omit: { senderId: true },
-    include: { sender: { select: { name: true } } }
+    include: MESSAGE_INCLUDE
   }));
 
   if (createdMessage instanceof PromiseError) throw new Error(createdMessage.error);

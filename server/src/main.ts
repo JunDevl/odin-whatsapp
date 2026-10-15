@@ -1,16 +1,11 @@
 import express, { Router } from "express";
-import type { RequestHandler } from "express";
-import { body, matchedData, validationResult, type ValidationChain } from "express-validator";
 import cookieParser from "cookie-parser";
 import cookie from "cookie";
 
 import { createServer } from "node:http";
-import fs from "node:fs";
-import path from "node:path";
 
 import cors from "cors";
 import jwt from "jsonwebtoken";
-// import prisma from "../lib/prisma.ts";
 import { Server, Socket } from "socket.io";
 
 import passport from "passport";
@@ -55,7 +50,8 @@ app.use((err: any, _: any, res: any, __: any) => {
 const server = createServer(app);
 const io = new Server(server, {
   cors: { origin: "http://localhost:5173", credentials: true },
-  cookie: true
+  cookie: true,
+  maxHttpBufferSize: 3e7 // 30mb maximum buffer files uploaded via websocket
 });
 
 export const connectedUsers = new Map<string, Socket>();
@@ -125,7 +121,7 @@ io.on("connection", socket => {
 
   //TODO: implement group messaging by making a socket join a room of a group on connection (query every group which has the socket.user.id as a member and make the socket join a room of each group's id)
 
-  socket.on("createMessage", async (content: string, reciever: Reciever, ack: AckFunction) => {
+  socket.on("createMessage", async (content: string, reciever: Reciever, files: Buffer[], ack: AckFunction) => {
     const {kind: recieverKind} = reciever;
     const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
 
@@ -154,8 +150,8 @@ io.on("connection", socket => {
     });
 
     const createdMessage = await handleError(
-      createMessage(user.id, content, { kind: recieverKind, id: recieverExists.id }
-    ));
+      createMessage(user.id, content, { kind: recieverKind, id: recieverExists.id }, files)
+    );
 
     if (createdMessage instanceof PromiseError) return ack({
       data: null,

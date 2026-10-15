@@ -43,6 +43,11 @@ export type MemberOfGroup = Prisma.MemberOfGroupModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model File
+ * 
+ */
+export type File = Prisma.FileModel
+/**
  * Model MessageSeenByUser
  * 
  */

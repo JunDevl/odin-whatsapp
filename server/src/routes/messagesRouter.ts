@@ -1,4 +1,4 @@
-import { Router, type RequestHandler } from "express";
+import { Router } from "express";
 
 import { JWTProtectedRoute } from "../auth.ts";
 

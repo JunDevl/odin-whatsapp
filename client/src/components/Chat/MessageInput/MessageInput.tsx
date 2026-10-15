@@ -2,11 +2,12 @@ import "./messageinput.css"
 
 import { useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
 import { cn } from "../../../utils";
-import type { MessageResponse, UserContacts, UserGroups } from "../../../utils";
+import type { MessageResponse, MessageFileAttachment, UserContacts, UserGroups } from "../../../utils";
 import { createMessage } from "../../../actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
 import { ContextMenu, MenuItem } from "../../ContextMenu/ContextMenu";
+import type { File as IFile } from "@types";
 
 type Props = {
   kind: EntityKind
@@ -17,7 +18,7 @@ const MessageInput = ({ kind, chat }: Props) => {
   const queryClient = useQueryClient();
 
   const [text, setText] = useState("");
-  const [attachments, setAttachments] = useState<File[]>([]);
+  const [attachments, setAttachments] = useState<MessageFileAttachment[]>([]);
 
   const form = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -26,7 +27,7 @@ const MessageInput = ({ kind, chat }: Props) => {
   const isSelectedUser = "friendUser" in chat;
 
   const { mutateAsync: sendMessage } = useMutation({
-    mutationFn: ({content, chat}: {content: string, chat: {name: string} | {id: string}}) => createMessage(content, chat),
+    mutationFn: ({content, chat, files}: {content: string, chat: {name: string} | {id: string}, files: MessageFileAttachment[]}) => createMessage(content, chat, files),
     onSuccess: (data, params, result, context) => {
       return queryClient.setQueryData(
         [`${kind}_chats`, isSelectedUser ? chat.friendUser.name : chat!.group.id],
@@ -45,8 +46,9 @@ const MessageInput = ({ kind, chat }: Props) => {
     
     const messageContent = String(formData.get("content"));
     const reciever = chat;
+    const messageFiles = (formData.get("files") ?? []) as MessageFileAttachment[];
 
-    const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}});
+    const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}, files: messageFiles});
 
     setText("");
   }
@@ -114,7 +116,7 @@ const MessageInput = ({ kind, chat }: Props) => {
               <ContextMenu id="file-attach-menu" ref={attachMenu} className="[&>ul>li>button]:bg-dark-500 [&>ul>li>button:not(.delete)]:hover:bg-dark-600">
                 <MenuItem className="m-2 border border-dark-300" type="button">
                   <label 
-                    htmlFor="file-input"
+                    htmlFor="files"
                     className="flex flex-col items-center cursor-pointer gap-1 p-2"
                   >
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-9">
@@ -125,12 +127,14 @@ const MessageInput = ({ kind, chat }: Props) => {
                   <input 
                     multiple
                     type="file" 
-                    name="file-input" 
-                    id="file-input"
+                    name="files" 
+                    id="files"
                     onInput={e => {
                       const target = e.target as HTMLInputElement;
 
-                      setAttachments(Array.from(target.files!));
+                      const files = Array.from(target.files!).map(file => ({name: file.name, file: file}));
+
+                      setAttachments(files);
                     }}
                     hidden
                   />

@@ -131,7 +131,7 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
         open={!!selectedMessagesIndex.size}
         className="top-4 rounded-4xl p-1"
       >
-        <div className="relative bg-black z-1 flex justify-between gap-2 [&>button>svg]:size-6">
+        <div className="relative z-1 flex justify-between gap-2 [&>button>svg]:size-6">
           {!selectedMessagesHasThirdParty && 
             <>
               <button title="Edit message(s)">
