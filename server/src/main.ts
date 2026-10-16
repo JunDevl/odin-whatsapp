@@ -119,9 +119,7 @@ io.on("connection", socket => {
     })
   })
 
-  //TODO: implement group messaging by making a socket join a room of a group on connection (query every group which has the socket.user.id as a member and make the socket join a room of each group's id)
-
-  socket.on("createMessage", async (content: string, reciever: Reciever, files: Buffer[], ack: AckFunction) => {
+  socket.on("createMessage", async (content: string, reciever: Reciever, file: {fileName: string, sizeBytes: number} | null, attachment: Buffer | null, ack: AckFunction) => {
     const {kind: recieverKind} = reciever;
     const recieverIdentification = recieverKind === "user" ? reciever.name : reciever.id;
 
@@ -150,13 +148,18 @@ io.on("connection", socket => {
     });
 
     const createdMessage = await handleError(
-      createMessage(user.id, content, { kind: recieverKind, id: recieverExists.id }, files)
+      createMessage(user.id, content, { kind: recieverKind, id: recieverExists.id }, file)
     );
 
     if (createdMessage instanceof PromiseError) return ack({
       data: null,
       error: createdMessage.error
     })
+
+    if (attachment) {
+      // TODO: upload buffer file to supabase if it exists
+
+    }
 
     const message = { message: createdMessage };
 

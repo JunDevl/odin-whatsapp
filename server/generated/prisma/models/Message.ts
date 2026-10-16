@@ -192,7 +192,7 @@ export type MessageWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   seenBy?: Prisma.MessageSeenByUserListRelationFilter
-  attachedFiles?: Prisma.FileListRelationFilter
+  attachedFile?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
   messageToGroups?: Prisma.MessageToGroupListRelationFilter
   messageToUsers?: Prisma.MessageToUserListRelationFilter
 }
@@ -206,7 +206,7 @@ export type MessageOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sender?: Prisma.UserOrderByWithRelationInput
   seenBy?: Prisma.MessageSeenByUserOrderByRelationAggregateInput
-  attachedFiles?: Prisma.FileOrderByRelationAggregateInput
+  attachedFile?: Prisma.FileOrderByWithRelationInput
   messageToGroups?: Prisma.MessageToGroupOrderByRelationAggregateInput
   messageToUsers?: Prisma.MessageToUserOrderByRelationAggregateInput
 }
@@ -223,7 +223,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   seenBy?: Prisma.MessageSeenByUserListRelationFilter
-  attachedFiles?: Prisma.FileListRelationFilter
+  attachedFile?: Prisma.XOR<Prisma.FileNullableScalarRelationFilter, Prisma.FileWhereInput> | null
   messageToGroups?: Prisma.MessageToGroupListRelationFilter
   messageToUsers?: Prisma.MessageToUserListRelationFilter
 }, "id">
@@ -260,7 +260,7 @@ export type MessageCreateInput = {
   deletedAt?: Date | string | null
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
   seenBy?: Prisma.MessageSeenByUserCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutMessageInput
 }
@@ -273,7 +273,7 @@ export type MessageUncheckedCreateInput = {
   content: string
   deletedAt?: Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileUncheckedCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileUncheckedCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutMessageInput
 }
@@ -286,7 +286,7 @@ export type MessageUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   seenBy?: Prisma.MessageSeenByUserUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutMessageNestedInput
 }
@@ -299,7 +299,7 @@ export type MessageUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUncheckedUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUncheckedUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutMessageNestedInput
 }
@@ -418,18 +418,18 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type MessageCreateNestedOneWithoutAttachedFilesInput = {
-  create?: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFilesInput, Prisma.MessageUncheckedCreateWithoutAttachedFilesInput>
-  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutAttachedFilesInput
+export type MessageCreateNestedOneWithoutAttachedFileInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFileInput, Prisma.MessageUncheckedCreateWithoutAttachedFileInput>
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutAttachedFileInput
   connect?: Prisma.MessageWhereUniqueInput
 }
 
-export type MessageUpdateOneRequiredWithoutAttachedFilesNestedInput = {
-  create?: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFilesInput, Prisma.MessageUncheckedCreateWithoutAttachedFilesInput>
-  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutAttachedFilesInput
-  upsert?: Prisma.MessageUpsertWithoutAttachedFilesInput
+export type MessageUpdateOneRequiredWithoutAttachedFileNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFileInput, Prisma.MessageUncheckedCreateWithoutAttachedFileInput>
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutAttachedFileInput
+  upsert?: Prisma.MessageUpsertWithoutAttachedFileInput
   connect?: Prisma.MessageWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.MessageUpdateToOneWithWhereWithoutAttachedFilesInput, Prisma.MessageUpdateWithoutAttachedFilesInput>, Prisma.MessageUncheckedUpdateWithoutAttachedFilesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MessageUpdateToOneWithWhereWithoutAttachedFileInput, Prisma.MessageUpdateWithoutAttachedFileInput>, Prisma.MessageUncheckedUpdateWithoutAttachedFileInput>
 }
 
 export type MessageCreateNestedOneWithoutSeenByInput = {
@@ -481,7 +481,7 @@ export type MessageCreateWithoutSenderInput = {
   content: string
   deletedAt?: Date | string | null
   seenBy?: Prisma.MessageSeenByUserCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutMessageInput
 }
@@ -493,7 +493,7 @@ export type MessageUncheckedCreateWithoutSenderInput = {
   content: string
   deletedAt?: Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileUncheckedCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileUncheckedCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutMessageInput
 }
@@ -536,7 +536,7 @@ export type MessageScalarWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
 }
 
-export type MessageCreateWithoutAttachedFilesInput = {
+export type MessageCreateWithoutAttachedFileInput = {
   id?: string
   sentAt?: Date | string
   editedAt?: Date | string | null
@@ -548,7 +548,7 @@ export type MessageCreateWithoutAttachedFilesInput = {
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutMessageInput
 }
 
-export type MessageUncheckedCreateWithoutAttachedFilesInput = {
+export type MessageUncheckedCreateWithoutAttachedFileInput = {
   id?: string
   senderId: string
   sentAt?: Date | string
@@ -560,23 +560,23 @@ export type MessageUncheckedCreateWithoutAttachedFilesInput = {
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutMessageInput
 }
 
-export type MessageCreateOrConnectWithoutAttachedFilesInput = {
+export type MessageCreateOrConnectWithoutAttachedFileInput = {
   where: Prisma.MessageWhereUniqueInput
-  create: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFilesInput, Prisma.MessageUncheckedCreateWithoutAttachedFilesInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFileInput, Prisma.MessageUncheckedCreateWithoutAttachedFileInput>
 }
 
-export type MessageUpsertWithoutAttachedFilesInput = {
-  update: Prisma.XOR<Prisma.MessageUpdateWithoutAttachedFilesInput, Prisma.MessageUncheckedUpdateWithoutAttachedFilesInput>
-  create: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFilesInput, Prisma.MessageUncheckedCreateWithoutAttachedFilesInput>
+export type MessageUpsertWithoutAttachedFileInput = {
+  update: Prisma.XOR<Prisma.MessageUpdateWithoutAttachedFileInput, Prisma.MessageUncheckedUpdateWithoutAttachedFileInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutAttachedFileInput, Prisma.MessageUncheckedCreateWithoutAttachedFileInput>
   where?: Prisma.MessageWhereInput
 }
 
-export type MessageUpdateToOneWithWhereWithoutAttachedFilesInput = {
+export type MessageUpdateToOneWithWhereWithoutAttachedFileInput = {
   where?: Prisma.MessageWhereInput
-  data: Prisma.XOR<Prisma.MessageUpdateWithoutAttachedFilesInput, Prisma.MessageUncheckedUpdateWithoutAttachedFilesInput>
+  data: Prisma.XOR<Prisma.MessageUpdateWithoutAttachedFileInput, Prisma.MessageUncheckedUpdateWithoutAttachedFileInput>
 }
 
-export type MessageUpdateWithoutAttachedFilesInput = {
+export type MessageUpdateWithoutAttachedFileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -588,7 +588,7 @@ export type MessageUpdateWithoutAttachedFilesInput = {
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutMessageNestedInput
 }
 
-export type MessageUncheckedUpdateWithoutAttachedFilesInput = {
+export type MessageUncheckedUpdateWithoutAttachedFileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -607,7 +607,7 @@ export type MessageCreateWithoutSeenByInput = {
   content: string
   deletedAt?: Date | string | null
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
-  attachedFiles?: Prisma.FileCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutMessageInput
 }
@@ -619,7 +619,7 @@ export type MessageUncheckedCreateWithoutSeenByInput = {
   editedAt?: Date | string | null
   content: string
   deletedAt?: Date | string | null
-  attachedFiles?: Prisma.FileUncheckedCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileUncheckedCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutMessageInput
 }
@@ -647,7 +647,7 @@ export type MessageUpdateWithoutSeenByInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
-  attachedFiles?: Prisma.FileUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutMessageNestedInput
 }
@@ -659,7 +659,7 @@ export type MessageUncheckedUpdateWithoutSeenByInput = {
   editedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  attachedFiles?: Prisma.FileUncheckedUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUncheckedUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutMessageNestedInput
 }
@@ -672,7 +672,7 @@ export type MessageCreateWithoutMessageToGroupsInput = {
   deletedAt?: Date | string | null
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
   seenBy?: Prisma.MessageSeenByUserCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileCreateNestedOneWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserCreateNestedManyWithoutMessageInput
 }
 
@@ -684,7 +684,7 @@ export type MessageUncheckedCreateWithoutMessageToGroupsInput = {
   content: string
   deletedAt?: Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileUncheckedCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileUncheckedCreateNestedOneWithoutMessageInput
   messageToUsers?: Prisma.MessageToUserUncheckedCreateNestedManyWithoutMessageInput
 }
 
@@ -712,7 +712,7 @@ export type MessageUpdateWithoutMessageToGroupsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   seenBy?: Prisma.MessageSeenByUserUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUpdateOneWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutMessageNestedInput
 }
 
@@ -724,7 +724,7 @@ export type MessageUncheckedUpdateWithoutMessageToGroupsInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUncheckedUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUncheckedUpdateOneWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutMessageNestedInput
 }
 
@@ -736,7 +736,7 @@ export type MessageCreateWithoutMessageToUsersInput = {
   deletedAt?: Date | string | null
   sender: Prisma.UserCreateNestedOneWithoutMessagesInput
   seenBy?: Prisma.MessageSeenByUserCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupCreateNestedManyWithoutMessageInput
 }
 
@@ -748,7 +748,7 @@ export type MessageUncheckedCreateWithoutMessageToUsersInput = {
   content: string
   deletedAt?: Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedCreateNestedManyWithoutMessageInput
-  attachedFiles?: Prisma.FileUncheckedCreateNestedManyWithoutMessageInput
+  attachedFile?: Prisma.FileUncheckedCreateNestedOneWithoutMessageInput
   messageToGroups?: Prisma.MessageToGroupUncheckedCreateNestedManyWithoutMessageInput
 }
 
@@ -776,7 +776,7 @@ export type MessageUpdateWithoutMessageToUsersInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sender?: Prisma.UserUpdateOneRequiredWithoutMessagesNestedInput
   seenBy?: Prisma.MessageSeenByUserUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutMessageNestedInput
 }
 
@@ -788,7 +788,7 @@ export type MessageUncheckedUpdateWithoutMessageToUsersInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUncheckedUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUncheckedUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutMessageNestedInput
 }
 
@@ -807,7 +807,7 @@ export type MessageUpdateWithoutSenderInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   seenBy?: Prisma.MessageSeenByUserUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUpdateManyWithoutMessageNestedInput
 }
@@ -819,7 +819,7 @@ export type MessageUncheckedUpdateWithoutSenderInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   seenBy?: Prisma.MessageSeenByUserUncheckedUpdateManyWithoutMessageNestedInput
-  attachedFiles?: Prisma.FileUncheckedUpdateManyWithoutMessageNestedInput
+  attachedFile?: Prisma.FileUncheckedUpdateOneWithoutMessageNestedInput
   messageToGroups?: Prisma.MessageToGroupUncheckedUpdateManyWithoutMessageNestedInput
   messageToUsers?: Prisma.MessageToUserUncheckedUpdateManyWithoutMessageNestedInput
 }
@@ -839,14 +839,12 @@ export type MessageUncheckedUpdateManyWithoutSenderInput = {
 
 export type MessageCountOutputType = {
   seenBy: number
-  attachedFiles: number
   messageToGroups: number
   messageToUsers: number
 }
 
 export type MessageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   seenBy?: boolean | MessageCountOutputTypeCountSeenByArgs
-  attachedFiles?: boolean | MessageCountOutputTypeCountAttachedFilesArgs
   messageToGroups?: boolean | MessageCountOutputTypeCountMessageToGroupsArgs
   messageToUsers?: boolean | MessageCountOutputTypeCountMessageToUsersArgs
 }
@@ -866,13 +864,6 @@ export type MessageCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  */
 export type MessageCountOutputTypeCountSeenByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageSeenByUserWhereInput
-}
-
-/**
- * MessageCountOutputType without action
- */
-export type MessageCountOutputTypeCountAttachedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FileWhereInput
 }
 
 /**
@@ -899,7 +890,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   deletedAt?: boolean
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   seenBy?: boolean | Prisma.Message$seenByArgs<ExtArgs>
-  attachedFiles?: boolean | Prisma.Message$attachedFilesArgs<ExtArgs>
+  attachedFile?: boolean | Prisma.Message$attachedFileArgs<ExtArgs>
   messageToGroups?: boolean | Prisma.Message$messageToGroupsArgs<ExtArgs>
   messageToUsers?: boolean | Prisma.Message$messageToUsersArgs<ExtArgs>
   _count?: boolean | Prisma.MessageCountOutputTypeDefaultArgs<ExtArgs>
@@ -938,7 +929,7 @@ export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   seenBy?: boolean | Prisma.Message$seenByArgs<ExtArgs>
-  attachedFiles?: boolean | Prisma.Message$attachedFilesArgs<ExtArgs>
+  attachedFile?: boolean | Prisma.Message$attachedFileArgs<ExtArgs>
   messageToGroups?: boolean | Prisma.Message$messageToGroupsArgs<ExtArgs>
   messageToUsers?: boolean | Prisma.Message$messageToUsersArgs<ExtArgs>
   _count?: boolean | Prisma.MessageCountOutputTypeDefaultArgs<ExtArgs>
@@ -955,7 +946,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     sender: Prisma.$UserPayload<ExtArgs>
     seenBy: Prisma.$MessageSeenByUserPayload<ExtArgs>[]
-    attachedFiles: Prisma.$FilePayload<ExtArgs>[]
+    attachedFile: Prisma.$FilePayload<ExtArgs> | null
     messageToGroups: Prisma.$MessageToGroupPayload<ExtArgs>[]
     messageToUsers: Prisma.$MessageToUserPayload<ExtArgs>[]
   }
@@ -1362,7 +1353,7 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   sender<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   seenBy<T extends Prisma.Message$seenByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$seenByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageSeenByUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  attachedFiles<T extends Prisma.Message$attachedFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$attachedFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attachedFile<T extends Prisma.Message$attachedFileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$attachedFileArgs<ExtArgs>>): Prisma.Prisma__FileClient<runtime.Types.Result.GetResult<Prisma.$FilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   messageToGroups<T extends Prisma.Message$messageToGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$messageToGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messageToUsers<T extends Prisma.Message$messageToUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$messageToUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageToUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1825,9 +1816,9 @@ export type Message$seenByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Message.attachedFiles
+ * Message.attachedFile
  */
-export type Message$attachedFilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Message$attachedFileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the File
    */
@@ -1841,11 +1832,6 @@ export type Message$attachedFilesArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.FileInclude<ExtArgs> | null
   where?: Prisma.FileWhereInput
-  orderBy?: Prisma.FileOrderByWithRelationInput | Prisma.FileOrderByWithRelationInput[]
-  cursor?: Prisma.FileWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FileScalarFieldEnum | Prisma.FileScalarFieldEnum[]
 }
 
 /**

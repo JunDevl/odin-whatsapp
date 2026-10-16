@@ -6,7 +6,7 @@ import type { User } from "../../generated/prisma/client.ts";
 
 const MESSAGE_INCLUDE = {
   sender: { select: { name: true } },
-  attachedFiles: true
+  attachedFile: true
 };
 
 export const getTargetMessages: RequestHandler = async (req, res, next) => {
@@ -118,10 +118,10 @@ export const updateMessage = async (messageId: string, content: string) => {
 }
 
 
-export const createMessage = async (senderId: string, content: string, reciever: { kind: "user" | "group", id: string }, files: Buffer[]) => {
+export const createMessage = async (senderId: string, content: string, reciever: { kind: "user" | "group", id: string }, file: {fileName: string, sizeBytes: number} | null) => {
 
   const createdMessage = await handleError(prisma.message.create({ 
-    data: { senderId, content },
+    data: { senderId, content, attachedFile: file ? { create: file } : undefined },
     omit: { senderId: true },
     include: MESSAGE_INCLUDE
   }));

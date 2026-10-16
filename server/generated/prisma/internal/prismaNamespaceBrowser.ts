@@ -130,7 +130,6 @@ export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeo
 
 
 export const FileScalarFieldEnum = {
-  fileId: 'fileId',
   messageId: 'messageId',
   fileName: 'fileName',
   sizeBytes: 'sizeBytes'

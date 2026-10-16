@@ -2,7 +2,7 @@ import "./messageinput.css"
 
 import { useRef, useState, type InputEvent, type KeyboardEvent, type SubmitEvent } from "react";
 import { cn } from "../../../utils";
-import type { MessageResponse, MessageFileAttachment, UserContacts, UserGroups } from "../../../utils";
+import type { MessageResponse, UserContacts, UserGroups } from "../../../utils";
 import { createMessage } from "../../../actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { EntityKind } from "@packages/utils";
@@ -18,7 +18,7 @@ const MessageInput = ({ kind, chat }: Props) => {
   const queryClient = useQueryClient();
 
   const [text, setText] = useState("");
-  const [attachments, setAttachments] = useState<MessageFileAttachment[]>([]);
+  const [attachment, setAttachment] = useState<File | null>(null);
 
   const form = useRef<HTMLFormElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -27,7 +27,7 @@ const MessageInput = ({ kind, chat }: Props) => {
   const isSelectedUser = "friendUser" in chat;
 
   const { mutateAsync: sendMessage } = useMutation({
-    mutationFn: ({content, chat, files}: {content: string, chat: {name: string} | {id: string}, files: MessageFileAttachment[]}) => createMessage(content, chat, files),
+    mutationFn: ({content, chat, attachment}: {content: string, chat: {name: string} | {id: string}, attachment: File}) => createMessage(content, chat, attachment),
     onSuccess: (data, params, result, context) => {
       return queryClient.setQueryData(
         [`${kind}_chats`, isSelectedUser ? chat.friendUser.name : chat!.group.id],
@@ -46,9 +46,9 @@ const MessageInput = ({ kind, chat }: Props) => {
     
     const messageContent = String(formData.get("content"));
     const reciever = chat;
-    const messageFiles = (formData.get("files") ?? []) as MessageFileAttachment[];
+    const messageFile = (formData.get("files") ?? []) as File;
 
-    const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}, files: messageFiles});
+    const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}, attachment: messageFile});
 
     setText("");
   }
@@ -71,19 +71,17 @@ const MessageInput = ({ kind, chat }: Props) => {
     <footer className="z-20 px-1 pb-1" id="input-area">
       <form id="message-form" method="POST" onSubmit={onSubmitMessage} ref={form} className="overflow-hidden bg-dark-300 rounded-3xl [&>button]:flex [&>button]:items-center has-[textarea:focus]:outline-1 has-[textarea:focus]:outline-light-900 items-end">
         <label className="flex flex-col" htmlFor="content">
-          {attachments.length > 0 && 
+          {attachment && 
             <div className="attachments flex flex-col items-start self-stretch bg-dark-400 border border-dark-200 m-0.5 p-1 rounded-3xl">
               <p className="ml-2 mb-1 mt-1 title">File Attachments:</p>
               <ul className="attachments-list flex justify-start items-center gap-0.5">
-                {attachments.map((file, i) => 
-                  <li className="file bg-dark-300 rounded-full flex items-center justify-center px-3 py-1" key={i}>
-                    <p className="filename">{file.name}</p>
-                    {/* <p className="size">{file.size}</p> */}
-                  </li>
-                )}
+                <li className="file bg-dark-300 rounded-full flex items-center justify-center px-3 py-1">
+                  <p className="filename">{attachment.name}</p>
+                  {/* <p className="size">{file.size}</p> */}
+                </li>
                 <div 
                   className="justify-self-end ml-0.5 p-1 cursor-pointer hover:bg-dark-600 rounded-full"
-                  onClick={() => setAttachments([])}
+                  onClick={() => setAttachment(null)}
                 >
                   <svg className="size-5" xmlns="http://www.w3.org/2000/svg">
                     <use href="/icons.svg#close1"/>
@@ -97,7 +95,7 @@ const MessageInput = ({ kind, chat }: Props) => {
               <button 
                 id="send" 
                 type="submit"
-                className={cn("size-11", !!text || attachments.length > 0 ? "bg-primary-400" : "")}
+                className={cn("size-11", !!text || attachment ? "bg-primary-400" : "")}
               >
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z" stroke="currentColor" fill="transparent" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -125,16 +123,13 @@ const MessageInput = ({ kind, chat }: Props) => {
                     <p>Choose a file</p>
                   </label>
                   <input 
-                    multiple
                     type="file" 
                     name="files" 
                     id="files"
                     onInput={e => {
                       const target = e.target as HTMLInputElement;
 
-                      const files = Array.from(target.files!).map(file => ({name: file.name, file: file}));
-
-                      setAttachments(files);
+                      setAttachment(target.files![0]);
                     }}
                     hidden
                   />

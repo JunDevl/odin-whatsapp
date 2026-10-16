@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups, GroupResponse, MessageFileAttachment } from "./utils";
+import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups, GroupResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
 export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
@@ -234,7 +234,7 @@ export const leaveGroup = async (id: string) => {
 
 // WEBSOCKET ACTIONS BELOW
 
-export const createMessage = async (content: string, chat: {name: string} | {id: string}, files: MessageFileAttachment[]) => {
+export const createMessage = async (content: string, chat: {name: string} | {id: string}, attachment: File | null) => {
   const isUser = "name" in chat;
 
   const kind = isUser ? "user" : "group";
@@ -246,8 +246,15 @@ export const createMessage = async (content: string, chat: {name: string} | {id:
 
   let createdMessage: {data: { message: MessageResponse } } | {data: null, error: any};
 
-  try {createdMessage = await socket.emitWithAck("createMessage", content, reciever, files)} 
-  catch (e) {throw new Error(e as any)}
+  try {
+    createdMessage = await socket.emitWithAck(
+      "createMessage", 
+      content, 
+      reciever, 
+      attachment && {fileName: attachment.name, sizeBytes: attachment.size}, 
+      attachment
+    );
+  } catch (e) {throw new Error(e as any)}
 
   if ("error" in createdMessage) throw new Error(createdMessage.error);
 

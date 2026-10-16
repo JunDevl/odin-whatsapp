@@ -10,10 +10,8 @@ export type MessageResponse = Omit<Message, "sentAt" | "editedAt" | "deletedAt" 
   sentAt: string,
   editedAt: string | null,
   deletedAt: string | null,
-  attachedFiles: IFile[]
+  attachedFile: Omit<IFile, "messageId"> | null
 }
-
-export type MessageFileAttachment = { name: string, file: File }
 
 export type Contact = Omit<User, "id" | "email" | "password_hash">;
 

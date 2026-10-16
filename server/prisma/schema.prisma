@@ -64,28 +64,25 @@ model MemberOfGroup {
 }
 
 model Message {
-  id            String              @id @default(uuid())
-  sender        User                @relation(fields: [senderId], references: [id])
-  senderId      String
-  sentAt        DateTime            @default(now())
-  editedAt      DateTime?
-  content       String
-  deletedAt     DateTime?
-  seenBy        MessageSeenByUser[]
-  attachedFiles File[]
+  id           String              @id @default(uuid())
+  sender       User                @relation(fields: [senderId], references: [id])
+  senderId     String
+  sentAt       DateTime            @default(now())
+  editedAt     DateTime?
+  content      String
+  deletedAt    DateTime?
+  seenBy       MessageSeenByUser[]
+  attachedFile File?
 
   messageToGroups MessageToGroup[]
   messageToUsers  MessageToUser[]
 }
 
 model File {
-  fileId    Int     @default(autoincrement())
   message   Message @relation(fields: [messageId], references: [id])
-  messageId String
+  messageId String  @id @unique
   fileName  String
   sizeBytes Int
-
-  @@id([messageId, fileId])
 }
 
 model MessageSeenByUser {
