@@ -187,6 +187,21 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   return result;
 }
 
+export const getMessageFileAttachment = async (id: string) => {
+  const downloadedFile = await fetch(
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    {
+      credentials: "include"
+    }
+  )
+
+  if (!downloadedFile.ok) throw new Error(await downloadedFile.text());
+
+  const file = await downloadedFile.arrayBuffer();
+
+  return file;
+}
+
 export const getInvitingGroup = async (id: string) => {
   const groupResponse = await fetch(
     `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}`,

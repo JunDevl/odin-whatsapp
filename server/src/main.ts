@@ -20,6 +20,8 @@ import { createMessage, deleteMessages, updateMessage } from "./controllers/mess
 import messagesRouter from "./routes/messagesRouter.ts";
 import groupsRouter from "./routes/groupsRouter.ts";
 
+import supabase from "../lib/supabase.ts";
+
 const PORT = 8080;
 
 const app = express();
@@ -157,8 +159,14 @@ io.on("connection", socket => {
     })
 
     if (attachment) {
-      // TODO: upload buffer file to supabase if it exists
+      const { error } = await supabase.storage
+        .from("messages-files")
+        .upload(`/${createdMessage.id}/${file!.fileName}`, attachment);
 
+      if (error) return ack({
+        data: null,
+        error
+      })
     }
 
     const message = { message: createdMessage };

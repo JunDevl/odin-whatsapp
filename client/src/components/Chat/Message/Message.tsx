@@ -3,7 +3,6 @@ import "./message.css";
 import type { MessageResponse, LoggedUserResponse, UserContacts, UserGroups } from "../../../utils";
 import { cn } from "../../../utils";
 import { format } from "date-fns";
-import type { MouseEvent } from "react";
 import { useRef, useState,  } from "react";
 import { deleteMesssages } from "../../../actions";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,7 +35,7 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
   const [hovering, setHovering] = useState<"row" | "message" | null>(null);
   const [menuActive, setMenuActive] = useState(false);
 
-  const {id, content, sentAt, editedAt, sender, deletedAt} = message;
+  const {id, content, sentAt, editedAt, sender, deletedAt, attachedFile} = message;
 
   const isOwn = user.name === sender.name;
 
@@ -59,15 +58,10 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
     )
   }
 
-  const openMessageModal = (e: MouseEvent) => {
-    const modalType = (e.target as HTMLButtonElement).textContent;
+  const handleFileDownload = async () => {
+    if (!attachedFile) return;
 
-    console.log(modalType);
-
-    switch (modalType) {
-      case "Info": { messageInfoModal.current!.showModal(); break; }
-      case "Edit": { editMessageModal.current!.showModal(); break; }
-    }
+    
   }
 
   return (
@@ -157,6 +151,14 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
           </MenuItem>
         </ContextMenu>
 
+        {attachedFile && 
+          <div className={cn(
+            "p-3 rounded-md cursor-pointer",
+            isOwn ? "bg-blue-900" : "bg-green-700"
+          )}>
+            {`${attachedFile.fileName} (${(attachedFile.sizeBytes / 1000000).toFixed(2)}mb)`}
+          </div>
+        }
         {deletedAt ? "Message has been deleted." : content}
 
         <span className="text-xs float-right ml-3 mt-2">

@@ -50,7 +50,10 @@ const MessageInput = ({ kind, chat }: Props) => {
 
     const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}, attachment: messageFile});
 
+    // No good UX whatsoever of optimistic updates so that messages are immediatelly sent in the UI... Sorry.
+
     setText("");
+    setAttachment(null);
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {

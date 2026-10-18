@@ -3,6 +3,7 @@ import { body, validationResult, matchedData, type ValidationChain } from "expre
 import { handleError, PromiseError } from "@packages/utils";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
+import supabase from "../../lib/supabase.ts";
 
 const MESSAGE_INCLUDE = {
   sender: { select: { name: true } },
@@ -83,6 +84,12 @@ export const getTargetMessages: RequestHandler = async (req, res, next) => {
   if (messages instanceof PromiseError) return res.status(400).send(messages.error)
 
   return res.json(messages);
+}
+
+export const getAttachedMessageFile: RequestHandler = async (req, res, next) => {
+  const messageId = String(req.params.messageId);
+
+  // const { data, error } = await supabase.storage.from("messages-files").download(`${user.id}${path}`);
 }
 
 export const deleteMessages = async (messageIds: string[]) => {
