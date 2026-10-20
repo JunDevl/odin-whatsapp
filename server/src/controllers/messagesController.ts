@@ -88,8 +88,19 @@ export const getTargetMessages: RequestHandler = async (req, res, next) => {
 
 export const getAttachedMessageFile: RequestHandler = async (req, res, next) => {
   const messageId = String(req.params.messageId);
+  const fileName = String(req.params.fileName);
 
-  // const { data, error } = await supabase.storage.from("messages-files").download(`${user.id}${path}`);
+  const { data, error } = await supabase.storage.from("messages-files").download(`/${messageId}/${fileName}`);
+
+  if (error) return res.status(400).send(error);
+
+  if (!data) return res.sendStatus(404);
+
+  res.type(data.type);
+
+  const buffer = await data.arrayBuffer();
+
+  return res.send(Buffer.from(buffer));
 }
 
 export const deleteMessages = async (messageIds: string[]) => {

@@ -4,7 +4,7 @@ import type { MessageResponse, LoggedUserResponse, UserContacts, UserGroups } fr
 import { cn } from "../../../utils";
 import { format } from "date-fns";
 import { useRef, useState,  } from "react";
-import { deleteMesssages } from "../../../actions";
+import { deleteMesssages, getMessageFileAttachment } from "../../../actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { ContextMenu, MenuItem } from "../../ContextMenu/ContextMenu";
 
@@ -61,7 +61,7 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
   const handleFileDownload = async () => {
     if (!attachedFile) return;
 
-    
+    const downloadedFile = await getMessageFileAttachment(message.id);
   }
 
   return (
@@ -152,10 +152,13 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
         </ContextMenu>
 
         {attachedFile && 
-          <div className={cn(
-            "p-3 rounded-md cursor-pointer",
-            isOwn ? "bg-blue-900" : "bg-green-700"
-          )}>
+          <div 
+            className={cn(
+              "p-4 rounded-md cursor-pointer",
+              isOwn ? "bg-blue-950" : "bg-green-800"
+            )}
+            onClick={handleFileDownload}
+          >
             {`${attachedFile.fileName} (${(attachedFile.sizeBytes / 1000000).toFixed(2)}mb)`}
           </div>
         }

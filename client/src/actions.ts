@@ -189,7 +189,7 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 
 export const getMessageFileAttachment = async (id: string) => {
   const downloadedFile = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file`,
     {
       credentials: "include"
     }

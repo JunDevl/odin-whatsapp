@@ -7,11 +7,9 @@ import { getAttachedMessageFile, getTargetMessages } from "../controllers/messag
 const messagesRouter = Router();
 const groupsRouter = Router();
 const usersRouter = Router();
-const fileRouter = Router();
 
 messagesRouter.use("/user", usersRouter);
 messagesRouter.use("/group", groupsRouter);
-messagesRouter.use("/file", fileRouter);
 
 usersRouter.route("/:userName")
   .get(JWTProtectedRoute, getTargetMessages);
@@ -19,7 +17,7 @@ usersRouter.route("/:userName")
 groupsRouter.route("/:groupId")
   .get(JWTProtectedRoute, getTargetMessages);
 
-fileRouter.route("/:messageId")
+messagesRouter.route("/:messageId/file/:fileName")
   .get(JWTProtectedRoute, getAttachedMessageFile);
 
 export default messagesRouter;
