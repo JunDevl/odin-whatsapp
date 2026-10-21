@@ -11,7 +11,7 @@ export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
 export const createUser = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -29,7 +29,7 @@ export const createUser = async (formData: FormData) => {
 export const editUserData = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
@@ -47,7 +47,7 @@ export const editUserData = async (formData: FormData) => {
 export const loginUser = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -65,7 +65,7 @@ export const loginUser = async (formData: FormData) => {
 }
 
 export const getLoggedUser = async () => {
-  const userResponse = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     credentials: "include"
   });
 
@@ -80,7 +80,7 @@ export const getLoggedUser = async () => {
 }
 
 export const getUserContacts = async () => {
-  const fetchedContacts = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
+  const fetchedContacts = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
     credentials: "include"
   });
 
@@ -94,7 +94,7 @@ export const getUserContacts = async () => {
 export const addContact = async (name: string) => {
   const data = { name };
 
-  const addedContact = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
+  const addedContact = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -111,7 +111,7 @@ export const addContact = async (name: string) => {
 }
 
 export const removeContact = async (name: string) => {
-  const removedContact = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends/${name}`, {
+  const removedContact = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends/${name}`, {
     method: "DELETE",
     credentials: "include"
   })
@@ -127,7 +127,7 @@ export const createGroup = async (name: string, description?: string) => {
   const data = {name, description};
 
   const createdGroup = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups`, { 
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups`, { 
       credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -143,7 +143,7 @@ export const createGroup = async (name: string, description?: string) => {
 }
 
 export const getUserGroups = async () => {
-  const fetchedGroups = await fetch(`http://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
+  const fetchedGroups = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
     credentials: "include"
   });
 
@@ -156,7 +156,7 @@ export const getUserGroups = async () => {
 
 export const getGroupMembers = async (id: string) => {
   const fetchedMembers = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, 
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, 
     { credentials: "include" }
   );
 
@@ -176,7 +176,7 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   if (chatIdentification === "") return result;
 
   const messagesResponse = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
     { credentials: "include" }
   )
 
@@ -189,7 +189,7 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 
 export const getMessageFileAttachment = async (id: string, fileName: string) => {
   const downloadedFile = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file/${fileName}`,
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file/${fileName}`,
     {
       credentials: "include"
     }
@@ -204,7 +204,7 @@ export const getMessageFileAttachment = async (id: string, fileName: string) => 
 
 export const getInvitingGroup = async (id: string) => {
   const groupResponse = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}`,
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}`,
     { credentials: "include" }
   )
 
@@ -217,7 +217,7 @@ export const getInvitingGroup = async (id: string) => {
 
 export const joinGroup = async (id: string) => {
   const joinGroup = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
     { 
       method: "POST",
       credentials: "include"
@@ -233,7 +233,7 @@ export const joinGroup = async (id: string) => {
 
 export const leaveGroup = async (id: string) => {
   const joinGroup = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
     { 
       method: "DELETE",
       credentials: "include" 
