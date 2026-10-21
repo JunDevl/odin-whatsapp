@@ -23,10 +23,11 @@ import groupsRouter from "./routes/groupsRouter.ts";
 import supabase from "../lib/supabase.ts";
 
 const PORT = 8080;
+const CLIENT_ORIGIN = "https://odin-whatsapp-client-five.vercel.app";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -51,7 +52,7 @@ app.use((err: any, _: any, res: any, __: any) => {
 
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", credentials: true },
+  cors: { origin: CLIENT_ORIGIN, credentials: true },
   cookie: true,
   maxHttpBufferSize: 3e7 // 30mb maximum buffer files uploaded via websocket
 });
