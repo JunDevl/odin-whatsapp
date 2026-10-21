@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups, GroupResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
-export const socket = io(`ws://${import.meta.env["VITE_SERVER_PATH"]}`, {
+export const socket = io(`wss://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true
 });
 
