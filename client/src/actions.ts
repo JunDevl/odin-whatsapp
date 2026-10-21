@@ -187,9 +187,9 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   return result;
 }
 
-export const getMessageFileAttachment = async (id: string) => {
+export const getMessageFileAttachment = async (id: string, fileName: string) => {
   const downloadedFile = await fetch(
-    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file`,
+    `http://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file/${fileName}`,
     {
       credentials: "include"
     }
@@ -197,7 +197,7 @@ export const getMessageFileAttachment = async (id: string) => {
 
   if (!downloadedFile.ok) throw new Error(await downloadedFile.text());
 
-  const file = await downloadedFile.arrayBuffer();
+  const file = await downloadedFile.blob();
 
   return file;
 }

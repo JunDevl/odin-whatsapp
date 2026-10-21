@@ -61,7 +61,19 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
   const handleFileDownload = async () => {
     if (!attachedFile) return;
 
-    const downloadedFile = await getMessageFileAttachment(message.id);
+    const downloadedFile = await getMessageFileAttachment(message.id, attachedFile.fileName);
+
+    const fileURL = URL.createObjectURL(downloadedFile);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = fileURL;
+    a.download = attachedFile.fileName;
+
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(fileURL);
   }
 
   return (
