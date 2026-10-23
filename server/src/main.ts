@@ -1,8 +1,6 @@
 import express, { Router } from "express";
 import cookieParser from "cookie-parser";
 
-import { createServer } from "node:http";
-
 import cors from "cors";
 
 import passport from "passport";
@@ -13,10 +11,10 @@ import usersRouter from "./routes/usersRouter.ts";
 import messagesRouter from "./routes/messagesRouter.ts";
 import groupsRouter from "./routes/groupsRouter.ts";
 
+import { server, app } from "./socket-io.ts";
+
 const PORT = 8080;
 export const CLIENT_ORIGIN = "https://odin-whatsapp-client-five.vercel.app";
-
-const app = express();
 
 app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
@@ -40,8 +38,6 @@ app.use((err: any, _: any, res: any, __: any) => {
   console.error(err.stack);
   res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
 })
-
-const server = createServer(app);
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
