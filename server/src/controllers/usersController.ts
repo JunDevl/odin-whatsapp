@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
-import { connectedUsers } from "../socket-io.ts";
+import { connectedUsers } from "../main.ts";
 
 const createUserValidator: ValidationChain[] = [
   body("name")
