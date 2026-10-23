@@ -14,7 +14,7 @@ import { JWTStrategy } from "./auth.ts";
 
 import usersRouter from "./routes/usersRouter.ts";
 import type { User } from "../generated/prisma/client.ts";
-import { handleError, PromiseError } from "@packages/utils";
+import { handleError, PromiseError } from "packages/utils";
 import prisma from "../lib/prisma.ts";
 import { createMessage, deleteMessages, updateMessage } from "./controllers/messagesController.ts";
 import messagesRouter from "./routes/messagesRouter.ts";

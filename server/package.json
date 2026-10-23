@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/JunDevl/odin-whatsapp#readme",
   "dependencies": {
-    "@packages/utils": "*",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@supabase/supabase-js": "^2.118.0",
@@ -55,5 +54,8 @@
     "prisma": "^7.9.1",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
+  },
+  "imports": {
+    "#packages/utils/*": "../packages/utils/*"
   }
 }

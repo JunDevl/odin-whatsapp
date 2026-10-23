@@ -1,4 +1,4 @@
-import { handleError, PromiseError } from "@packages/utils";
+import { handleError, PromiseError } from "packages/utils";
 
 import passport from "passport";
 import Jwt from "passport-jwt";

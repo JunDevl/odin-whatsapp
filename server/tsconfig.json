@@ -44,7 +44,11 @@
     "erasableSyntaxOnly": true,
     "rewriteRelativeImportExtensions": true,
     "allowImportingTsExtensions": true,
+
+    "paths": {
+      "packages/utils": ["../packages/utils/utils.ts"]
+    }
   },
-  
+
   "include": ["src", "../packages/utils/utils.ts"]
 }
