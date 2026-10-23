@@ -1,0 +1,25 @@
+export class PromiseError<T> {
+  public error: T;
+
+  constructor(error: T) {
+    this.error = error;
+  }
+}
+
+export const handleError = async <T>(promise: Promise<T>) => {
+  try {
+    const res = await promise;
+
+    return res;
+  } catch (e: any) {
+    return new PromiseError(e);
+  }
+}
+
+export type Prettify<T> = T extends infer O
+  ? { [ K in keyof O ]: O[ K ] }
+  : never;
+
+export type EntityKind = "group" | "user";
+
+export type Status = "online" | "offline";
