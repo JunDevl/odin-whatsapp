@@ -31,5 +31,5 @@
       "@types": ["../server/generated/prisma/browser.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../packages/utils/utils.ts"]
 }
