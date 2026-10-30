@@ -2,12 +2,12 @@
   "name": "whatsapp-server",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.ts",
+  "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node src/main.ts",
-    "dev": "nodemon src/main.ts",
-    "debug": "nodemon --inspect src/main.ts"
+    "start": "node src/index.ts",
+    "dev": "nodemon src/index.ts",
+    "debug": "nodemon --inspect src/index.ts"
   },
   "repository": {
     "type": "git",
