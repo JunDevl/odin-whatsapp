@@ -27,12 +27,6 @@ const PORT = 8080;
 export const CLIENT_ORIGIN = "https://odin-whatsapp-client-five.vercel.app";
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server, {
-  cors: { origin: CLIENT_ORIGIN, credentials: true },
-  cookie: true,
-  maxHttpBufferSize: 3e7 // 30mb maximum buffer files uploaded via websocket
-});
 
 app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
@@ -56,6 +50,13 @@ app.use((err: any, _: any, res: any, __: any) => {
   console.error(err.stack);
   res.send(`Message: ${err.message}\n\nStack: ${err.stack}`);
 })
+
+const server = createServer(app);
+const io = new Server(server, {
+  cors: { origin: CLIENT_ORIGIN, credentials: true },
+  cookie: true,
+  maxHttpBufferSize: 3e7 // 30mb maximum buffer files uploaded via websocket
+});
 
 export const connectedUsers = new Map<string, Socket>();
 
@@ -298,6 +299,8 @@ io.on("connection", socket => {
   io.emit(`status:${user.name}`, "online");
 })
 
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+if (!process.env.VERCEL) {
+  server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+}
 
 export default server;
