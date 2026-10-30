@@ -3,7 +3,7 @@ import { param, body, validationResult, matchedData, type ValidationChain } from
 import { handleError, PromiseError } from "../../lib/utils.ts";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
-import { connectedUsers } from "../main.ts";
+import { connectedUsers } from "../index.ts";
 
 export const getGroup: RequestHandler = async (req, res, next) => {
   const groupId = String(req.params.groupId);
