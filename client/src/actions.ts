@@ -4,6 +4,7 @@ import type { EntityKind } from "@packages/utils";
 
 export const socket = io(`wss://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true,
+  transports: ["websocket"]
 });
 
 // REST API ACTIONS BELOW
