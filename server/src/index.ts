@@ -26,6 +26,7 @@ import supabase from "../lib/supabase.ts";
 const PORT = 8080;
 export const CLIENT_ORIGIN = "https://odin-whatsapp-client-five.vercel.app";
 
+
 const app = express();
 
 app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
