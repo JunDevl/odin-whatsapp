@@ -24,11 +24,11 @@ import { createMessage, deleteMessages, updateMessage } from "./controllers/mess
 import supabase from "../lib/supabase.ts";
 
 const PORT = 8080;
-export const CLIENT_ORIGIN = "https://odin-whatsapp-client-five.vercel.app";
+export const CLIENT_ORIGINS = ["https://odin-whatsapp-client-five.vercel.app", "http://localhost:3000"];
 
 const app = express();
 
-app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+app.use(cors({ origin: CLIENT_ORIGINS, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -53,7 +53,7 @@ app.use((err: any, _: any, res: any, __: any) => {
 
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: CLIENT_ORIGIN, credentials: true },
+  cors: { origin: CLIENT_ORIGINS, credentials: true },
   cookie: true,
   maxHttpBufferSize: 3e7 // 30mb maximum buffer files uploaded via websocket
 });
