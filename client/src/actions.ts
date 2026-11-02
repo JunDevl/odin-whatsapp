@@ -65,6 +65,20 @@ export const loginUser = async (formData: FormData) => {
   return await userResponse.text();
 }
 
+export const logoutUser = async () => {
+  const logoutResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  if (!logoutResponse.ok) throw new Error(await logoutResponse.text());
+
+  return await logoutResponse.text();
+}
+
 export const getLoggedUser = async () => {
   const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
     credentials: "include"

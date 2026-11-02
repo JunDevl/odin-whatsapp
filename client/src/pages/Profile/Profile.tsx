@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getLoggedUser } from "../../actions";
+import { getLoggedUser, logoutUser } from "../../actions";
+import { useNavigate } from "react-router";
 
 type Props = {}
 
@@ -8,6 +9,8 @@ const Profile = (props: Props) => {
     queryKey: ["user"],
     queryFn: () => getLoggedUser()
   })
+
+  const navigate = useNavigate();
 
   return (
     <div id="profile" className="flex-1 flex flex-col p-3 *:flex *:gap-3">
@@ -26,6 +29,18 @@ const Profile = (props: Props) => {
       <div id="password">
         <label>Password:</label>
         <p></p>
+      </div>
+      <div className="log-out">
+        <button 
+          id="log-out" 
+          onClick={async () => {
+            const logout = await logoutUser();
+
+            navigate("/auth");
+          }}
+        >
+          Log-out
+        </button>
       </div>
     </div>
   )

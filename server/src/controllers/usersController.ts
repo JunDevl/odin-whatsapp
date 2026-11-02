@@ -6,6 +6,32 @@ import argon2 from "argon2";
 import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
 import { connectedUsers } from "../index.ts";
+import passport from "passport";
+
+export const loginUser: RequestHandler = (req, res, next) => { // log-in and create new JWT
+  passport.authenticate(
+    "local", 
+    { session: false }, 
+    async (err: string, user: User, info: any, status: string) => {
+      if (err) return res.status(400).send(info);
+
+      if (!user) return res.status(404).send(info);
+
+      try {
+        const token = jwt.sign(user, process.env["SECRET_KEY"]!, {expiresIn: "7d"})
+
+        res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(201);
+      } catch (err) {
+        res.status(400).send(err);
+      }
+    }
+  )(req, res, next)
+}
+
+export const logoutUser: RequestHandler = (req, res, next) => {
+  try { res.clearCookie("session_token").sendStatus(200); } 
+  catch (err) { res.status(400).send(err); }
+}
 
 const createUserValidator: ValidationChain[] = [
   body("name")
