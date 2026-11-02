@@ -20,7 +20,7 @@ export const loginUser: RequestHandler = (req, res, next) => { // log-in and cre
       try {
         const token = jwt.sign(user, process.env["SECRET_KEY"]!, {expiresIn: "7d"})
 
-        res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(201);
+        res.cookie("session_token", token, { partitioned: true /*httpOnly: true*/ }).sendStatus(201);
       } catch (err) {
         res.status(400).send(err);
       }
@@ -76,7 +76,7 @@ export const createUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(createdUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(200);
+      res.cookie("session_token", token, { partitioned: true /*httpOnly: true*/ }).sendStatus(200);
     })
   }
 ]
@@ -133,7 +133,7 @@ export const updateUser: (RequestHandler | ValidationChain[])[] = [
     jwt.sign(updatedUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
       if (err) return res.status(400).send(err);
 
-      res.cookie("session_token", token/*, { httpOnly: true }*/).sendStatus(200);
+      res.cookie("session_token", token, { partitioned: true /*httpOnly: true*/ }).sendStatus(200);
     })
   }
 ]
