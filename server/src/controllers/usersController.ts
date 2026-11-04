@@ -1,4 +1,4 @@
-import type { RequestHandler } from "express";
+import type { CookieOptions, RequestHandler } from "express";
 import { body, validationResult, matchedData, type ValidationChain } from "express-validator";
 import { handleError, PromiseError } from "../../lib/utils.ts";
 import jwt from "jsonwebtoken";
@@ -7,6 +7,8 @@ import prisma from "../../lib/prisma.ts";
 import type { User } from "../../generated/prisma/client.ts";
 import { connectedUsers } from "../index.ts";
 import passport from "passport";
+
+const USER_TOKEN_COOKIE_HEADERS: CookieOptions = { partitioned: true, secure: true, sameSite: "none" /*httpOnly: true*/ };
 
 export const loginUser: RequestHandler = (req, res, next) => { // log-in and create new JWT
   passport.authenticate(
@@ -19,8 +21,7 @@ export const loginUser: RequestHandler = (req, res, next) => { // log-in and cre
 
       try {
         const token = jwt.sign(user, process.env["SECRET_KEY"]!, {expiresIn: "7d"})
-
-        res.cookie("session_token", token, { partitioned: true, secure: true /*httpOnly: true*/ }).sendStatus(201);
+        res.cookie("session_token", token, USER_TOKEN_COOKIE_HEADERS).sendStatus(201);
       } catch (err) {
         res.status(400).send(err);
       }
@@ -73,11 +74,12 @@ export const createUser: (RequestHandler | ValidationChain[])[] = [
 
     if (createdUser instanceof PromiseError) return res.status(400).json(createdUser.error);
     
-    jwt.sign(createdUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
-      if (err) return res.status(400).send(err);
-
-      res.cookie("session_token", token, { partitioned: true, secure: true /*httpOnly: true*/ }).sendStatus(200);
-    })
+    try {
+      const token = jwt.sign(createdUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"});
+      res.cookie("session_token", token, USER_TOKEN_COOKIE_HEADERS).sendStatus(200);
+    } catch (e) {
+      res.status(400).send(e);
+    }
   }
 ]
 
@@ -130,11 +132,12 @@ export const updateUser: (RequestHandler | ValidationChain[])[] = [
 
     if (updatedUser instanceof PromiseError) return res.status(400).json(updatedUser.error);
 
-    jwt.sign(updatedUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"}, (err, token) => {
-      if (err) return res.status(400).send(err);
-
-      res.cookie("session_token", token, { partitioned: true, secure: true /*httpOnly: true*/ }).sendStatus(200);
-    })
+    try {
+      const token = jwt.sign(updatedUser, process.env["SECRET_KEY"]!, {expiresIn: "7d"});
+      res.cookie("session_token", token, USER_TOKEN_COOKIE_HEADERS).sendStatus(200);
+    } catch (e) {
+      res.status(400).send(e);
+    }
   }
 ]
 
