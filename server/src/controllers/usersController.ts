@@ -8,7 +8,13 @@ import type { User } from "../../generated/prisma/client.ts";
 import { connectedUsers } from "../index.ts";
 import passport from "passport";
 
-const USER_TOKEN_COOKIE_HEADERS: CookieOptions = { partitioned: true, secure: true, sameSite: "none", httpOnly: true };
+
+
+const USER_TOKEN_COOKIE_HEADERS: CookieOptions = 
+  Object.assign<CookieOptions, CookieOptions | null>(
+    { sameSite: "none", httpOnly: true }, 
+    process.env["NODE_ENV"] === "production" ? { partitioned: true, secure: true } : null
+  );
 
 export const loginUser: RequestHandler = (req, res, next) => { // log-in and create new JWT
   passport.authenticate(

@@ -2,17 +2,19 @@ import { io } from "socket.io-client";
 import type { GroupMemberResponse, MessageResponse, LoggedUserResponse, UserContacts, UserGroups, GroupResponse } from "./utils";
 import type { EntityKind } from "@packages/utils";
 
-export const socket = io(`wss://${import.meta.env["VITE_SERVER_PATH"]}`, {
+export const socket = io(`${import.meta.env["PROD"] ? "wss" : "ws"}://${import.meta.env["VITE_SERVER_PATH"]}`, {
   withCredentials: true,
   transports: ["websocket"]
 });
+
+const ORIGIN_API_URL = `${import.meta.env["PROD"] ? "https" : "http"}://${import.meta.env["VITE_SERVER_PATH"]}/api`
 
 // REST API ACTIONS BELOW
 
 export const createUser = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`${ORIGIN_API_URL}/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -30,7 +32,7 @@ export const createUser = async (formData: FormData) => {
 export const editUserData = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`${ORIGIN_API_URL}/users`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
@@ -48,7 +50,7 @@ export const editUserData = async (formData: FormData) => {
 export const loginUser = async (formData: FormData) => {
   const data = Object.fromEntries(formData.entries());
 
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+  const userResponse = await fetch(`${ORIGIN_API_URL}/users/auth`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -66,7 +68,7 @@ export const loginUser = async (formData: FormData) => {
 }
 
 export const logoutUser = async () => {
-  const logoutResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/auth`, {
+  const logoutResponse = await fetch(`${ORIGIN_API_URL}/users/auth`, {
     method: "DELETE",
     credentials: "include",
     headers: {
@@ -80,7 +82,7 @@ export const logoutUser = async () => {
 }
 
 export const getLoggedUser = async () => {
-  const userResponse = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users`, {
+  const userResponse = await fetch(`${ORIGIN_API_URL}/users`, {
     credentials: "include"
   });
 
@@ -95,7 +97,7 @@ export const getLoggedUser = async () => {
 }
 
 export const getUserContacts = async () => {
-  const fetchedContacts = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
+  const fetchedContacts = await fetch(`${ORIGIN_API_URL}/users/friends`, {
     credentials: "include"
   });
 
@@ -109,7 +111,7 @@ export const getUserContacts = async () => {
 export const addContact = async (name: string) => {
   const data = { name };
 
-  const addedContact = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends`, {
+  const addedContact = await fetch(`${ORIGIN_API_URL}/users/friends`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -126,7 +128,7 @@ export const addContact = async (name: string) => {
 }
 
 export const removeContact = async (name: string) => {
-  const removedContact = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/friends/${name}`, {
+  const removedContact = await fetch(`${ORIGIN_API_URL}/users/friends/${name}`, {
     method: "DELETE",
     credentials: "include"
   })
@@ -142,7 +144,7 @@ export const createGroup = async (name: string, description?: string) => {
   const data = {name, description};
 
   const createdGroup = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups`, { 
+    `${ORIGIN_API_URL}/groups`, { 
       credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -158,7 +160,7 @@ export const createGroup = async (name: string, description?: string) => {
 }
 
 export const getUserGroups = async () => {
-  const fetchedGroups = await fetch(`https://${import.meta.env["VITE_SERVER_PATH"]}/api/users/groups`, {
+  const fetchedGroups = await fetch(`${ORIGIN_API_URL}/users/groups`, {
     credentials: "include"
   });
 
@@ -171,7 +173,7 @@ export const getUserGroups = async () => {
 
 export const getGroupMembers = async (id: string) => {
   const fetchedMembers = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`, 
+    `${ORIGIN_API_URL}/groups/${id}/members`, 
     { credentials: "include" }
   );
 
@@ -191,7 +193,7 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
   if (chatIdentification === "") return result;
 
   const messagesResponse = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${chatKind}/${chatIdentification}`, 
+    `${ORIGIN_API_URL}/messages/${chatKind}/${chatIdentification}`, 
     { credentials: "include" }
   )
 
@@ -204,7 +206,7 @@ export const getMessagesFromChat = async (chatKind: EntityKind, chatIdentificati
 
 export const getMessageFileAttachment = async (id: string, fileName: string) => {
   const downloadedFile = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/messages/${id}/file/${fileName}`,
+    `${ORIGIN_API_URL}/messages/${id}/file/${fileName}`,
     {
       credentials: "include"
     }
@@ -219,7 +221,7 @@ export const getMessageFileAttachment = async (id: string, fileName: string) => 
 
 export const getInvitingGroup = async (id: string) => {
   const groupResponse = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}`,
+    `${ORIGIN_API_URL}/groups/${id}`,
     { credentials: "include" }
   )
 
@@ -232,7 +234,7 @@ export const getInvitingGroup = async (id: string) => {
 
 export const joinGroup = async (id: string) => {
   const joinGroup = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    `${ORIGIN_API_URL}/groups/${id}/members`,
     { 
       method: "POST",
       credentials: "include"
@@ -248,7 +250,7 @@ export const joinGroup = async (id: string) => {
 
 export const leaveGroup = async (id: string) => {
   const joinGroup = await fetch(
-    `https://${import.meta.env["VITE_SERVER_PATH"]}/api/groups/${id}/members`,
+    `${ORIGIN_API_URL}/groups/${id}/members`,
     { 
       method: "DELETE",
       credentials: "include" 
