@@ -56,13 +56,6 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
     const list = messagesList.current!;
 
     list.scrollTop = list.scrollHeight;
-
-    ["keyup","keydown"].forEach(event => {
-    window.addEventListener(event, (e: any) => {
-      document.onselectstart = () => !(e.key == "Shift" && e.shiftKey);
-    });
-});
-
   }, [])
 
   useEffect(() => {
@@ -136,29 +129,27 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
       <dialog 
         id="messages-tool" 
         open={!!selectedMessagesIndex.size}
-        className="bottom-4 rounded-4xl p-1 bg-dark-600"
+        className="top-4 rounded-4xl p-1"
       >
-        <div className="relative z-1 flex justify-between gap-1 [&>button]:rounded-full [&>button]:aspect-square [&>button:not(.close-tools)]:hover:bg-dark-400 [&>button>svg]:size-6">
+        <div className="relative z-1 flex justify-between gap-2 [&>button>svg]:size-6">
           {!selectedMessagesHasThirdParty && 
             <>
+              <button title="Edit message(s)">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                  <use href="/icons.svg#edit-pencil"/>
+                </svg>
+              </button>
               <button title="Delete message(s)">
                 <svg xmlns="http://www.w3.org/2000/svg">
                   <use href="/icons.svg#delete-trash-can"/>
                 </svg>
               </button>
               {selectedMessages.size === 1 && 
-                <>
-                  <button title="Edit message">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                      <use href="/icons.svg#edit-pencil"/>
-                    </svg>
-                  </button>
-                  <button title="Message info">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                      <use href="/icons.svg#info"/>
-                    </svg>
-                  </button>
-                </>
+                <button title="Message info">
+                  <svg xmlns="http://www.w3.org/2000/svg">
+                    <use href="/icons.svg#info"/>
+                  </svg>
+                </button>
               }
             </>
           }
@@ -168,7 +159,7 @@ const Chat = <T extends EntityKind,>({kind, selectedChat}: Props<T>) => {
             </svg>
           </button>
           <button 
-            className="close-tools absolute -right-8 hidden [dialog:hover>div>button]:block h-full aspect-square z-0"
+            className="absolute -right-6 hidden [dialog:hover>div>button]:block h-full aspect-square z-0"
             style={{padding: 0}}
             onClick={() => {
               setSelectedMessagesIndex(sm => {

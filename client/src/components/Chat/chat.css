@@ -1,15 +1,10 @@
-#input-area {
-  anchor-name: --footer;
+.chat-header {
+  anchor-name: --header;
 }
 
 #messages-tool {
-  position-anchor: --footer;
-  position-area: top;
-  transition: 500ms cubic-bezier(0.215, 0.610, 0.355, 1);
-
-  @starting-style {
-    bottom: 0px;
-  }
+  position-anchor: --header;
+  position-area: bottom;
 }
 
 #messages-tool:popover-open {

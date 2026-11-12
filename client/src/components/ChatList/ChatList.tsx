@@ -1,5 +1,5 @@
 import "./chatlist.css";
-import { Suspense, useContext, useRef, useState, type InputEvent } from "react";
+import { Suspense, useContext, useRef, useState } from "react";
 import type { UserContacts, UserGroups } from "../../utils";
 import NewChatModal from "../NewChatModal/NewChatModal";
 import { SelectedChatContext } from "../../utils";
@@ -18,26 +18,6 @@ type Props<T extends EntityKind> = {
 })
 
 const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T>) => {
-  const [search, setSearch] = useState("");
-
-  const filteredChats = search !== "" ? chats.filter(chat => {
-    const lowerCaseSearch = search.toLowerCase();
-
-    if ("status" in chat) {
-      if (
-        chat.friendUser.name.toLowerCase().includes(lowerCaseSearch) || 
-        chat.friendUser.profile_name.toLowerCase().includes(lowerCaseSearch)
-      ) return true;
-
-      return chat.status === search;
-    }
-
-    if (
-      chat.group.name.toLowerCase().includes(lowerCaseSearch) || 
-      (chat.group.description && chat.group.description.toLowerCase().includes(lowerCaseSearch))
-    ) return true;
-  }) : []
-
   const isContacts = kind === "user";
 
   const {setSelectedChatID} = useContext(SelectedChatContext);
@@ -47,12 +27,6 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
   const isGroupSelected = selectedChat && "group" in selectedChat!;
 
   const capitalKind = `${kind[0].toUpperCase()}${kind.slice(1)}`;
-
-  const handleSearch = (e: InputEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-
-    setSearch(target.value);
-  }
 
   return (
     <nav id={`${kind}s-sidebar`} className="overflow-hidden flex flex-col">
@@ -73,7 +47,7 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
       </button>
       <div className="list">
         <div id="search-chat" className="search m-2 bg-dark-500 h-8">
-          <input type="text" placeholder={`Search ${capitalKind}`} onInput={handleSearch} value={search}/>
+          <input type="text" name="" id="" placeholder={`Search ${capitalKind}`}/>
           <button className="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg">
               <use href="/icons.svg#search-magnifying-glass"/>
@@ -82,7 +56,7 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
         </div>
         <ul id={`${kind}s`} className="flex flex-col gap-1 px-1.5">
           <Suspense>
-            {chats.length > 0 && (search !== "" ? filteredChats : chats).map((chat, i) => 
+            {chats.length > 0 && chats.map((chat, i) => 
               <ChatItem 
                 id={`${kind}-chats`}
                 kind={kind}
@@ -108,13 +82,6 @@ const ChatList = <T extends EntityKind, >({ kind, chats, selectedChat }: Props<T
                 }}
               />
             )}
-            {(search !== "" && filteredChats.length === 0) && 
-              <li 
-                className={`chat-item ${kind} relative py-2`}
-              >
-                Search didn't match anything.
-              </li>
-            }
           </Suspense>
         </ul>
       </div>

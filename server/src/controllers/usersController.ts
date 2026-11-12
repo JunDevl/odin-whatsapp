@@ -12,8 +12,8 @@ import passport from "passport";
 
 const USER_TOKEN_COOKIE_HEADERS: CookieOptions = 
   Object.assign<CookieOptions, CookieOptions | null>(
-    { httpOnly: true }, 
-    process.env["NODE_ENV"] === "production" ? { sameSite: "none", partitioned: true, secure: true } : null
+    { sameSite: "none", httpOnly: true }, 
+    process.env["NODE_ENV"] === "production" ? { partitioned: true, secure: true } : null
   );
 
 export const loginUser: RequestHandler = (req, res, next) => { // log-in and create new JWT

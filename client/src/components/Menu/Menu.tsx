@@ -14,7 +14,7 @@ const Menu = (props: Props) => {
   return (
     <nav id="menu" className="p-0.5 overflow-hidden">
       <ul className={cn(
-        "flex flex-col gap-1 [&>li>a]:p-2 [&>li>a]:block *:rounded-lg *:aspect-square *:w-10 *:hover:bg-dark-300", 
+        "flex flex-col gap-2 [&>li>a]:p-2 [&>li>a]:block *:rounded-lg *:aspect-square *:w-10 *:hover:bg-dark-300", 
         `*:data-[selected="true"]:bg-dark-300`
       )}>
         <li data-selected={selectedMenu === "priv"}>
