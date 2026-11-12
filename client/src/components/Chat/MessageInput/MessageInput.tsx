@@ -27,7 +27,7 @@ const MessageInput = ({ kind, chat }: Props) => {
   const isSelectedUser = "friendUser" in chat;
 
   const { mutateAsync: sendMessage } = useMutation({
-    mutationFn: ({content, chat, attachment}: {content: string, chat: {name: string} | {id: string}, attachment: File}) => createMessage(content, chat, attachment),
+    mutationFn: ({content, chat, attachment}: {content: string, chat: {name: string} | {id: string}, attachment: File | null}) => createMessage(content, chat, attachment),
     onSuccess: (data, params, result, context) => {
       return queryClient.setQueryData(
         [`${kind}_chats`, isSelectedUser ? chat.friendUser.name : chat!.group.id],
@@ -41,12 +41,10 @@ const MessageInput = ({ kind, chat }: Props) => {
 
   const onSubmitMessage = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(form.current!);
     
-    const messageContent = String(formData.get("content"));
+    const messageContent = text;
     const reciever = chat;
-    const messageFile = (formData.get("files") ?? []) as File;
+    const messageFile = attachment;
 
     const createdMessage = await sendMessage({content: messageContent, chat: "friendUser" in reciever ? {name: reciever.friendUser.name} : {id: reciever.group.id}, attachment: messageFile});
 
@@ -93,8 +91,8 @@ const MessageInput = ({ kind, chat }: Props) => {
               </ul>
             </div>
           }
-          <div className="flex items-end p-0.5">
-            <div className="flex gap-0.5 items-center [&>button]:justify-center [&>button]:aspect-square [&>button]:rounded-4xl [&>button]:flex [&>button]:items-center">
+          <div className="flex items-end p-0.5" onClick={e => e.target === e.currentTarget && input.current!.focus()}>
+            <div className="flex gap-0.5 items-center [&>button]:justify-center [&>button]:aspect-square [&>button]:rounded-4xl [&>button]:flex [&>button]:items-center" onClick={e => e.target === e.currentTarget && input.current!.focus()}>
               <button 
                 id="send" 
                 type="submit"
@@ -117,7 +115,7 @@ const MessageInput = ({ kind, chat }: Props) => {
               <ContextMenu id="file-attach-menu" ref={attachMenu} className="[&>ul>li>button]:bg-dark-500 [&>ul>li>button:not(.delete)]:hover:bg-dark-600">
                 <MenuItem className="m-2 border border-dark-300" type="button">
                   <label 
-                    htmlFor="files"
+                    htmlFor="file"
                     className="flex flex-col items-center cursor-pointer gap-1 p-2"
                   >
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-9">
@@ -127,8 +125,8 @@ const MessageInput = ({ kind, chat }: Props) => {
                   </label>
                   <input 
                     type="file" 
-                    name="files" 
-                    id="files"
+                    name="file" 
+                    id="file"
                     onInput={e => {
                       const target = e.target as HTMLInputElement;
 
@@ -140,13 +138,14 @@ const MessageInput = ({ kind, chat }: Props) => {
               </ContextMenu>
             </div>
             <textarea 
-              className="pl-2 min-w-0 flex-1 field-sizing-content focus:outline-0 self-center"
+              className="pl-2 min-w-0 flex-1 field-sizing-content focus:outline-0 self-center wrap-anywhere"
               name="content" 
               id="content" 
               ref={input}
               value={text}
               required={true}
               placeholder="Write a message"
+              // wrap="hard"
               onInput={handleInput}
               onKeyDown={handleKeyDown}
             />

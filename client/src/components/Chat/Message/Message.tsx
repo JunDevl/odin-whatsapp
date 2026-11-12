@@ -87,7 +87,8 @@ const Message = ({ message, user, chat, index, onSelect }: Props) => {
       onMouseEnter={() => setHovering("row")}
       onMouseLeave={() => setHovering(null)}
       onClick={(e) => {
-        if (hovering === "row" && e.target !== checkbox.current) checkbox.current!.checked = !checkbox.current!.checked;
+        if (hovering === "row" && e.target !== checkbox.current && e.shiftKey) 
+          checkbox.current!.checked = !checkbox.current!.checked;
 
         onSelect!(checkbox.current!.checked);
       }}
