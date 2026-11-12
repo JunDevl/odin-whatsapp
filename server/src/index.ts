@@ -24,7 +24,7 @@ import { createMessage, deleteMessages, updateMessage } from "./controllers/mess
 import supabase from "../lib/supabase.ts";
 
 const PORT = 8080;
-export const CLIENT_ORIGIN_REGEXP = /^https:\/\/(odin-whatsapp-client.*\.vercel\.app|localhost:\d{4})$/;
+export const CLIENT_ORIGIN_REGEXP = /^https?:\/\/(odin-whatsapp-client.*\.vercel\.app|localhost:\d{4})$/;
 
 const app = express();
 
